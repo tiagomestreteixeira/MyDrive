@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phonebook>
+  <person name="António">
+    <contacts>
+      <contact name="Xana" phoneNumber="963456789" />
+      <contact name="Miguel" phoneNumber="345678900" />
+      <contact name="Ana" phoneNumber="935667654" />
+      <contact name="SOS" phoneNumber="112" />
+      <contact name="Aerporto" phoneNumber="218413700" />
+    </contacts>
+  </person>
+  <person name="Miguel">
+    <contacts>
+      <contact name="Maria" phoneNumber="960123321" />
+      <contact name="Xico" phoneNumber="911919191" />
+      <contact name="Xana" phoneNumber="963456789" />
+      <contact name="Ana" phoneNumber="935667654" />
+      <contact name="Metro" phoneNumber="213558457" />
+    </contacts>
+  </person>
+  <person name="Xana">
+    <contacts>
+      <contact name="Maria" phoneNumber="960123321" />
+      <contact name="Xico" phoneNumber="911919191" />
+      <contact name="Miguel" phoneNumber="345678900" />
+      <contact name="Ana" phoneNumber="935667654" />
+      <contact name="Saude24" phoneNumber="808242424" />
+      <contact name="Metro" phoneNumber="213558457" />
+    </contacts>
+  </person>
+  <person name="Ana">
+    <contacts>
+      <contact name="Zé" phoneNumber="966669999" />
+      <contact name="Miguel" phoneNumber="345678900" />
+      <contact name="Maria" phoneNumber="960123321" />
+      <contact name="Carris" phoneNumber="213632044" />
+      <contact name="Metro" phoneNumber="213558457" />
+    </contacts>
+  </person>
+  <person name="Sofia">
+    <contacts>
+      <contact name="Miguel" phoneNumber="345678900" />
+      <contact name="Ana" phoneNumber="935667654" />
+      <contact name="Saude24" phoneNumber="808242424" />
+      <contact name="Intoxicações" phoneNumber="217950143" />
+      <contact name="EPAL" phoneNumber="213221111" />
+      <contact name="Aerporto" phoneNumber="218413700" />
+      <contact name="Carris" phoneNumber="213632044" />
+      <contact name="Metro" phoneNumber="213558457" />
+    </contacts>
+  </person>
+</phonebook>
+
