@@ -11,8 +11,7 @@
 
     <organization>
         <name>Engenharia de Software, IST 2016</name>
-        <url>https://fenix.tecnico.ulisboa.pt/disciplinas/ESof96451113/2015-2016/2-semestre</url> <!-- Alameda -->
-        <!-- ESof141113 Tagus -->
+        <url>https://fenix.tecnico.ulisboa.pt/disciplinas/ESof141113/2015-2016/2-semestre</url>
     </organization>
 
     <developers>
@@ -174,7 +173,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>pt.tecnico.mydrive.Main</mainClass> <!-- FIXME -->
+                    <mainClass>pt.tecnico.mydrive.Main</mainClass>
                     <killAfter>-1</killAfter>
                 </configuration>
             </plugin>
