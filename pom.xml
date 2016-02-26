@@ -16,11 +16,11 @@
     </organization>
 
     <developers>
-        <developer> <!-- FIXME: one developer for each team member -->
-            <id>ist99999</id> <!-- FIXME -->
-            <name>github username</name> <!-- FIXME -->
-            <email>ist99999@tecnico.ulisboa.pt</email> <!-- FIXME -->
-            <organization>es16 g99al</organization> <!-- FIXME -->
+        <developer>
+            <id>ist65907</id>
+            <name>vanil90</name>
+            <email>vanil90@gmail.com</email>
+            <organization>es16 g12tg</organization>
             <roles>
                 <role>Developer</role>
                 <role>Architect</role>
@@ -28,7 +28,82 @@
                 <role>Integrator</role>
             </roles>
             <properties>
-                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist199999</picUrl> <!-- FIXME -->
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist165907</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ist65865</id>
+            <name>AndreZilhao</name>
+            <email>aalmsantos@gmail.com</email>
+            <organization>es16 g12tg</organization>
+            <roles>
+                <role>Developer</role>
+                <role>Architect</role>
+                <role>Tester</role>
+                <role>Integrator</role>
+            </roles>
+            <properties>
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist165865</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ist57422</id>
+            <name>tiagomestreteixeira</name>
+            <email>tam.teixeira@gmail.com</email>
+            <organization>es16 g12tg</organization>
+            <roles>
+                <role>Developer</role>
+                <role>Architect</role>
+                <role>Tester</role>
+                <role>Integrator</role>
+            </roles>
+            <properties>
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist157422</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ist63576</id>
+            <name>RenatoL</name>
+            <email>lourinho.renato@gmail.com</email>
+            <organization>es16 g12tg</organization>
+            <roles>
+                <role>Developer</role>
+                <role>Architect</role>
+                <role>Tester</role>
+                <role>Integrator</role>
+            </roles>
+            <properties>
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist163576</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ist63535</id>
+            <name>joaomiguel-ist</name>
+            <email>joaomdc.costa@gmail.com</email>
+            <organization>es16 g12tg</organization>
+            <roles>
+                <role>Developer</role>
+                <role>Architect</role>
+                <role>Tester</role>
+                <role>Integrator</role>
+            </roles>
+            <properties>
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist163535</picUrl>
+            </properties>
+        </developer>
+        <developer>
+            <id>ist66355</id>
+            <name>andrefsascensao</name>
+            <email>andrefsascensao@gmail.com</email>
+            <organization>es16 g12tg</organization>
+            <roles>
+                <role>Developer</role>
+                <role>Architect</role>
+                <role>Tester</role>
+                <role>Integrator</role>
+            </roles>
+            <properties>
+                <picUrl>https://fenix.tecnico.ulisboa.pt/user/photo/ist166355</picUrl>
             </properties>
         </developer>
     </developers>
