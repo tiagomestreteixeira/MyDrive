@@ -99,7 +99,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>pt.tecnico.mydrive.MyDriveApplication</mainClass> <!-- FIXME -->
+                    <mainClass>pt.tecnico.mydrive.Main</mainClass> <!-- FIXME -->
                     <killAfter>-1</killAfter>
                 </configuration>
             </plugin>
