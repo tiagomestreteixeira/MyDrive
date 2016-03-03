@@ -15,8 +15,7 @@ class File
 {
   Integer id;
   String name;
-  String creatorPermissions;
-  String regularPermissions;
+  String Permissions;
   DateTime lastModification;
 }
 
