@@ -9,8 +9,7 @@ class User{
 	String _name;
 	String _password;
 	String _mask;
-	String _directory;
-}
+	String _directory;}
 
 class SuperUser extends User;
 
@@ -22,15 +21,12 @@ class Entry{
 	DateTime _modificationDate;
 	String _path;
 	Integer _size;
-	Boolean _permission;
-}
+	Boolean _permission;}
 
 class File extends Entry {
-	String _content;
-}
+	String _content;}
 
-class Directory extends Entry{
-}
+class Directory extends Entry;
 
 class PlainFiles extends File;
 
@@ -40,59 +36,40 @@ class App extends PlainFiles;
 
 relation DomainRootHasMyDriveApplication {
   .pt.ist.fenixframework.DomainRoot playsRole root;
-  MyDrive playsRole mydrive;
-}
+  MyDrive playsRole mydrive;}
 
 relation MyDriveHasUsers{
 	MyDrive playsRole mydrive{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	User playsRole user{
-		multiplicity *;
-	}
-}
+		multiplicity *;}}
 
 relation MyDriveHasFileSystem{
 	MyDrive playsRole mydrive{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	FileSystem playsRole filesystem{
-		multiplicity *;
-	}
-}
+		multiplicity *;}}
 
 relation FileSystemHasEntries{
 	FileSystem playsRole filesystem{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	Entry playsRole entry{
-		multiplicity *;
-	}
-}
+		multiplicity *;}}
 
 relation UserHasDirectory{
 	User playsRole user{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	Directory playsRole directory{
-		multiplicity 1;
-	}
-}
+		multiplicity 1;}}
 
 relation FileSystemHasSuperUser{
 	FileSystem playsRole filesystem{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	SuperUser playsRole superuser{
-		multiplicity 1;
-	}
-}
+		multiplicity 1;}}
 
 relation FileSystemHasRegularUser{
 	FileSystem playsRole filesystem{
-		multiplicity 1;
-	}
+		multiplicity 1;}
 	RegularUser playsRole regularuser{
-		multiplicity *;
-	}
-}
+		multiplicity *;}}
