@@ -1,0 +1,98 @@
+package pt.tecnico.mydrive.domain;
+
+class MyDrive;
+
+class FileSystem;
+
+class User{
+	String _username;
+	String _umask;
+	String _password;
+}
+
+class SuperUser extends User;
+
+class RegularUser extends User;
+
+class Entry{
+	Integer _id;
+	String _name;
+	String _user;
+	DateTime _creation;
+	DateTime _modified;
+	String _fmask;
+	Integer _dimension;
+}
+
+class File extends Entry{
+	String _content;
+}
+
+class Directory extends Entry{
+
+}
+
+class PlainFiles extends File;
+
+class Link extends PlainFiles;
+
+class App extends PlainFiles;
+
+relation DomainRootHasMyDriveApplication {
+  .pt.ist.fenixframework.DomainRoot playsRole root;
+  MyDrive playsRole mydrive;
+}
+
+relation MyDriveHasUsers{
+	MyDrive playsRole mydrive{
+		multiplicity 1;
+	}
+	User playsRole user{
+		multiplicity *;
+	}
+}
+
+relation MyDriveHasFileSystem{
+	MyDrive playsRole mydrive{
+		multiplicity 1;
+	}
+	FileSystem playsRole filesystem{
+		multiplicity *;
+	}
+}
+
+relation FileSystemHasEntries{
+	FileSystem playsRole filesystem{
+		multiplicity 1;
+	}
+	Entry playsRole entry{
+		multiplicity *;
+	}
+}
+
+relation UserHasDirectory{
+	User playsRole user{
+		multiplicity 1;
+	}
+	Directory playsRole directory{
+		multiplicity 1;
+	}
+}
+
+relation FileSystemHasSuperUser{
+	FileSystem playsRole filesystem{
+		multiplicity 1;
+	}
+	SuperUser playsRole superuser{
+		multiplicity 1;
+	}
+}
+
+relation FileSystemHasRegularUser{
+	FileSystem playsRole filesystem{
+		multiplicity 1;
+	}
+	RegularUser playsRole regularuser{
+		multiplicity *;
+	}
+}
