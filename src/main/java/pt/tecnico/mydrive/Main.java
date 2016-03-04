@@ -1,4 +1,4 @@
-package pt.tecnico.mydrive;
+package pt.tecnico.myDrive;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
