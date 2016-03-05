@@ -1,8 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
-class MyDrive;
+class MyDrive
 {
-Integer idCounter;
+  Integer idCounter;
 }
 
 class User 
@@ -62,7 +62,7 @@ relation MyDriveContainsUsers
 
 relation UserContainsFiles 
 {
-  User playsRole user;
+  User playsRole user
   {
     multiplicity *;
   }
@@ -74,7 +74,7 @@ relation UserContainsFiles
 
 relation DirectoryContainsFiles
 {
-  Dir playsRole dir;
+  Dir playsRole dir
   {
     multiplicity *;
   }
