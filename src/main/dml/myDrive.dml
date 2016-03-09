@@ -14,11 +14,15 @@ class User
   String home;
 }
 
+class SuperUser extends User
+{
+}
+
 class File 
 {
   Integer id;
   String name;
-  String Permissions;
+  String permissions;
   DateTime lastModification;
 }
 
