@@ -11,6 +11,7 @@ import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Dir;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.SuperUser;
+import pt.tecnico.myDrive.domain.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,13 +20,13 @@ public class Main {
     static final Logger log = LogManager.getRootLogger();
 
     public static void main(String[] args) throws IOException {
-        log.info("Hello World!");
 
         try {
             setup();
             for (String s : args){
+                log.info("command line argument: " + s);
                 importXML(new File(s));
-                log.info("ARGUMENT: " + s);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,31 +73,20 @@ public class Main {
 
     @Atomic
     public static void importXML(File file) {
-        log.trace("xmlScan: " + FenixFramework.getDomainRoot());
+        log.trace("importXML: " + FenixFramework.getDomainRoot());
+
         // MyDrive Singleton must be implemented
         //MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
             Document document = (Document)builder.build(file);
-           // md.xmlImport(document.getRootElement());
-            xmlImport(document.getRootElement());
+        //    md.xmlImport(document.getRootElement());
+
         } catch (JDOMException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void xmlImport(Element element) {
-        for (Element node: element.getChildren("plain")) {
-            String name = node.getAttribute("id").getValue();
 
-            log.info("Element id attribute : " + name.toString());
 
-            //Person person = getPersonByName(name);
-
-            //if (person == null) // Does not exist
-            //    person = new Person(this, name);
-
-            //person.xmlImport(node);
-        }
-    }
 }
