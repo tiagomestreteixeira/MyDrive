@@ -3,6 +3,7 @@ package pt.tecnico.myDrive;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import pt.ist.fenixframework.Atomic;
@@ -19,10 +20,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         log.info("Hello World!");
+
         try {
             setup();
-            for (String s : args)
+            for (String s : args){
                 importXML(new File(s));
+                log.info("ARGUMENT: " + s);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -49,33 +53,50 @@ public class Main {
         // TODO: Change to use User File creation
         int id = md.getIdCounter();
 
-        Dir rootDir = new Dir();
-        rootDir.setName("/");
-        rootDir.addUser(root);
-        rootDir.setId(id);
-        rootDir.addFile(rootDir);
-        md.setIdCounter(id + 1);
+    Dir rootDir = new Dir();
+    rootDir.setName("/");
+    rootDir.addUser(root);
+    rootDir.setId(id);
+    rootDir.addFile(rootDir);
+    md.setIdCounter(id + 1);
 
-        // TODO: Change to use User File creation
-        id = md.getIdCounter();
-        Dir homeDir = new Dir();
-        homeDir.setName("home");
-        homeDir.addUser(root);
-        homeDir.setId(id);
-        md.setIdCounter(id + 1);
-        rootDir.addFile(homeDir);
-    }
+    // TODO: Change to use User File creation
+    id = md.getIdCounter();
+    Dir homeDir = new Dir();
+    homeDir.setName("home");
+    homeDir.addUser(root);
+    homeDir.setId(id);
+    md.setIdCounter(id + 1);
+    rootDir.addFile(homeDir);
+}
 
     @Atomic
     public static void importXML(File file) {
         log.trace("xmlScan: " + FenixFramework.getDomainRoot());
-        MyDrive md = MyDrive.getInstance();
+        // MyDrive Singleton must be implemented
+        //MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
             Document document = (Document)builder.build(file);
-            md.xmlImport(document.getRootElement());
+           // md.xmlImport(document.getRootElement());
+            xmlImport(document.getRootElement());
         } catch (JDOMException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void xmlImport(Element element) {
+        for (Element node: element.getChildren("plain")) {
+            String name = node.getAttribute("id").getValue();
+
+            log.info("Element id attribute : " + name.toString());
+
+            //Person person = getPersonByName(name);
+
+            //if (person == null) // Does not exist
+            //    person = new Person(this, name);
+
+            //person.xmlImport(node);
         }
     }
 }
