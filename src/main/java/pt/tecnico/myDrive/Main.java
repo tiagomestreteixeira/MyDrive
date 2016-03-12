@@ -38,12 +38,12 @@ public class Main {
     @Atomic
     public static void setup() {
         // TODO: Change to use MyDrive Singleton
-        MyDrive md = new MyDrive.getInstance();
+        MyDrive md = MyDrive.getInstance();
         md.setRoot(FenixFramework.getDomainRoot());
         md.setIdCounter(1);
 
         // TODO: Change later use SuperUser Singleton
-        SuperUser root = new SuperUser();
+        SuperUser root = SuperUser.getInstance();
         root.setUsername("root");
         root.setName("root");
         root.setPassword("***");
@@ -80,7 +80,7 @@ public class Main {
         SAXBuilder builder = new SAXBuilder();
         try {
             Document document = (Document)builder.build(file);
-            md.xmlImport(document.getRootElement());
+            //md.xmlImport(document.getRootElement());
 
         } catch (JDOMException | IOException e) {
             e.printStackTrace();

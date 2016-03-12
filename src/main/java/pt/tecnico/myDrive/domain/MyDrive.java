@@ -68,7 +68,7 @@ public class MyDrive extends MyDrive_Base {
 
     @Override
     public void setRoot(DomainRoot root) throws MyDriveException {
-        throw new NoPermissionException("setRoot");
+        //throw new NoPermissionException("setRoot");
     }
 
 }
