@@ -44,33 +44,28 @@ public class Main {
         md.setIdCounter(1);
 
         // TODO: Change later use SuperUser Singleton
-        SuperUser root = new SuperUser();
-        root.setUsername("root");
-        root.setName("root");
-        root.setPassword("***");
-        root.setUmask("rwxdr-x-");
+        SuperUser root = SuperUser.getInstance();
 
         md.addUser(root);
 
         // TODO: Change to use User File creation
-        int id = md.getIdCounter();
 
-    Dir rootDir = new Dir();
-    rootDir.setName("/");
-    rootDir.addUser(root);
-    rootDir.setId(id);
-    rootDir.addFile(rootDir);
-    md.setIdCounter(id + 1);
 
-    // TODO: Change to use User File creation
-    id = md.getIdCounter();
-    Dir homeDir = new Dir();
-    homeDir.setName("home");
-    homeDir.addUser(root);
-    homeDir.setId(id);
-    md.setIdCounter(id + 1);
-    rootDir.addFile(homeDir);
-}
+        Dir rootDir = new Dir();
+        rootDir.setName("/");
+        rootDir.addUser(root);
+        rootDir.setId(md.getNewId());
+        rootDir.addFile(rootDir);
+
+        // TODO: Change to use User File creation
+        Dir homeDir = new Dir();
+        homeDir.setName("home");
+        homeDir.addUser(root);
+        homeDir.setId(md.getNewId());
+        rootDir.addFile(homeDir);
+
+        pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
+    }
 
     @Atomic
     public static void importXML(File file) {
