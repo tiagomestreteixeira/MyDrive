@@ -32,7 +32,6 @@ public class User extends User_Base {
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
 
-
         String defaultHome = "/home/" + username;
         String defaultMask = "rwxd----";
         String defaultName = username;
@@ -50,6 +49,11 @@ public class User extends User_Base {
             log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
+        setUsername(username);
+        setHome(defaultHome);
+        setUmask(defaultMask);
+        setName(defaultName);
+        setPassword(defaultPassword);
     }
 
 
