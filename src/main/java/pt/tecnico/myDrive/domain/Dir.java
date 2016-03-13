@@ -8,12 +8,11 @@ public class Dir extends Dir_Base {
 	
     public Dir(){
 		super();
-		init("root", "/", this, "rwxd----");
     }
 	
-	public Dir(String name, String user, Dir directory, String permissions){
+	public Dir(String name, User user, Dir directory, String permissions){
 		super();
-		init(user, name, directory, permissions);
+		init(name, user, directory, permissions);
 	}
 	
 	@Override
