@@ -106,6 +106,15 @@ public class MyDrive extends MyDrive_Base {
             // new dir(directoryPath,directoryName,directoryOwnerUsername,directoryPermissions)
 
 
+            if(directoryPath == null)
+                throw new ImportDocumentException("Directory", "<path> node cannot be read properly.");
+            if(directoryName == null)
+                throw new ImportDocumentException("Directory","<name> node cannot be read properly.");
+            if(directoryOwnerUsername == null)
+                throw new ImportDocumentException("Directory","<owner> node cannot be read properly.");
+            if(directoryPermissions == null)
+                throw new ImportDocumentException("Directory","<perm> node cannot be read properly.");
+
         }
 
 
