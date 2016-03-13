@@ -13,16 +13,21 @@ import java.util.Set;
 
 public class MyDrive extends MyDrive_Base {
     static final Logger log = LogManager.getRootLogger();
+
     private MyDrive() {
         setRoot(FenixFramework.getDomainRoot());
+        FenixFramework.getDomainRoot().setMyDrive(this);
+        if (getIdCounter() == null)
+            setIdCounter(0);
     }
 
     public static MyDrive getInstance() {
         MyDrive md = FenixFramework.getDomainRoot().getMyDrive();
-        if (md == null)
-            return new MyDrive();
 
-        return md;
+        if (md != null)
+            return md;
+
+        return new MyDrive();
     }
 
     public User getUserByUsername(String username) {

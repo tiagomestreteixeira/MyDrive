@@ -4,6 +4,7 @@ package pt.tecnico.myDrive.domain;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.InvalidFileNameException;
 import pt.tecnico.myDrive.exception.InvalidPermissionsFormatException;
+import pt.tecnico.myDrive.exception.MyDriveException;
 
 
 public class File extends File_Base {
@@ -11,17 +12,14 @@ public class File extends File_Base {
 
     protected File() { /* for derived classes */ }
 
-    public File(String name, User user, Dir directory, String permissions)
-            throws InvalidFileNameException, InvalidPermissionsFormatException {
+    public File(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(user, name, directory, permissions);
     }
 
-    protected void init(User user, String name, Dir directory, String permissions)
-            throws InvalidFileNameException, InvalidPermissionsFormatException {
+    protected void init(User user, String name, Dir directory, String permissions) throws MyDriveException {
 
-        MyDrive md = MyDrive.getInstance();
 
-        setId(md.getNewId());
+        super.setId(MyDrive.getInstance().getNewId());
         setName(name);
         setOwner(user);
         setPermissions(permissions);
@@ -64,8 +62,8 @@ public class File extends File_Base {
     public User getFileOwner() {
         // TODO: Check if access should be allowed
         for (User u : getUserSet()) {
-                return u;
-            }
+            return u;
+        }
         return null;
     }
 
@@ -93,7 +91,7 @@ public class File extends File_Base {
         if (permissions.matches("(r|-)(w|-)(x|-)(d|-)(r|-)(w|-)(x|-)(d|-)")) {
             super.setPermissions(permissions);
         } else
-        throw new InvalidPermissionsFormatException(permissions);
+            throw new InvalidPermissionsFormatException(permissions);
     }
 
     @Override
