@@ -1,7 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 public class SuperUser extends SuperUser_Base {
-    SuperUser root;
+    static private SuperUser root;
 
     private SuperUser() {
         setUsername("root");
@@ -11,9 +11,11 @@ public class SuperUser extends SuperUser_Base {
         setHome("/home/root");
     }
 
-    public SuperUser getInstance() {
+    public static SuperUser getInstance() {
         if (root == null)
             return new SuperUser();
         return root;
     }
+
+
 }
