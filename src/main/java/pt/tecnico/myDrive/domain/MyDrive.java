@@ -56,27 +56,10 @@ public class MyDrive extends MyDrive_Base {
             log.info("Attribute : " + username);
 
             User user = getUserByUsername(username);
-            //if(user != null)
-            //    throw new UserAlreadyExistsException(username);
+           // if(user != null)
+           //     throw new UserAlreadyExistsException(username);
 
-            String defaultHome = "/home/" + username;
-            String defaultMask = "rwxd----";
-            String defaultName = username;
-            String defaultPassword = username;
-
-            for (Element child : node.getChildren()) {
-                if (child.getName().equals("home"))
-                    defaultHome = child.getText();
-                if (child.getName().equals("mask"))
-                    defaultMask = child.getText();
-                if (child.getName().equals("name"))
-                    defaultName = child.getText();
-                if (child.getName().equals("password"))
-                    defaultPassword = child.getText();
-                log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
-            }
-            // User implementation needed
-           // new User(defaultName);
+            new User(this,username,node);
         }
 
         // import dirs
