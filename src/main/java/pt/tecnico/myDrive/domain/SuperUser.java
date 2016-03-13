@@ -16,4 +16,8 @@ public class SuperUser extends SuperUser_Base {
             return new SuperUser();
         return root;
     }
+
+    public boolean checkPermission(File file) {
+        return true;
+    }
 }
