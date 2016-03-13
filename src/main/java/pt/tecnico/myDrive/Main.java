@@ -38,7 +38,7 @@ public class Main {
     @Atomic
     public static void setup() {
         // TODO: Change to use MyDrive Singleton
-        MyDrive md = new MyDrive();
+        MyDrive md = MyDrive.getInstance();
         md.setRoot(FenixFramework.getDomainRoot());
         md.setIdCounter(1);
 
@@ -76,11 +76,11 @@ public class Main {
         log.trace("importXML: " + FenixFramework.getDomainRoot());
 
         // MyDrive Singleton must be implemented
-        //MyDrive md = MyDrive.getInstance();
+        MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
             Document document = (Document)builder.build(file);
-        //    md.xmlImport(document.getRootElement());
+            md.xmlImport(document.getRootElement());
 
         } catch (JDOMException | IOException e) {
             e.printStackTrace();

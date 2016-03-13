@@ -5,5 +5,7 @@ public class User extends User_Base {
     public User() {
         super();
     }
+
+    //public User
     
 }
