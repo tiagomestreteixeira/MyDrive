@@ -1,7 +1,7 @@
-package pt.tecnico
+package pt.tecnico.myDrive.domain;
 
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-
+import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 
 public class Dir extends Dir_Base {
     
