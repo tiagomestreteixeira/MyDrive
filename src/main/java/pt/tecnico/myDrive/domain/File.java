@@ -5,10 +5,12 @@ import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.InvalidFileNameException;
 import pt.tecnico.myDrive.exception.InvalidPermissionsFormatException;
 import pt.tecnico.myDrive.exception.MyDriveException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
+
+
 
 
 public class File extends File_Base {
-
 
     protected File() { /* for derived classes */ }
 
@@ -16,10 +18,12 @@ public class File extends File_Base {
         init(name, user, directory, permissions);
     }
 
+
+
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
 
-        super.setId(MyDrive.getInstance().getNewId());
+        setId(MyDrive.getInstance().getNewId());
         setName(name);
         setOwner(user);
         setPermissions(permissions);
@@ -30,29 +34,24 @@ public class File extends File_Base {
 
     @Override
     public Integer getId(){
-        // TODO: Check if access should be allowed
         return super.getId();
     }
 
     @Override
     public String getPermissions(){
-        // TODO: Check if access should be allowed
         return super.getPermissions();
     }
 
     @Override
     public String getName(){
-        // TODO: Check if access should be allowed
         return super.getName();
     }
 
     public DateTime getLastModification(){
-        // TODO: Check if access should be allowed
         return super.getLastModification();
     }
 
     public Dir getDirectory(){
-        // TODO: Check if access should be allowed
         for (Dir d : getDirSet()) {
             return d;
         }
@@ -60,7 +59,6 @@ public class File extends File_Base {
     }
 
     public User getFileOwner() {
-        // TODO: Check if access should be allowed
         for (User u : getUserSet()) {
             return u;
         }
@@ -68,7 +66,6 @@ public class File extends File_Base {
     }
 
     public boolean isOwner(User user) {
-        // TODO: Check if access should be allowed
         for (User u : getUserSet()) {
             if (u.equals(user)) {
                 return true;
@@ -78,7 +75,6 @@ public class File extends File_Base {
 
     @Override
     public void setName(String name) {
-        // TODO: Check if access should be allowed
         if (name.contains("\0") /*|| name.contains("/")*/) {
             throw new InvalidFileNameException(name);
         }
@@ -87,7 +83,6 @@ public class File extends File_Base {
 
     @Override
     public void setPermissions(String permissions) {
-        // TODO: Check if access should be allowed
         if (permissions.matches("(r|-)(w|-)(x|-)(d|-)(r|-)(w|-)(x|-)(d|-)")) {
             super.setPermissions(permissions);
         } else
@@ -96,17 +91,10 @@ public class File extends File_Base {
 
     @Override
     public void addUser(User user) {
-        // TODO: Check if access should be allowed
-        if (user == null) {
-            super.addUser(SuperUser.getInstance());
-            return;
-        }
-
-        user.addFile(this);
+       throw new NoPermissionException("addUser");
     }
 
     public void setOwner(User user) {
-        // TODO: Check if access should be allowed
         for (User u : getUserSet())
             u.removeFile(this);
 
@@ -122,6 +110,4 @@ public class File extends File_Base {
             u.removeFile(this);
         deleteDomainObject();
     }
-
-
 }
