@@ -13,10 +13,10 @@ public class File extends File_Base {
     protected File() { /* for derived classes */ }
 
     public File(String name, User user, Dir directory, String permissions) throws MyDriveException {
-        init(user, name, directory, permissions);
+        init(name, user, directory, permissions);
     }
 
-    protected void init(User user, String name, Dir directory, String permissions) throws MyDriveException {
+    protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
 
         super.setId(MyDrive.getInstance().getNewId());
