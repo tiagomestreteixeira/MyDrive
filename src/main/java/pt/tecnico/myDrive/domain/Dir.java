@@ -8,12 +8,12 @@ public class Dir extends Dir_Base {
 	
     public Dir(){
 		super();
-		init("/", "root", this, "rwxd----");
+		init("root", "/", this, "rwxd----");
     }
 	
 	public Dir(String name, String user, Dir directory, String permissions){
 		super();
-		init(name, user, directory, permissions);
+		init(user, name, directory, permissions);
 	}
 	
 	@Override
@@ -33,12 +33,13 @@ public class Dir extends Dir_Base {
 	}
 
 	public void listFileSet(){
-		
+		for(File file : getFileSet())
+			System.out.println(file.getName());
 	}
 	
 	
 	public File getFileByName(String name){
-		for(File file: getFileSet())
+		for(File file : getFileSet())
 			if(file.getName().equals(name))
 				return file;
 		return null;
