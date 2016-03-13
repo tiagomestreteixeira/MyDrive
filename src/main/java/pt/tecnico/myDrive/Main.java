@@ -12,6 +12,7 @@ import pt.tecnico.myDrive.domain.Dir;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.SuperUser;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class Main {
             Document document = (Document)builder.build(file);
             md.xmlImport(document.getRootElement());
 
-        } catch (JDOMException | IOException e) {
+        } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
     }

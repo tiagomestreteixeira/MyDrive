@@ -41,7 +41,7 @@ public class MyDrive extends MyDrive_Base {
         return null;
     }
 
-    public void xmlImport(Element element) {
+    public void xmlImport(Element element) throws ImportDocumentException{
 
 
         // import users
@@ -81,45 +81,195 @@ public class MyDrive extends MyDrive_Base {
 
         // import dirs
         for (Element node: element.getChildren("dir")) {
-            String name = node.getAttribute("id").getValue();
+            String id = node.getAttribute("id").getValue();
+
+            if(id == null)
+                throw new ImportDocumentException("Directory", "attribute id cannot be read properly");
+
             log.info("Node Element : " + node.getName());
-            log.info("Attribute : " + name);
+            log.info("Attribute Id: " + id);
             String  directoryPath,
                     directoryName,
                     directoryOwnerUsername,
-                    directoryPermissions;
+                    directoryDefaultPermissions;
 
-            directoryPath = directoryName = directoryOwnerUsername = directoryPermissions = null;
+            directoryPath = directoryName = directoryOwnerUsername = directoryDefaultPermissions = null;
+
             for (Element child : node.getChildren()) {
                 if (child.getName().equals("path"))
                     directoryPath = child.getText();
+
                 if (child.getName().equals("name"))
                     directoryName = child.getText();
+
                 if (child.getName().equals("owner"))
                     directoryOwnerUsername = child.getText();
+
                 if (child.getName().equals("perm"))
-                    directoryPermissions = child.getText();
+                    directoryDefaultPermissions = child.getText();
+
                 log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
             }
 
-            // Directory implementation needed
-            // new dir(directoryPath,directoryName,directoryOwnerUsername,directoryPermissions)
-
 
             if(directoryPath == null)
-                throw new ImportDocumentException("Directory", "<path> node cannot be read properly.");
+                throw new ImportDocumentException("Directory","<path> node cannot be read properly.");
             if(directoryName == null)
                 throw new ImportDocumentException("Directory","<name> node cannot be read properly.");
             if(directoryOwnerUsername == null)
                 throw new ImportDocumentException("Directory","<owner> node cannot be read properly.");
-            if(directoryPermissions == null)
-                throw new ImportDocumentException("Directory","<perm> node cannot be read properly.");
+            // TODO: Check correctness of defaultPermissions
+            if(directoryDefaultPermissions == null)
+                directoryDefaultPermissions = "rwxd----";
+            //    throw new ImportDocumentException("Directory","<perm> node cannot be read properly.");
 
+
+            // Directory implementation needed
+            // new dir(directoryPath,directoryName,directoryOwnerUsername,directoryPermissions)
         }
 
 
+        // import Plain Files
+        for (Element node: element.getChildren("plain")) {
+            String name = node.getAttribute("id").getValue();
+            log.info("Node Element : " + node.getName());
+            log.info("Attribute : " + name);
+            String  plainPath,
+                    plainName,
+                    plainOwnerUsername,
+                    plainDefaultPermissions,
+                    plainContents;
+
+            plainPath = plainName = plainOwnerUsername = plainDefaultPermissions = null;
+            plainContents = "";
+
+            for (Element child : node.getChildren()) {
+                if (child.getName().equals("path"))
+                    plainPath = child.getText();
+                if (child.getName().equals("name"))
+                    plainName = child.getText();
+                if (child.getName().equals("owner"))
+                    plainOwnerUsername = child.getText();
+                if (child.getName().equals("perm"))
+                    plainDefaultPermissions = child.getText();
+                if (child.getName().equals("contents"))
+                    plainContents = child.getText();
+
+                log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
+            }
 
 
+            if(plainPath == null)
+                throw new ImportDocumentException("Plain File", "<path> node cannot be read properly.");
+            if(plainName == null)
+                throw new ImportDocumentException("Plain File","<name> node cannot be read properly.");
+            if(plainOwnerUsername == null)
+                throw new ImportDocumentException("Plain File","<owner> node cannot be read properly.");
+
+            // TODO: Check correctness of plainDefaultPermissions
+            if(plainDefaultPermissions == null)
+                plainDefaultPermissions = "rwxd----";
+            //    throw new ImportDocumentException("plain","<perm> node cannot be read properly.");
+
+
+            // Directory implementation needed
+            // new plainFile(plainPath,plainName,plainOwnerUsername,plainDefaultPermissions,plainContents);
+        }
+
+
+        // import Link Files
+        for (Element node: element.getChildren("link")) {
+            String name = node.getAttribute("id").getValue();
+            log.info("Node Element : " + node.getName());
+            log.info("Attribute : " + name);
+            String  linkPath,
+                    linkName,
+                    linkOwnerUsername,
+                    linkDefaultPermissions,
+                    linkValue;
+
+            linkPath = linkName = linkOwnerUsername = linkDefaultPermissions = null;
+            linkValue = "";
+
+            for (Element child : node.getChildren()) {
+                if (child.getName().equals("path"))
+                    linkPath = child.getText();
+                if (child.getName().equals("name"))
+                    linkName = child.getText();
+                if (child.getName().equals("owner"))
+                    linkOwnerUsername = child.getText();
+                if (child.getName().equals("perm"))
+                    linkDefaultPermissions = child.getText();
+                if (child.getName().equals("value"))
+                    linkValue = child.getText();
+
+                log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
+            }
+
+
+            if(linkPath == null)
+                throw new ImportDocumentException("Link", "<path> node cannot be read properly.");
+            if(linkName == null)
+                throw new ImportDocumentException("Link","<name> node cannot be read properly.");
+            if(linkOwnerUsername == null)
+                throw new ImportDocumentException("Link","<owner> node cannot be read properly.");
+
+            // TODO: Check correctness of plainDefaultPermissions
+            if(linkDefaultPermissions == null)
+                linkDefaultPermissions = "rwxd----";
+            //    throw new ImportDocumentException("Link","<perm> node cannot be read properly.");
+
+
+            // Directory implementation needed
+            // new Link(linkPath,linkName,linkOwnerUsername,linkDefaultPermissions,linkValue);
+        }
+
+        // import App's
+        for (Element node: element.getChildren("app")) {
+            String name = node.getAttribute("id").getValue();
+            log.info("Node Element : " + node.getName());
+            log.info("Attribute : " + name);
+            String  appPath,
+                    appName,
+                    appOwnerUsername,
+                    appDefaultPermissions,
+                    appMethod;
+
+            appPath = appName = appOwnerUsername = appDefaultPermissions = null;
+            appMethod = "";
+
+            for (Element child : node.getChildren()) {
+                if (child.getName().equals("path"))
+                    appPath = child.getText();
+                if (child.getName().equals("name"))
+                    appName = child.getText();
+                if (child.getName().equals("owner"))
+                    appOwnerUsername = child.getText();
+                if (child.getName().equals("perm"))
+                    appDefaultPermissions = child.getText();
+                if (child.getName().equals("method"))
+                    appMethod = child.getText();
+
+                log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
+            }
+
+
+            if(appPath == null)
+                throw new ImportDocumentException("app", "<path> node cannot be read properly.");
+            if(appName == null)
+                throw new ImportDocumentException("app","<name> node cannot be read properly.");
+            if(appOwnerUsername == null)
+                throw new ImportDocumentException("app","<owner> node cannot be read properly.");
+
+            // TODO: Check correctness of plainDefaultPermissions
+            if(appDefaultPermissions == null)
+                appDefaultPermissions = "rwxd----";
+            //    throw new ImportDocumentException("app","<perm> node cannot be read properly.");
+
+
+            // App implementation needed
+            // new App(appPath,appName,appOwnerUsername,appDefaultPermissions,appValue);
+        }
 
     }
 }
