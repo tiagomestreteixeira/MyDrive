@@ -195,6 +195,14 @@
                 <configuration>
                     <mainClass>pt.tecnico.myDrive.Main</mainClass>
                     <killAfter>-1</killAfter>
+                    <!-- Added for XML Import Testing -->
+                        <arguments>
+                            <argument>drive.xml</argument>
+                            <argument>null.xml</argument>
+                            <argument>users.xml</argument>
+                        </arguments>
+                    <!-- End of XML Import Testing -->
+
                 </configuration>
             </plugin>
         </plugins>

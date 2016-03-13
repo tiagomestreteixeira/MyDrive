@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<myDrive>
+  <user username="jtb">
+    <password>Fernandes</password>
+    <name>Joaquim Teófilo Braga</name>
+    <home>/home/jtb</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="mja">
+    <password>Peyrelongue</password>
+    <name>Manuel José de Arriaga</name>
+    <home>/home/mja</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="blm">
+    <password>Guimarães</password>
+    <name>Bernardino Luís Machado</name>
+    <home>/home/blm</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="sbp">
+    <password>Cardoso da Silva</password>
+    <name>Sidónio Bernardino Pais</name>
+    <home>/home/sbp</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="jcc">
+    <password>O Júnior</password>
+    <name>João do Canto e Castro</name>
+    <home>/home/jcc</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="aja">
+    <password>password</password>
+    <name>António José de Almeida</name>
+    <home>/home/aja</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <user username="mtg">
+    <password>nefelibata</password>
+    <name>Manuel Teixeira Gomes</name>
+    <home>/home/mtg</home>
+    <mask>rwxdr-x-</mask>
+  </user>
+  <plain id="3">
+    <path>/home/jtb</path>
+    <owner>jtb</owner>
+    <name>profile</name>
+    <contents>Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República.</contents>
+  </plain>
+  <dir id="4">
+    <owner>jtb</owner>
+    <path>/home/jtb</path>
+    <name>documents</name>
+  </dir>
+  <link id="5">
+    <path>/home/jtb</path>
+    <owner>jtb</owner>
+    <name>doc</name>
+    <value>/home/jtb/documents</value>
+  </link>
+  <app id="7">
+    <path>/home/jtb/bin</path>
+    <name>length</name>
+    <owner>jtb</owner>
+    <method>pt.tecnico.myDrive.presentation.Hello.sum</method>
+  </app>
+</myDrive>

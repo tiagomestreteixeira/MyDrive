@@ -12,6 +12,7 @@ import pt.tecnico.myDrive.domain.Dir;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.SuperUser;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class Main {
     @Atomic
     public static void setup() {
         // TODO: Change to use MyDrive Singleton
-        MyDrive md = new MyDrive.getInstance();
+        MyDrive md = MyDrive.getInstance();
         md.setRoot(FenixFramework.getDomainRoot());
         md.setIdCounter(1);
 
@@ -54,22 +55,22 @@ public class Main {
         // TODO: Change to use User File creation
         int id = md.getIdCounter();
 
-        Dir rootDir = new Dir();
-        rootDir.setName("/");
-        rootDir.addUser(root);
-        rootDir.setId(id);
-        rootDir.addFile(rootDir);
-        md.setIdCounter(id + 1);
+    Dir rootDir = new Dir();
+    rootDir.setName("/");
+    rootDir.addUser(root);
+    rootDir.setId(id);
+    rootDir.addFile(rootDir);
+    md.setIdCounter(id + 1);
 
-        // TODO: Change to use User File creation
-        id = md.getIdCounter();
-        Dir homeDir = new Dir();
-        homeDir.setName("home");
-        homeDir.addUser(root);
-        homeDir.setId(id);
-        md.setIdCounter(id + 1);
-        rootDir.addFile(homeDir);
-    }
+    // TODO: Change to use User File creation
+    id = md.getIdCounter();
+    Dir homeDir = new Dir();
+    homeDir.setName("home");
+    homeDir.addUser(root);
+    homeDir.setId(id);
+    md.setIdCounter(id + 1);
+    rootDir.addFile(homeDir);
+}
 
     @Atomic
     public static void importXML(File file) {
@@ -82,7 +83,7 @@ public class Main {
             Document document = (Document)builder.build(file);
             md.xmlImport(document.getRootElement());
 
-        } catch (JDOMException | IOException e) {
+        } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
     }
