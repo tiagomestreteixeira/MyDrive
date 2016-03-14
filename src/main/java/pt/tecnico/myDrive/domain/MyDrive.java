@@ -109,7 +109,7 @@ public class MyDrive extends MyDrive_Base {
 
             log.info("Node Element : " + node.getName());
             log.info("Attribute Id: " + id);
-            // new dir(directoryPath,directoryName,directoryOwnerUsername,directoryPermissions)
+            (new Dir()).xmlImport(node);
         }
 
 

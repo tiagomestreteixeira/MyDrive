@@ -149,7 +149,7 @@ public class File extends File_Base {
 
     public Element xmlExportHelper(Element el) {
 
-        el.setAttribute("id", this.getId().toString());
+        el.setAttribute("id", Integer.toString(getId()));
 
         Element nameElement = new Element("name");
         Element pathElement = new Element("path");

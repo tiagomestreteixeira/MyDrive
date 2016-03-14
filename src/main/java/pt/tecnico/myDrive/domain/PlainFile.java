@@ -2,6 +2,9 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+
+import java.security.acl.Owner;
+
 public class PlainFile extends PlainFile_Base {
 
     public PlainFile() {
@@ -63,14 +66,14 @@ public class PlainFile extends PlainFile_Base {
 
         defaultPermissions = owner.getUmask();
 
-        //setPath(path);
+
 
         setName(name);
         setPermissions(defaultPermissions);
         setOwner(owner);
         setContent(contents);
+        setId(MyDrive.getInstance().getNewId());
 
-        //    throw new ImportDocumentException("plain","<perm> node cannot be read properly.");
     }
 
 

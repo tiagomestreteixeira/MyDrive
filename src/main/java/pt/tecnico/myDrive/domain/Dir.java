@@ -5,8 +5,10 @@ import org.apache.logging.log4j.Logger;
 
 
 import org.jdom2.Element;
+import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 public class Dir extends Dir_Base {
 
@@ -72,6 +74,53 @@ public class Dir extends Dir_Base {
 		dirElement = xmlExportHelper(dirElement);
 		return dirElement;
 
+	}
+	@Atomic
+	public void xmlImport(Element dirElement) throws ImportDocumentException {
+
+		String path,
+				name,
+				ownerUsername,
+				defaultPermissions;
+
+		path = name = ownerUsername = defaultPermissions = null;
+
+		for (Element child : dirElement.getChildren()) {
+
+			if (child.getName().equals("path"))
+				path = child.getText();
+			if (child.getName().equals("name"))
+				name = child.getText();
+			if (child.getName().equals("owner"))
+				ownerUsername = child.getText();
+			if (child.getName().equals("perm"))
+				defaultPermissions = child.getText();
+
+
+			log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
+
+		}
+
+		if (path == null)
+			throw new ImportDocumentException("Dir", "<path> node cannot be read properly.");
+		if (name == null)
+			throw new ImportDocumentException("Dir", "<name> node cannot be read properly.");
+		if (ownerUsername == null)
+			ownerUsername = "root";
+
+		User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
+
+		if (defaultPermissions == null) {
+			if (owner == null) {
+				owner = MyDrive.getInstance().getUserByUsername("root");
+			}
+		}
+
+		Dir d = owner.makeDir(path);
+		defaultPermissions = owner.getUmask();
+		setName(name);
+		setPermissions(defaultPermissions);
+		setOwner(owner);
 	}
 
 }
