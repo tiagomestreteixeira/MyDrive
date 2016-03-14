@@ -29,11 +29,21 @@ public class Main {
                 importXML(new File(s));
             }
             xmlPrint();
+            end();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             FenixFramework.shutdown();
         }
+    }
+
+    @Atomic
+    private static void end() {
+        SuperUser root = SuperUser.getInstance();
+        Dir homeDir = (Dir) root.getFileByName("home");
+
+        homeDir.getFileByName("README").remove();
+        homeDir.listFileSet();
     }
 
     @Atomic
@@ -56,17 +66,11 @@ public class Main {
         readme.addDir(homeDir);
         readme.setContent("lista de utilizadores");
 
-        Dir usrDir = new Dir("usr", root, rootDir, "rwxdr-x-");
-
-        Dir localDir = new Dir("local", root, usrDir, "rwxdr-x-");
-
-        Dir binDir = new Dir("bin", root, localDir, "rwxdr-x-");
-
-        binDir.remove();
-
-        homeDir.listFileSet();
+        Dir binDir = root.makeDir("/usr/local/bin");
 
         System.out.println(readme.getContent());
+
+        binDir.remove();
     }
 
     @Atomic
