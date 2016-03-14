@@ -123,6 +123,7 @@ public class Dir extends Dir_Base {
 		setName(name);
 		setPermissions(defaultPermissions);
 		setOwner(owner);
+		addDir(d);
 	}
 
 }

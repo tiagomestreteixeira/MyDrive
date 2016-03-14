@@ -21,8 +21,8 @@ public class Link extends Link_Base {
         linkElement = xmlExportHelper(linkElement);
 
         Element valueElement = new Element("value");
-        valueElement.addContent(getContent());
-        linkElement.addContent(valueElement);
+        //valueElement.addContent(getContent());
+        //linkElement.addContent(valueElement);
         return valueElement;
     }
 }
