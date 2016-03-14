@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
@@ -9,6 +11,7 @@ public class File extends File_Base {
 
     protected File() { /* for derived classes */ }
 
+    static final Logger log = LogManager.getRootLogger();
     public File(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
     }
@@ -60,6 +63,17 @@ public class File extends File_Base {
         return null;
     }
 
+    public String getPath(){
+        String path = "";
+        File f = this;
+        while (!f.getName().equals("/")){
+            log.debug(f.getName());
+            path = "/"+f.getName()+path;
+            f = f.getDirectory();
+        }
+        return path;
+    }
+
     public boolean isOwner(User user) {
         for (User u : getUserSet()) {
             if (u.equals(user)) {
@@ -76,6 +90,7 @@ public class File extends File_Base {
                 if (f.getName().equals(this.getName()))
                         throw new FileAlreadyExistsException(this.getName());
         }
+        super.addDir(directory);
     }
 
     @Override

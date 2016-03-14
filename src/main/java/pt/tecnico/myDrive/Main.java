@@ -25,8 +25,8 @@ public class Main {
         try {
             setup();
             for (String s : args){
-                log.info("command line argument: " + s);
-                importXML(new File(s));
+                //log.info("command line argument: " + s);
+                //importXML(new File(s));
 
             }
         } catch (Exception e) {
@@ -53,18 +53,27 @@ public class Main {
 
         Dir rootDir = new Dir();
         rootDir.setName("/");
-        rootDir.addUser(root);
+        rootDir.setOwner(root);
         rootDir.setId(md.getNewId());
-        rootDir.addFile(rootDir);
+        rootDir.addDir(rootDir);
 
         // TODO: Change to use User File creation
         Dir homeDir = new Dir();
         homeDir.setName("home");
-        homeDir.addUser(root);
+        homeDir.setOwner(root);
         homeDir.setId(md.getNewId());
-        rootDir.addFile(homeDir);
+        homeDir.addDir(rootDir);
 
         pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
+        log.debug(testFile.getName());
+        log.debug(testFile.getPath());
+        log.debug(testFile.isOwner(root));
+        log.debug(testFile.getFileOwner());
+        log.debug(testFile.getLastModification().toString());
+
+
+
+
     }
 
     @Atomic
