@@ -62,6 +62,7 @@ public class Main {
         log.debug(testFile.isOwner(root));
         log.debug(testFile.getFileOwner());
         log.debug(testFile.getLastModification().toString());
+        log.debug(root.lookup("/home/test").getPath());
 
 
 

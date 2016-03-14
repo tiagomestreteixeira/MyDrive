@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 
+import java.util.Stack;
+
 public class User extends User_Base {
 
     static final Logger log = LogManager.getRootLogger();
@@ -19,6 +21,12 @@ public class User extends User_Base {
         setMyDrive(md);
     }
 
+    public File getFileByName(String name){
+        	  for (File file: getFileSet())
+                  if (file.getName().equals(name))
+            			  return file;
+        	  return null;
+          }
 
     @Override
     public void setMyDrive(MyDrive md) {
@@ -26,6 +34,24 @@ public class User extends User_Base {
             super.setMyDrive(null);
         else
             md.addUser(this);
+    }
+
+    public File lookup(String pathname){
+        String[] params = pathname.split("/");
+        Stack<String> st = new Stack<>();
+        for (int i = params.length-1; i > 0; i--) {
+            log.debug(params[i]);
+            st.push(params[i]);
+        }
+
+        File fd = SuperUser.getInstance().getFileByName("/");
+        while (!st.empty()) {
+            if (fd instanceof Dir)
+                fd = ((Dir) fd).getFileByName(st.pop());
+            //TODO: Check for links.
+            //TODO: Check Permissions.
+        }
+        return fd;
     }
 
 
