@@ -39,11 +39,14 @@ public class Main {
         SuperUser root = SuperUser.getInstance();
 
         // TODO: Change to use User File creation
-        Dir rootDir = new Dir();
-        rootDir.setName("/");
-        rootDir.setOwner(root);
-        rootDir.setId(md.getNewId());
-        rootDir.addDir(rootDir);
+        Dir rootDir;
+        if ((rootDir = (Dir) SuperUser.getInstance().getFileByName("/")) == null) {
+            rootDir = new Dir();
+            rootDir.setName("/");
+            rootDir.setOwner(root);
+            rootDir.setId(md.getNewId());
+            rootDir.addDir(rootDir);
+        }
 
         // TODO: Change to use User File creation
         Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
@@ -84,7 +87,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-
-
 }
