@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import pt.tecnico.myDrive.exception.InvalidUsernameException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
@@ -32,7 +33,7 @@ public class User extends User_Base {
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
 		  if(hasFile(fileToBeAdded.getName()))
-			  throw new UserAlreadyExistsException(fileToBeAdded.getName());
+			  throw new FileAlreadyExistsException(fileToBeAdded.getName());
 		  
 		  super.addFile(fileToBeAdded);
 	  }
