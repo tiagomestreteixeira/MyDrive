@@ -3,6 +3,8 @@ package pt.tecnico.myDrive.domain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 
@@ -49,6 +51,15 @@ public class Dir extends Dir_Base {
 	
 	public boolean hasFile(String fileName){
 		return getFileByName(fileName) != null;
+	}
+
+
+	@Override
+	public Element xmlExport(){
+		Element dirElement =  new Element("dir");
+		dirElement = xmlExportHelper(dirElement);
+		return dirElement;
+
 	}
 
 }

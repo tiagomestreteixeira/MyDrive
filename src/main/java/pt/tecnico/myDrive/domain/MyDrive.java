@@ -145,11 +145,17 @@ public class MyDrive extends MyDrive_Base {
 
 
     public Document xmlExport() {
-        Element element = new Element("myDrive");
-        Document doc = new Document(element);
+        Element myDriveElement = new Element("myDrive");
+        Document doc = new Document(myDriveElement);
 
-        for (User p: getUserSet())
-            element.addContent(p.xmlExport());
+        for (User u: getUserSet()) {
+            myDriveElement.addContent(u.xmlExport());
+        }
+
+        for (User u: getUserSet()) {
+            for(File file : u.getFileSet())
+                myDriveElement.addContent(file.xmlExport());
+        }
 
         return doc;
     }

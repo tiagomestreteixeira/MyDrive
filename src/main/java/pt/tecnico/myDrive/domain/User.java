@@ -169,6 +169,9 @@ public class User extends User_Base {
 		userNode.addContent(homeElement);
 		userNode.addContent(passwordElement);
 
+		//for(File f : getFileSet())
+		//	userNode.addContent(f.xmlExport());
+
 		return userNode;
 	}
 }

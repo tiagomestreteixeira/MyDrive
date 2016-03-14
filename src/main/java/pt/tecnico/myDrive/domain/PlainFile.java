@@ -73,29 +73,8 @@ public class PlainFile extends PlainFile_Base {
         //    throw new ImportDocumentException("plain","<perm> node cannot be read properly.");
     }
 
-    public Element xmlExportHelper(Element el) {
 
-        el.setAttribute("id", this.getId().toString());
-
-        Element nameElement = new Element("name");
-        Element pathElement = new Element("path");
-        Element ownerElement = new Element("owner");
-        Element permElement = new Element("perm");
-
-        nameElement.addContent(getName());
-        pathElement.addContent(getPath());
-        ownerElement.addContent(getFileOwner().getUsername());
-        permElement.addContent(getPermissions());
-
-
-        el.addContent(nameElement);
-        el.addContent(pathElement);
-        el.addContent(ownerElement);
-        el.addContent(permElement);
-
-        return el;
-    }
-
+    @Override
     public Element xmlExport(){
         Element plainElement =  new Element("plain");
         plainElement = xmlExportHelper(plainElement);

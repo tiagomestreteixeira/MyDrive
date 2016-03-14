@@ -15,7 +15,6 @@ public class App extends App_Base {
         xmlImport(node,"app","method");
     };
 
-
     public Element xmlExport(){
         Element appElement =  new Element("app");
         appElement = xmlExportHelper(appElement);

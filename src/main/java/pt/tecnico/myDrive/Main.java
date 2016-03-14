@@ -60,16 +60,6 @@ public class Main {
         homeDir.setId(md.getNewId());
         homeDir.addDir(rootDir);
 
-        pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
-        log.debug(testFile.getName());
-        log.debug(testFile.getPath());
-        log.debug(testFile.isOwner(root));
-        log.debug(testFile.getFileOwner());
-        log.debug(testFile.getLastModification().toString());
-
-
-
-
     }
 
     @Atomic
