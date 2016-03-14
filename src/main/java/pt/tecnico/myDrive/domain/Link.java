@@ -14,4 +14,15 @@ public class Link extends Link_Base {
         super();
         xmlImport(node,"link","value");
     };
+
+
+    public Element xmlExport(){
+        Element linkElement =  new Element("link");
+        linkElement = xmlExportHelper(linkElement);
+
+        Element valueElement = new Element("value");
+        valueElement.addContent(getContent());
+        linkElement.addContent(valueElement);
+        return valueElement;
+    }
 }

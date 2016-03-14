@@ -3,23 +3,24 @@ import org.jdom2.Element;
 import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 public class PlainFile extends PlainFile_Base {
-    
+
     public PlainFile() {
-    	super();
-    }
-    
-    public String getContent(){
-    	return super.getContent();
+        super();
     }
 
-    public PlainFile(Element xml){
-        super();
-        xmlImport(xml,"plain","contents");
+    public String getContent() {
+        return super.getContent();
     }
+
+    public PlainFile(Element xml) {
+        super();
+        xmlImport(xml, "plain", "contents");
+    }
+
     @Atomic
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
-        String  path,
+        String path,
                 name,
                 ownerUsername,
                 defaultPermissions,
@@ -52,9 +53,10 @@ public class PlainFile extends PlainFile_Base {
         if (ownerUsername == null)
             ownerUsername = "root";
 
-        User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);;
-        if(defaultPermissions==null){
-            if(owner == null) {
+        User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
+        ;
+        if (defaultPermissions == null) {
+            if (owner == null) {
                 owner = MyDrive.getInstance().getUserByUsername("root");
             }
         }
@@ -70,4 +72,38 @@ public class PlainFile extends PlainFile_Base {
 
         //    throw new ImportDocumentException("plain","<perm> node cannot be read properly.");
     }
+
+    public Element xmlExportHelper(Element el) {
+
+        el.setAttribute("id", this.getId().toString());
+
+        Element nameElement = new Element("name");
+        Element pathElement = new Element("path");
+        Element ownerElement = new Element("owner");
+        Element permElement = new Element("perm");
+
+        nameElement.addContent(getName());
+        pathElement.addContent(getPath());
+        ownerElement.addContent(getFileOwner().getUsername());
+        permElement.addContent(getPermissions());
+
+
+        el.addContent(nameElement);
+        el.addContent(pathElement);
+        el.addContent(ownerElement);
+        el.addContent(permElement);
+
+        return el;
+    }
+
+    public Element xmlExport(){
+        Element plainElement =  new Element("plain");
+        plainElement = xmlExportHelper(plainElement);
+
+        Element contentsElement = new Element("contents");
+        contentsElement.addContent(getContent());
+        plainElement.addContent(contentsElement);
+        return plainElement;
+    }
+
 }
