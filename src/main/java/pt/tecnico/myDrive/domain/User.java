@@ -59,14 +59,14 @@ public class User extends User_Base {
 		}
 	  
 	  @Override
-	  public void setUsername(String username) throws InvalidUsernameException, UserAlreadyExistsException {
+	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 		  
 	    if (username == null){
 	      throw new InvalidUsernameException("Username cannot be empty");
 	    }
-	    if (username.equals("root")){
+	    /*if (username.equals("root")){
 	      throw new UserAlreadyExistsException(username);
-	    }
+	    }*/
 		  if(isAlphanumeric(username)){
 	    	super.setUsername(username);
 	    } else {
