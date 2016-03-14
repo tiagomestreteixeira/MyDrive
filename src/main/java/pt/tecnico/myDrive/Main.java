@@ -8,10 +8,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.domain.Dir;
-import pt.tecnico.myDrive.domain.MyDrive;
-import pt.tecnico.myDrive.domain.SuperUser;
-import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.File;
@@ -25,8 +22,8 @@ public class Main {
         try {
             setup();
             for (String s : args){
-                //log.info("command line argument: " + s);
-                //importXML(new File(s));
+                log.info("command line argument: " + s);
+                importXML(new File(s));
 
             }
         } catch (Exception e) {
@@ -55,6 +52,36 @@ public class Main {
         homeDir.setOwner(root);
         homeDir.setId(md.getNewId());
         homeDir.addDir(rootDir);
+
+        // Create README file
+        PlainFile readme = new PlainFile();
+        readme.setName("README");
+        readme.setOwner(root);
+        readme.setId(md.getNewId());
+        readme.addDir(homeDir);
+        readme.setContent("lista de utilizadores");
+
+        Dir usrDir = new Dir();
+        usrDir.setName("usr");
+        usrDir.setOwner(root);
+        usrDir.setId(md.getNewId());
+        usrDir.addDir(rootDir);
+
+        Dir localDir = new Dir();
+        localDir.setName("local");
+        localDir.setOwner(root);
+        localDir.setId(md.getNewId());
+        localDir.addDir(usrDir);
+
+        Dir binDir = new Dir();
+        binDir.setName("bin");
+        binDir.setOwner(root);
+        binDir.setId(md.getNewId());
+        binDir.addDir(localDir);
+
+        binDir.remove();
+
+        System.out.println(readme.getContent());
 
         pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
         log.debug(testFile.getName());
