@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
+import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.*;
 
 
@@ -24,8 +25,8 @@ public class File extends File_Base {
 
 
         setId(MyDrive.getInstance().getNewId());
-        setName(name);
         setOwner(user);
+        setName(name);
         setPermissions(permissions);
         addDir(directory);
         setLastModification(new DateTime());
@@ -96,9 +97,15 @@ public class File extends File_Base {
     }
 
     @Override
+    @Atomic
     public void setName(String name) {
-        if (name.contains("\0") /*|| name.contains("/")*/) {
+        if (name.contains("\0")) {
             throw new InvalidFileNameException(name);
+        }
+        if (name.contains("/")) {
+            if (this.isOwner(SuperUser.getInstance())) {
+                super.setName(name);
+            }
         }
         super.setName(name);
     }
