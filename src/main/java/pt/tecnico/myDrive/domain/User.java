@@ -112,6 +112,7 @@ public class User extends User_Base {
         for (int i = params.length-1; i > 0; i--) {
             log.debug(params[i]);
             st.push(params[i]);
+			int b = 10;
         }
 
         File fd = SuperUser.getInstance().getFileByName("/");
@@ -123,6 +124,32 @@ public class User extends User_Base {
         }
         return fd;
     }
+
+	public File lookupDir(String pathname){
+		String[] params = pathname.split("/");
+		Stack<String> st = new Stack<>();
+		for (int i = params.length-1; i > 0; i--) {
+			log.debug(params[i]);
+			st.push(params[i]);
+			int a = 5;
+
+		}
+
+		File fd = SuperUser.getInstance().getFileByName("/");
+		while (!st.empty()) {
+			if (fd instanceof Dir) {
+				String temp = st.pop();
+				Dir d = (Dir)fd;
+				fd = ((Dir) fd).getFileByName(temp);
+				if (fd == null) {
+					fd = new Dir(temp,this,d,this.getUmask());
+				}
+			}
+			//TODO: Check for links.
+			//TODO: Check Permissions.
+		}
+		return fd;
+	}
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
 
