@@ -74,7 +74,11 @@ public class File extends File_Base {
             path = "/"+f.getName()+path;
             f = f.getDirectory();
         }
-        return path;
+        if (path == ""){
+            return "/";
+        } else {
+            return path;
+        }
     }
 
     public boolean isOwner(User user) {
