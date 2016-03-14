@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
+import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 public class PlainFile extends PlainFile_Base {
     
@@ -15,7 +16,7 @@ public class PlainFile extends PlainFile_Base {
         super();
         xmlImport(xml,"plain","contents");
     }
-
+    @Atomic
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
         String  path,
@@ -61,6 +62,7 @@ public class PlainFile extends PlainFile_Base {
         defaultPermissions = owner.getUmask();
 
         //setPath(path);
+
         setName(name);
         setPermissions(defaultPermissions);
         setOwner(owner);

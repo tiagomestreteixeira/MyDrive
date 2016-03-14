@@ -130,4 +130,26 @@ public class User extends User_Base {
         setName(defaultName);
         setPassword(defaultPassword);
     }
+
+	public Element xmlExport() {
+		Element userNode = new Element("user");
+		userNode.setAttribute("username", getUsername());
+
+		Element nameElement = new Element("name");
+		Element maskElement = new Element("mask");
+		Element homeElement = new Element("home");
+		Element passwordElement = new Element("password");
+
+		nameElement.addContent(getName());
+		maskElement.addContent(getUmask());
+		homeElement.addContent(getHome());
+		passwordElement.addContent(getPassword());
+
+		userNode.addContent(nameElement);
+		userNode.addContent(maskElement);
+		userNode.addContent(homeElement);
+		userNode.addContent(passwordElement);
+
+		return userNode;
+	}
 }

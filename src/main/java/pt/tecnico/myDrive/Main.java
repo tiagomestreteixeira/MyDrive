@@ -6,6 +6,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.Dir;
@@ -16,6 +18,7 @@ import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class Main {
     static final Logger log = LogManager.getRootLogger();
@@ -25,10 +28,11 @@ public class Main {
         try {
             setup();
             for (String s : args){
-                //log.info("command line argument: " + s);
+                log.info("command line argument: " + s);
                 //importXML(new File(s));
-
             }
+            xmlPrint();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -82,6 +86,15 @@ public class Main {
         } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Atomic
+    public static void xmlPrint() {
+        log.trace("xmlPrint: " + FenixFramework.getDomainRoot());
+        Document doc = MyDrive.getInstance().xmlExport();
+        XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
+        try { xmlOutput.output(doc, new PrintStream(System.out));
+        } catch (IOException e) { System.out.println(e); }
     }
 
 
