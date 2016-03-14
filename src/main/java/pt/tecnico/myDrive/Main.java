@@ -29,10 +29,9 @@ public class Main {
             setup();
             for (String s : args){
                 log.info("command line argument: " + s);
-                //importXML(new File(s));
+                importXML(new File(s));
             }
             xmlPrint();
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -47,29 +46,37 @@ public class Main {
         SuperUser root = SuperUser.getInstance();
 
         // TODO: Change to use User File creation
-        Dir rootDir = new Dir();
-        rootDir.setName("/");
-        rootDir.setOwner(root);
-        rootDir.setId(md.getNewId());
-        rootDir.addDir(rootDir);
+        Dir rootDir;
+        if ((rootDir = (Dir) SuperUser.getInstance().getFileByName("/")) == null) {
+            rootDir = new Dir();
+            rootDir.setName("/");
+            rootDir.setOwner(root);
+            rootDir.setId(md.getNewId());
+            rootDir.addDir(rootDir);
+        }
 
         // TODO: Change to use User File creation
-        Dir homeDir = new Dir();
-        homeDir.setName("home");
-        homeDir.setOwner(root);
-        homeDir.setId(md.getNewId());
-        homeDir.addDir(rootDir);
+        Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
 
-        pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
-        log.debug(testFile.getName());
-        log.debug(testFile.getPath());
-        log.debug(testFile.isOwner(root));
-        log.debug(testFile.getFileOwner());
-        log.debug(testFile.getLastModification().toString());
+        // Create README file
+        PlainFile readme = new PlainFile();
+        readme.setName("README");
+        readme.setOwner(root);
+        readme.setId(md.getNewId());
+        readme.addDir(homeDir);
+        readme.setContent("lista de utilizadores");
 
+        Dir usrDir = new Dir("usr", root, rootDir, "rwxdr-x-");
 
+        Dir localDir = new Dir("local", root, usrDir, "rwxdr-x-");
 
+        Dir binDir = new Dir("bin", root, localDir, "rwxdr-x-");
 
+        binDir.remove();
+
+        homeDir.listFileSet();
+
+        log.info(readme.getContent());
     }
 
     @Atomic
