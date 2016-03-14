@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdom2.Document;
 import org.jdom2.Element;
 import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
@@ -140,5 +141,16 @@ public class MyDrive extends MyDrive_Base {
             new App(node);
         }
 
+    }
+
+
+    public Document xmlExport() {
+        Element element = new Element("myDrive");
+        Document doc = new Document(element);
+
+        for (User p: getUserSet())
+            element.addContent(p.xmlExport());
+
+        return doc;
     }
 }

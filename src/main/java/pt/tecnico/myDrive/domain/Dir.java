@@ -50,5 +50,5 @@ public class Dir extends Dir_Base {
 	public boolean hasFile(String fileName){
 		return getFileByName(fileName) != null;
 	}
-	
+
 }
