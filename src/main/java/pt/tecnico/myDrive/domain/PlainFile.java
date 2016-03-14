@@ -65,6 +65,7 @@ public class PlainFile extends PlainFile_Base {
 
         //setPath(path);
 
+        setId(MyDrive.getInstance().getNewId());
         setName(name);
         setPermissions(defaultPermissions);
         setOwner(owner);
