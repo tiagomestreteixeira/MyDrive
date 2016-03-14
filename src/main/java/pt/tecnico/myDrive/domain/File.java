@@ -2,12 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 
 import org.joda.time.DateTime;
-import pt.tecnico.myDrive.exception.InvalidFileNameException;
-import pt.tecnico.myDrive.exception.InvalidPermissionsFormatException;
-import pt.tecnico.myDrive.exception.MyDriveException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
-
-
+import pt.tecnico.myDrive.exception.*;
 
 
 public class File extends File_Base {
@@ -71,7 +66,17 @@ public class File extends File_Base {
                 return true;
             }
         }
-        return false;}
+        return false;
+    }
+
+    @Override
+    public void addDir(Dir directory) {
+        for (Dir d : getDirSet()) {
+            for (File f : d.getFileSet())
+                if (f.getName().equals(this.getName()))
+                        throw new FileAlreadyExistsException(this.getName());
+        }
+    }
 
     @Override
     public void setName(String name) {
