@@ -106,23 +106,47 @@ public class User extends User_Base {
             md.addUser(this);
     }
 
-    public File lookup(String pathname){
-        String[] params = pathname.split("/");
-        Stack<String> st = new Stack<>();
-        for (int i = params.length-1; i > 0; i--) {
-            log.debug(params[i]);
-            st.push(params[i]);
-        }
+	private Stack<String> toStack (String pathname) {
+		String[] params = pathname.split("/");
+		Stack<String> st = new Stack<>();
+		for (int i = params.length - 1; i > 0; i--) {
+			log.debug(params[i]);
+			st.push(params[i]);
+		}
+		return st;
+	}
 
-        File fd = SuperUser.getInstance().getFileByName("/");
-        while (!st.empty()) {
-            if (fd instanceof Dir)
-                fd = ((Dir) fd).getFileByName(st.pop());
-            //TODO: Check for links.
-            //TODO: Check Permissions.
-        }
-        return fd;
-    }
+	public File lookup(String pathname){
+
+		File file = SuperUser.getInstance().getFileByName("/");
+		Stack<String> st = toStack(pathname);
+
+		while (!st.empty()) {
+			if (file instanceof Dir)
+				file = ((Dir) file).getFileByName(st.pop());
+			//TODO: Check for links.
+			//TODO: Check Permissions.
+		}
+		return file;
+	}
+	public Dir makeDir(String pathname){
+
+		File file = SuperUser.getInstance().getFileByName("/");
+		Stack<String> st = toStack(pathname);
+		while (!st.empty()) {
+			if (file instanceof Dir) {
+				String temp = st.pop();
+				Dir d = (Dir)file;
+				file = ((Dir) file).getFileByName(temp);
+				if (file == null) {
+					file = new Dir(temp,this,d,this.getUmask());
+				}
+			}
+			//TODO: Check for links.
+			//TODO: Check Permissions.
+		}
+		return (Dir)file;
+	}
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
 
