@@ -1,5 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 
@@ -48,6 +51,4 @@ public class Dir extends Dir_Base {
 		return getFileByName(fileName) != null;
 	}
 
-
-	
 }
