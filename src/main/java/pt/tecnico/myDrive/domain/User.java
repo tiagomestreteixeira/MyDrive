@@ -118,7 +118,7 @@ public class User extends User_Base {
 
 	public File lookup(String pathname){
 
-		File file = SuperUser.getInstance().getFileByName("/");
+		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
@@ -131,7 +131,7 @@ public class User extends User_Base {
 	}
 	public Dir makeDir(String pathname){
 
-		File file = SuperUser.getInstance().getFileByName("/");
+		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
 			if (file instanceof Dir) {
