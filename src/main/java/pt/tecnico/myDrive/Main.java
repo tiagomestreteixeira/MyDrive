@@ -20,12 +20,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         try {
-            setup();
             for (String s : args){
                 log.info("command line argument: " + s);
                 importXML(new File(s));
-
             }
+            setup();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -47,11 +46,7 @@ public class Main {
         rootDir.addDir(rootDir);
 
         // TODO: Change to use User File creation
-        Dir homeDir = new Dir();
-        homeDir.setName("home");
-        homeDir.setOwner(root);
-        homeDir.setId(md.getNewId());
-        homeDir.addDir(rootDir);
+        Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
 
         // Create README file
         PlainFile readme = new PlainFile();
@@ -61,38 +56,17 @@ public class Main {
         readme.addDir(homeDir);
         readme.setContent("lista de utilizadores");
 
-        Dir usrDir = new Dir();
-        usrDir.setName("usr");
-        usrDir.setOwner(root);
-        usrDir.setId(md.getNewId());
-        usrDir.addDir(rootDir);
+        Dir usrDir = new Dir("usr", root, rootDir, "rwxdr-x-");
 
-        Dir localDir = new Dir();
-        localDir.setName("local");
-        localDir.setOwner(root);
-        localDir.setId(md.getNewId());
-        localDir.addDir(usrDir);
+        Dir localDir = new Dir("local", root, usrDir, "rwxdr-x-");
 
-        Dir binDir = new Dir();
-        binDir.setName("bin");
-        binDir.setOwner(root);
-        binDir.setId(md.getNewId());
-        binDir.addDir(localDir);
+        Dir binDir = new Dir("bin", root, localDir, "rwxdr-x-");
 
         binDir.remove();
 
-        System.out.println(readme.getContent());
+        homeDir.listFileSet();
 
-        pt.tecnico.myDrive.domain.File testFile = new pt.tecnico.myDrive.domain.File("test",root,homeDir,"rwxdrwxd");
-        log.debug(testFile.getName());
-        log.debug(testFile.getPath());
-        log.debug(testFile.isOwner(root));
-        log.debug(testFile.getFileOwner());
-        log.debug(testFile.getLastModification().toString());
-
-
-
-
+        log.info(readme.getContent());
     }
 
     @Atomic
