@@ -21,13 +21,6 @@ public class User extends User_Base {
         setMyDrive(md);
     }
 
-    public File getFileByName(String name){
-        	  for (File file: getFileSet())
-                  if (file.getName().equals(name))
-            			  return file;
-        	  return null;
-          }
-
     @Override
     public void setMyDrive(MyDrive md) {
         if (md == null)
