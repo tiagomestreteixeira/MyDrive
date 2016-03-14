@@ -130,6 +130,8 @@ public class File extends File_Base {
     public void remove() {
         for (User u : getUserSet())
             u.removeFile(this);
+        for (Dir d : getDirSet())
+            d.removeFile(this);
         deleteDomainObject();
     }
 
