@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.domain;
-
-
+import org.jdom2.Element;
 public class App extends App_Base {
 
     public App() {
@@ -10,4 +9,9 @@ public class App extends App_Base {
     public String getContent(){
         return super.getContent();
     }
+
+    public App(Element node){
+        super();
+        xmlImport(node,"app","method");
+    };
 }
