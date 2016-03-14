@@ -38,29 +38,21 @@ public class Main {
 
     @Atomic
     public static void setup() {
-        // TODO: Change to use MyDrive Singleton
         MyDrive md = MyDrive.getInstance();
-        md.setRoot(FenixFramework.getDomainRoot());
-        md.setIdCounter(1);
 
-        // TODO: Change later use SuperUser Singleton
         SuperUser root = SuperUser.getInstance();
 
-        md.addUser(root);
-
         // TODO: Change to use User File creation
-
-
         Dir rootDir = new Dir();
         rootDir.setName("/");
-        rootDir.addUser(root);
+        rootDir.setOwner(root);
         rootDir.setId(md.getNewId());
         rootDir.addFile(rootDir);
 
         // TODO: Change to use User File creation
         Dir homeDir = new Dir();
         homeDir.setName("home");
-        homeDir.addUser(root);
+        homeDir.setOwner(root);
         homeDir.setId(md.getNewId());
         rootDir.addFile(homeDir);
 
