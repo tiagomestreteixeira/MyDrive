@@ -3,7 +3,7 @@ import org.jdom2.Element;
 import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 
-import java.security.acl.Owner;
+import java.util.Stack;
 
 public class PlainFile extends PlainFile_Base {
 
@@ -19,7 +19,15 @@ public class PlainFile extends PlainFile_Base {
         super();
         xmlImport(xml, "plain", "contents");
     }
-
+    private Stack<String> toStack (String pathname) {
+        String[] params = pathname.split("/");
+        Stack<String> st = new Stack<>();
+        for (int i = params.length - 1; i > 0; i--) {
+            log.debug(params[i]);
+            st.push(params[i]);
+        }
+        return st;
+    }
     @Atomic
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
@@ -57,7 +65,7 @@ public class PlainFile extends PlainFile_Base {
             ownerUsername = "root";
 
         User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
-        ;
+
         if (defaultPermissions == null) {
             if (owner == null) {
                 owner = MyDrive.getInstance().getUserByUsername("root");
@@ -66,14 +74,12 @@ public class PlainFile extends PlainFile_Base {
 
         defaultPermissions = owner.getUmask();
 
-
-
+        setId(MyDrive.getInstance().getNewId());
         setName(name);
         setPermissions(defaultPermissions);
         setOwner(owner);
         setContent(contents);
-        setId(MyDrive.getInstance().getNewId());
-
+        addDir((Dir) SuperUser.getInstance().makeDir(path));
     }
 
 

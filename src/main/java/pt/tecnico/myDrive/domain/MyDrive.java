@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
@@ -11,6 +13,8 @@ import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Set;
 
 public class MyDrive extends MyDrive_Base {
@@ -93,8 +97,8 @@ public class MyDrive extends MyDrive_Base {
             if(username == null)
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
 
-            log.info("Node Element : " + node.getName());
-            log.info("Attribute : " + username);
+            //log.info("Node Element : " + node.getName());
+            //log.info("Attribute : " + username);
 
             User user = getUserByUsername(username);
             if(user != null)
@@ -107,8 +111,8 @@ public class MyDrive extends MyDrive_Base {
         for (Element node: element.getChildren("dir")) {
             String id = node.getAttribute("id").getValue();
 
-            log.info("Node Element : " + node.getName());
-            log.info("Attribute Id: " + id);
+           // log.info("Node Element : " + node.getName());
+           // log.info("Attribute Id: " + id);
             (new Dir()).xmlImport(node);
         }
 
@@ -116,8 +120,8 @@ public class MyDrive extends MyDrive_Base {
         // import Plain Files
         for (Element node: element.getChildren("plain")) {
             String name = node.getAttribute("id").getValue();
-            log.info("Node Element : " + node.getName());
-            log.info("Attribute : " + name);
+            //log.info("Node Element : " + node.getName());
+            //log.info("Attribute : " + name);
 
             new PlainFile(node);
         }
@@ -126,8 +130,8 @@ public class MyDrive extends MyDrive_Base {
         // import Link Files
         for (Element node: element.getChildren("link")) {
             String name = node.getAttribute("id").getValue();
-            log.info("Node Element : " + node.getName());
-            log.info("Attribute : " + name);
+            //log.info("Node Element : " + node.getName());
+            //log.info("Attribute : " + name);
 
             new Link(node);
         }
@@ -135,8 +139,8 @@ public class MyDrive extends MyDrive_Base {
         // import App's
         for (Element node: element.getChildren("app")) {
             String name = node.getAttribute("id").getValue();
-            log.info("Node Element : " + node.getName());
-            log.info("Attribute : " + name);
+            //log.info("Node Element : " + node.getName());
+            //log.info("Attribute : " + name);
 
             new App(node);
         }
@@ -153,8 +157,9 @@ public class MyDrive extends MyDrive_Base {
         }
 
         for (User u: getUserSet()) {
-            for(File file : u.getFileSet())
+            for(File file : u.getFileSet()){
                 myDriveElement.addContent(file.xmlExport());
+            }
         }
 
         return doc;

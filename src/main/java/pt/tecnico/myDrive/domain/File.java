@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
@@ -74,7 +75,11 @@ public class File extends File_Base {
             path = "/"+f.getName()+path;
             f = f.getDirectory();
         }
-        return path;
+        if (path == ""){
+            return "/";
+        } else {
+            return path;
+        }
     }
 
     public boolean isOwner(User user) {
@@ -149,7 +154,7 @@ public class File extends File_Base {
 
     public Element xmlExportHelper(Element el) {
 
-        el.setAttribute("id", Integer.toString(getId()));
+        el.setAttribute("id", Integer.toString(this.getId()));
 
         Element nameElement = new Element("name");
         Element pathElement = new Element("path");

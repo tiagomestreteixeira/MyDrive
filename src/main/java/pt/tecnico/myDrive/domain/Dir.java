@@ -75,6 +75,7 @@ public class Dir extends Dir_Base {
 		return dirElement;
 
 	}
+
 	@Atomic
 	public void xmlImport(Element dirElement) throws ImportDocumentException {
 
@@ -116,11 +117,13 @@ public class Dir extends Dir_Base {
 			}
 		}
 
+		setId(MyDrive.getInstance().getNewId());
 		Dir d = owner.makeDir(path);
 		defaultPermissions = owner.getUmask();
 		setName(name);
 		setPermissions(defaultPermissions);
 		setOwner(owner);
+		addDir(d);
 	}
 
 }

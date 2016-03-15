@@ -63,12 +63,14 @@ public class Main {
         readme.setName("README");
         readme.setOwner(root);
         readme.setId(md.getNewId());
+        readme.setPermissions("rwxdr-x-");
         readme.addDir(homeDir);
         readme.setContent("lista de utilizadores");
 
         Dir binDir = root.makeDir("/usr/local/bin");
 
         System.out.println(readme.getContent());
+
 
         binDir.remove();
     }

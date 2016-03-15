@@ -23,6 +23,6 @@ public class Link extends Link_Base {
         Element valueElement = new Element("value");
         valueElement.addContent(getContent());
         linkElement.addContent(valueElement);
-        return valueElement;
+        return linkElement;
     }
 }
