@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
@@ -13,8 +11,6 @@ import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Set;
 
 public class MyDrive extends MyDrive_Base {
