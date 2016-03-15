@@ -88,17 +88,11 @@ public class MyDrive extends MyDrive_Base {
 
     public void xmlImport(Element element) throws ImportDocumentException {
 
-
-        // import users
         for (Element node: element.getChildren("user")) {
-
             String username = node.getAttribute("username").getValue();
 
             if(username == null)
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
-
-            //log.info("Node Element : " + node.getName());
-            //log.info("Attribute : " + username);
 
             User user = getUserByUsername(username);
             if(user != null)
@@ -107,41 +101,19 @@ public class MyDrive extends MyDrive_Base {
             new User(this,username,node);
         }
 
-        // import dirs
         for (Element node: element.getChildren("dir")) {
-            String id = node.getAttribute("id").getValue();
-
-           // log.info("Node Element : " + node.getName());
-           // log.info("Attribute Id: " + id);
             (new Dir()).xmlImport(node);
         }
 
-
-        // import Plain Files
         for (Element node: element.getChildren("plain")) {
-            String name = node.getAttribute("id").getValue();
-            //log.info("Node Element : " + node.getName());
-            //log.info("Attribute : " + name);
-
             new PlainFile(node);
         }
 
-
-        // import Link Files
         for (Element node: element.getChildren("link")) {
-            String name = node.getAttribute("id").getValue();
-            //log.info("Node Element : " + node.getName());
-            //log.info("Attribute : " + name);
-
             new Link(node);
         }
 
-        // import App's
         for (Element node: element.getChildren("app")) {
-            String name = node.getAttribute("id").getValue();
-            //log.info("Node Element : " + node.getName());
-            //log.info("Attribute : " + name);
-
             new App(node);
         }
 
