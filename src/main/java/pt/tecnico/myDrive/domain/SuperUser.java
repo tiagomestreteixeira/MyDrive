@@ -23,4 +23,11 @@ public class SuperUser extends SuperUser_Base {
     public boolean checkPermission(File file) {
         return true;
     }
+
+    public boolean setPermissions (File file, String newPermissions){
+            file.setPermissions(newPermissions);
+            return true;
+    }
+
+
 }
