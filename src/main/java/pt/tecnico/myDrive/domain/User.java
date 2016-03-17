@@ -106,6 +106,43 @@ public class User extends User_Base {
             md.addUser(this);
     }
 
+	public boolean checkPermission(File file, Character c){
+		if (file.isOwner(this)){
+			switch (c){
+				case 'r':
+					return file.getPermissions().matches("r.......");
+				case 'w':
+					return file.getPermissions().matches(".w......");
+				case 'x':
+					return file.getPermissions().matches("..x.....");
+				case 'd':
+					return file.getPermissions().matches("...d....");
+			}
+		}
+		switch (c){
+			case 'r':
+				return file.getPermissions().matches("....r...");
+			case 'w':
+				return file.getPermissions().matches(".....w..");
+			case 'x':
+				return file.getPermissions().matches("......x.");
+			case 'd':
+				return file.getPermissions().matches(".......d");
+		}
+		return false;
+	}
+
+	public boolean setPermissions (File file, String newPermissions){
+		if (file.isOwner(this)){
+			file.setPermissions(newPermissions);
+			log.info("Set Permissions to "+ file.getName()+ ": Access Granted.");
+			return true;
+		} else {
+			log.info("Set Permissions to "+ file.getName()+ ": Access Denied.");
+			return false;
+		}
+	}
+
 	private Stack<String> toStack (String pathname) {
 		String[] params = pathname.split("/");
 		Stack<String> st = new Stack<>();
