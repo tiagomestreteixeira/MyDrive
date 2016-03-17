@@ -161,11 +161,14 @@ public class User extends User_Base {
 		while (!st.empty()) {
 			if (file instanceof Dir)
 				file = ((Dir) file).getFileByName(st.pop());
+				if (!(this.checkPermission(file, 'r'))){
+					return null;
+				}
 			//TODO: Check for links.
-			//TODO: Check Permissions.
 		}
 		return file;
 	}
+
 	public Dir makeDir(String pathname){
 
 		File file = Dir.getRootDir();
@@ -179,8 +182,6 @@ public class User extends User_Base {
 					file = new Dir(temp,this,d,this.getUmask());
 				}
 			}
-			//TODO: Check for links.
-			//TODO: Check Permissions.
 		}
 		return (Dir)file;
 	}
