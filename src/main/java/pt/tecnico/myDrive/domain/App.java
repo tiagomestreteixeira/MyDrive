@@ -1,6 +1,8 @@
 package pt.tecnico.myDrive.domain;
+
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.MyDriveException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class App extends App_Base {
 
@@ -21,6 +23,20 @@ public class App extends App_Base {
         return super.getContent();
     }
 
+    @Override
+    public void write(User user, String methodName) {
+            // TODO  Check for correct formating of method.
+    }
+
+    @Override
+    public void execute(User user){
+        if (user.checkPermission(this, 'x')) {
+            // TODO Execute Apps.
+        } else {
+            throw new NoPermissionException("delete");
+        }
+    }
+    
     public Element xmlExport(){
         Element appElement =  new Element("app");
         appElement = xmlExportHelper(appElement);

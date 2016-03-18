@@ -1,11 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import org.jdom2.Element;
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
@@ -76,7 +71,6 @@ public class Dir extends Dir_Base {
 
 	}
 
-	@Atomic
 	public void xmlImport(Element dirElement) throws ImportDocumentException {
 
 		String path,

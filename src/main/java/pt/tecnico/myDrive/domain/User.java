@@ -4,7 +4,6 @@ import pt.tecnico.myDrive.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
-
 import java.util.Stack;
 
 public class User extends User_Base {
@@ -182,37 +181,6 @@ public class User extends User_Base {
 
 		}
 		return (Dir)file;
-	}
-
-	public String read (File file) throws MyDriveException {
-		if(this.checkPermission(file, 'r')){
-			return file.read();
-		}
-		throw new NoPermissionException("read");
-	}
-
-	public void write (File file, String content) throws MyDriveException {
-		if(this.checkPermission(file, 'w')){
-			file.write(content);
-			return;
-		}
-		throw new NoPermissionException("write");
-	}
-
-	public void execute (File file) throws MyDriveException {
-		if(this.checkPermission(file, 'x')){
-			file.execute();
-			return;
-		}
-		throw new NoPermissionException("execute");
-	}
-
-	public void delete (File file) throws MyDriveException {
-		if(this.checkPermission(file, 'd')){
-			file.delete();
-			return;
-		}
-		throw new NoPermissionException("delete");
 	}
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
