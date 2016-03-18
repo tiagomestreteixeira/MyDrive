@@ -78,7 +78,7 @@ public class User extends User_Base {
 	 
 	  public void setMask(String umask) throws InvalidUsernameException{
 	    if (umask.equals("rwxd----")){
-	      umask=umask;
+	      super.setUmask(umask);
 	    } else {
 	      throw new InvalidUsernameException("Mask not valid");
 	    }
