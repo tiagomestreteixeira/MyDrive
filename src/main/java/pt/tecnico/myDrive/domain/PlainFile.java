@@ -19,6 +19,15 @@ public class PlainFile extends PlainFile_Base {
         super();
         xmlImport(xml, "plain", "contents");
     }
+
+    public String read() {
+        return this.getContent();
+    }
+
+    public void write(String content) {
+        this.setContent(content);
+    }
+
     private Stack<String> toStack (String pathname) {
         String[] params = pathname.split("/");
         Stack<String> st = new Stack<>();

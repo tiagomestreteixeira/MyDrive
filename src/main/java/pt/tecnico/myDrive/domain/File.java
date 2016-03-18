@@ -34,6 +34,22 @@ public class File extends File_Base {
 
     }
 
+    public String read() throws MyDriveException {
+        throw new NoPermissionException("read");
+    }
+
+    public void write(String content) throws MyDriveException {
+        throw new NoPermissionException("write");
+    }
+
+    public void execute() throws MyDriveException {
+        throw new NoPermissionException("execute");
+    }
+
+    public void delete() throws MyDriveException {
+        this.remove();
+    }
+
     @Override
     public Integer getId(){
         return super.getId();
