@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.MyDriveException;
 
 import java.util.Stack;
 
@@ -11,14 +12,19 @@ public class PlainFile extends PlainFile_Base {
         super();
     }
 
-    public String getContent() {
-        return super.getContent();
+    public PlainFile(String name, User user, Dir directory, String permissions) throws MyDriveException {
+        init(name, user, directory, permissions);
     }
 
     public PlainFile(Element xml) {
         super();
         xmlImport(xml, "plain", "contents");
     }
+
+    public String getContent() {
+        return super.getContent();
+    }
+
     private Stack<String> toStack (String pathname) {
         String[] params = pathname.split("/");
         Stack<String> st = new Stack<>();
