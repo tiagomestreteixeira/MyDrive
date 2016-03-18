@@ -20,8 +20,6 @@ public class File extends File_Base {
         init(name, user, directory, permissions);
     }
 
-
-
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
 
@@ -34,20 +32,24 @@ public class File extends File_Base {
 
     }
 
-    public String read() throws MyDriveException {
+    public String read(User user) throws MyDriveException {
         throw new NoPermissionException("read");
     }
 
-    public void write(String content) throws MyDriveException {
+    public void write(User user, String content) throws MyDriveException {
         throw new NoPermissionException("write");
     }
 
-    public void execute() throws MyDriveException {
+    public void execute(User user) throws MyDriveException {
         throw new NoPermissionException("execute");
     }
 
-    public void delete() throws MyDriveException {
-        this.remove();
+    public void delete(User user) throws MyDriveException {
+        if (user.checkPermission(this, 'd')) {
+            this.remove();
+        } else {
+            throw new NoPermissionException("delete");
+        }
     }
 
     @Override
@@ -122,7 +124,6 @@ public class File extends File_Base {
     }
 
     @Override
-    @Atomic
     public void setName(String name) {
         if (name.contains("\0")) {
             throw new InvalidFileNameException(name);

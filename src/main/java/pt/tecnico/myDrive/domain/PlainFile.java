@@ -1,10 +1,10 @@
 package pt.tecnico.myDrive.domain;
+
 import org.jdom2.Element;
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.MyDriveException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
 
-import java.util.Stack;
 
 public class PlainFile extends PlainFile_Base {
 
@@ -12,38 +12,42 @@ public class PlainFile extends PlainFile_Base {
         super();
     }
 
-    public PlainFile(String name, User user, Dir directory, String permissions) throws MyDriveException {
-        init(name, user, directory, permissions);
-    }
-
     public PlainFile(Element xml) {
         super();
         xmlImport(xml, "plain", "contents");
     }
 
+    public PlainFile(String name, User user, Dir directory, String permissions) throws MyDriveException {
+        init(name, user, directory, permissions);
+    }
+
+    public PlainFile(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
+        init(name, user, directory, permissions);
+        this.setContent(content);
+    }
 
     public String getContent() {
         return super.getContent();
     }
 
-    public String read() {
-        return this.getContent();
-    }
-
-    public void write(String content) {
-        this.setContent(content);
-    }
-
-    private Stack<String> toStack (String pathname) {
-        String[] params = pathname.split("/");
-        Stack<String> st = new Stack<>();
-        for (int i = params.length - 1; i > 0; i--) {
-            log.debug(params[i]);
-            st.push(params[i]);
+    @Override
+    public String read(User user) {
+        if (user.checkPermission(this, 'r')) {
+            return this.getContent();
+        } else {
+            throw new NoPermissionException("read");
         }
-        return st;
     }
-    @Atomic
+
+    @Override
+    public void write(User user, String string) {
+        if (user.checkPermission(this, 'w')) {
+            this.setContent(string);
+        } else {
+            throw new NoPermissionException("write");
+        }
+    }
+
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
         String path,
