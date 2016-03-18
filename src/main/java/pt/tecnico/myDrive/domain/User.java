@@ -1,12 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.util.Stack;
 
@@ -153,17 +150,18 @@ public class User extends User_Base {
 		return st;
 	}
 
-	public File lookup(String pathname) {
+	public File lookup(String pathname) throws MyDriveException {
 
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
-			file = ((Dir) file).getFileByName(st.pop());
+			String filename = st.pop();
+			file = file.getFileByName(filename);
 			if (file.equals(null))
-				return null;
+				throw new FileDoesNotExistException(filename);
 			if (!(this.checkPermission(file, 'r'))) {
-				return null;
+				throw new NoPermissionException(filename);
 			}
 			//TODO: Check for links.
 		}
@@ -177,13 +175,44 @@ public class User extends User_Base {
 		while (!st.empty()) {
 				String temp = st.pop();
 				Dir d = (Dir)file;
-				file = ((Dir) file).getFileByName(temp);
+				file = file.getFileByName(temp);
 				if (file == null) {
 					file = new Dir(temp,this,d,this.getUmask());
 				}
 
 		}
 		return (Dir)file;
+	}
+
+	public String read (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'r')){
+			return file.read();
+		}
+		throw new NoPermissionException("read");
+	}
+
+	public void write (File file, String content) throws MyDriveException {
+		if(this.checkPermission(file, 'w')){
+			file.write(content);
+			return;
+		}
+		throw new NoPermissionException("write");
+	}
+
+	public void execute (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'x')){
+			file.execute();
+			return;
+		}
+		throw new NoPermissionException("execute");
+	}
+
+	public void delete (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'd')){
+			file.delete();
+			return;
+		}
+		throw new NoPermissionException("delete");
 	}
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
