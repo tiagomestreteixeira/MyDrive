@@ -21,8 +21,17 @@ public class PlainFile extends PlainFile_Base {
         xmlImport(xml, "plain", "contents");
     }
 
+
     public String getContent() {
         return super.getContent();
+    }
+
+    public String read() {
+        return this.getContent();
+    }
+
+    public void write(String content) {
+        this.setContent(content);
     }
 
     private Stack<String> toStack (String pathname) {

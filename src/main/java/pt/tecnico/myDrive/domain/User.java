@@ -1,12 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
-import pt.tecnico.myDrive.exception.InvalidUsernameException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
+import pt.tecnico.myDrive.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
 
 import java.util.Stack;
 
@@ -106,6 +103,43 @@ public class User extends User_Base {
             md.addUser(this);
     }
 
+	public boolean checkPermission(File file, Character c){
+		if (file.isOwner(this)){
+			switch (c){
+				case 'r':
+					return file.getPermissions().matches("r.......");
+				case 'w':
+					return file.getPermissions().matches(".w......");
+				case 'x':
+					return file.getPermissions().matches("..x.....");
+				case 'd':
+					return file.getPermissions().matches("...d....");
+			}
+		}
+		switch (c){
+			case 'r':
+				return file.getPermissions().matches("....r...");
+			case 'w':
+				return file.getPermissions().matches(".....w..");
+			case 'x':
+				return file.getPermissions().matches("......x.");
+			case 'd':
+				return file.getPermissions().matches(".......d");
+		}
+		return false;
+	}
+
+	public boolean setPermissions (File file, String newPermissions){
+		if (file.isOwner(this)){
+			file.setPermissions(newPermissions);
+			log.info("Set Permissions to "+ file.getName()+ ": Access Granted.");
+			return true;
+		} else {
+			log.info("Set Permissions to "+ file.getName()+ ": Access Denied.");
+			return false;
+		}
+	}
+
 	private Stack<String> toStack (String pathname) {
 		String[] params = pathname.split("/");
 		Stack<String> st = new Stack<>();
@@ -116,36 +150,69 @@ public class User extends User_Base {
 		return st;
 	}
 
-	public File lookup(String pathname){
+	public File lookup(String pathname) throws MyDriveException {
 
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
-			if (file instanceof Dir)
-				file = ((Dir) file).getFileByName(st.pop());
+			String filename = st.pop();
+			file = file.getFileByName(filename);
+			if (file.equals(null))
+				throw new FileDoesNotExistException(filename);
+			if (!(this.checkPermission(file, 'r'))) {
+				throw new NoPermissionException(filename);
+			}
 			//TODO: Check for links.
-			//TODO: Check Permissions.
 		}
 		return file;
 	}
+
 	public Dir makeDir(String pathname){
 
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
-			if (file instanceof Dir) {
 				String temp = st.pop();
 				Dir d = (Dir)file;
-				file = ((Dir) file).getFileByName(temp);
+				file = file.getFileByName(temp);
 				if (file == null) {
 					file = new Dir(temp,this,d,this.getUmask());
 				}
-			}
-			//TODO: Check for links.
-			//TODO: Check Permissions.
+
 		}
 		return (Dir)file;
+	}
+
+	public String read (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'r')){
+			return file.read();
+		}
+		throw new NoPermissionException("read");
+	}
+
+	public void write (File file, String content) throws MyDriveException {
+		if(this.checkPermission(file, 'w')){
+			file.write(content);
+			return;
+		}
+		throw new NoPermissionException("write");
+	}
+
+	public void execute (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'x')){
+			file.execute();
+			return;
+		}
+		throw new NoPermissionException("execute");
+	}
+
+	public void delete (File file) throws MyDriveException {
+		if(this.checkPermission(file, 'd')){
+			file.delete();
+			return;
+		}
+		throw new NoPermissionException("delete");
 	}
 
     public void xmlImport(String username, Element userElement) throws ImportDocumentException {
