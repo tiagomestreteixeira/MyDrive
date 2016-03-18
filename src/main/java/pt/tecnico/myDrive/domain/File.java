@@ -60,6 +60,10 @@ public class File extends File_Base {
         return null;
     }
 
+    public File getFileByName(String s) throws InvalidFileTypeException{
+        throw new InvalidFileTypeException (this.getName(), "getFileByName");
+    }
+
     public User getFileOwner() {
         for (User u : getUserSet()) {
             return u;

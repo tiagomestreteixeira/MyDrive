@@ -153,17 +153,18 @@ public class User extends User_Base {
 		return st;
 	}
 
-	public File lookup(String pathname){
+	public File lookup(String pathname) {
 
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
-			if (file instanceof Dir)
-				file = ((Dir) file).getFileByName(st.pop());
-				if (!(this.checkPermission(file, 'r'))){
-					return null;
-				}
+			file = ((Dir) file).getFileByName(st.pop());
+			if (file.equals(null))
+				return null;
+			if (!(this.checkPermission(file, 'r'))) {
+				return null;
+			}
 			//TODO: Check for links.
 		}
 		return file;
@@ -174,14 +175,13 @@ public class User extends User_Base {
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
-			if (file instanceof Dir) {
 				String temp = st.pop();
 				Dir d = (Dir)file;
 				file = ((Dir) file).getFileByName(temp);
 				if (file == null) {
 					file = new Dir(temp,this,d,this.getUmask());
 				}
-			}
+
 		}
 		return (Dir)file;
 	}
