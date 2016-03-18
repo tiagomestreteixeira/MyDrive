@@ -40,16 +40,21 @@ public class MyDrive extends MyDrive_Base {
         return null;
     }
 
-    @Override
-    public void addUser(User user) {
-        // TODO: Make necessary checks
-        super.addUser(user);
+    public void removeUser(String username) {
+        User user = getUserByUsername(username);
+        this.removeUser(user);
     }
 
     @Override
     public void removeUser(User user) {
-        // TODO: User deletes itself
         super.removeUser(user);
+        user.remove();
+    }
+
+    @Override
+    public void addUser(User user) {
+        // TODO: Make necessary checks
+        super.addUser(user);
     }
 
     @Override
