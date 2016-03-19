@@ -17,10 +17,9 @@ public class MyDrive extends MyDrive_Base {
     static final Logger log = LogManager.getRootLogger();
 
     private MyDrive() {
+		// TODO: Create basic structure
         setRoot(FenixFramework.getDomainRoot());
-        FenixFramework.getDomainRoot().setMyDrive(this);
-        if (getIdCounter() == null)
-            setIdCounter(0);
+        setIdCounter(0);
     }
 
     public static MyDrive getInstance() {
@@ -80,11 +79,6 @@ public class MyDrive extends MyDrive_Base {
         id++;
         super.setIdCounter(id);
         return id;
-    }
-
-    @Override
-    public void setRoot(DomainRoot root) throws MyDriveException {
-        //throw new NoPermissionException("setRoot");
     }
 
     public void xmlImport(Element element) throws ImportDocumentException {
