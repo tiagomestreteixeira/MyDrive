@@ -157,7 +157,7 @@ public class User extends User_Base {
 		while (!st.empty()) {
 			String filename = st.pop();
 			file = file.getFileByName(filename);
-			if (file.equals(null))
+			if (file == null)
 				throw new FileDoesNotExistException(filename);
 			if (!(this.checkPermission(file, 'r'))) {
 				throw new NoPermissionException(filename);

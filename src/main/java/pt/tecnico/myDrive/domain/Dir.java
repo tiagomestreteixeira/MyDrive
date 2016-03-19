@@ -62,14 +62,23 @@ public class Dir extends Dir_Base {
 		return getFileByName(fileName) != null;
 	}
 
-
 	@Override
 	public Element xmlExport(){
 		Element dirElement =  new Element("dir");
 		dirElement = xmlExportHelper(dirElement);
 		return dirElement;
-
 	}
+
+	@Override
+	public void remove() {
+		for (User u : getUserSet())
+			u.removeFile(this);
+		for (Dir d : getDirSet())
+			d.removeFile(this);
+		getFileSet().forEach(File::remove);
+		deleteDomainObject();
+	}
+
 
 	public void xmlImport(Element dirElement) throws ImportDocumentException {
 
