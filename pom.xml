@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pt.tecnico</groupId>
-    <artifactId>mydrive</artifactId> <!-- FIXME -->
+    <artifactId>mydrive</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

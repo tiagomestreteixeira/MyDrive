@@ -48,6 +48,11 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
+    @Override
+    public String getFormatedName() {
+        return "PlainFile " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
+    }
+
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
         String path,

@@ -67,6 +67,10 @@ public class File extends File_Base {
         return super.getName();
     }
 
+    public String getFormatedName() {
+        return "File " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
+    }
+
     public DateTime getLastModification(){
         return super.getLastModification();
     }
@@ -78,7 +82,7 @@ public class File extends File_Base {
         return null;
     }
 
-    public File getFileByName(String s) throws InvalidFileTypeException{
+    public File getFileByName(User u, String s) throws InvalidFileTypeException{
         throw new InvalidFileTypeException (this.getName(), "getFileByName");
     }
 

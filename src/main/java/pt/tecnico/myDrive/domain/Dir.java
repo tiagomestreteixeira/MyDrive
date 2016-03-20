@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class Dir extends Dir_Base {
 
@@ -47,19 +48,26 @@ public class Dir extends Dir_Base {
 
 	public void listFileSet(){
 		for(File file : getFileSet())
-			System.out.println(file.getName());
+			System.out.println(file.getFormatedName());
 	}
 	
-	
-	public File getFileByName(String name){
-		for(File file : getFileSet())
-			if(file.getName().equals(name))
-				return file;
-		return null;
+	@Override
+	public File getFileByName(User user, String name){
+		if (user.checkPermission(this, 'x')) {
+			for(File file : getFileSet())
+				if(file.getName().equals(name))
+					return file;
+			return null;
+		} else {
+			throw new NoPermissionException("getFileByName");
+		}
 	}
 	
 	public boolean hasFile(String fileName){
-		return getFileByName(fileName) != null;
+		for(File file : getFileSet())
+			if(file.getName().equals(fileName))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -79,6 +87,10 @@ public class Dir extends Dir_Base {
 		deleteDomainObject();
 	}
 
+	@Override
+	public String getFormatedName() {
+		return "Dir " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
+	}
 
 	public void xmlImport(Element dirElement) throws ImportDocumentException {
 

@@ -143,7 +143,6 @@ public class User extends User_Base {
 		String[] params = pathname.split("/");
 		Stack<String> st = new Stack<>();
 		for (int i = params.length - 1; i > 0; i--) {
-			log.debug(params[i]);
 			st.push(params[i]);
 		}
 		return st;
@@ -156,10 +155,10 @@ public class User extends User_Base {
 
 		while (!st.empty()) {
 			String filename = st.pop();
-			file = file.getFileByName(filename);
+			file = file.getFileByName(this,filename);
 			if (file == null)
 				throw new FileDoesNotExistException(filename);
-			if (!(this.checkPermission(file, 'r'))) {
+			if (!(this.checkPermission(file, 'x'))) {
 				throw new NoPermissionException(filename);
 			}
 			//TODO: Check for links.
@@ -170,11 +169,12 @@ public class User extends User_Base {
 	public Dir makeDir(String pathname){
 
 		File file = Dir.getRootDir();
+
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
 				String temp = st.pop();
 				Dir d = (Dir)file;
-				file = file.getFileByName(temp);
+				file = file.getFileByName(this,temp);
 				if (file == null) {
 					file = new Dir(temp,this,d,this.getUmask());
 				}

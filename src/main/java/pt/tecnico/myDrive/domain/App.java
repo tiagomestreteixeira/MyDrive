@@ -29,6 +29,11 @@ public class App extends App_Base {
     }
 
     @Override
+    public String getFormatedName() {
+        return "App " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
+    }
+
+    @Override
     public void execute(User user){
         if (user.checkPermission(this, 'x')) {
             // TODO Execute Apps.

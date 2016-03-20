@@ -10,8 +10,9 @@ public class Link extends Link_Base {
     	super();
     }
 
-    public Link(String name, User user, Dir directory, String permissions) throws MyDriveException {
+    public Link(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
         init(name, user, directory, permissions);
+        this.setContent(content);
     }
 
     public Link(Element node){
@@ -21,6 +22,30 @@ public class Link extends Link_Base {
 
     public String getContent(){
     	return super.getContent();
+    }
+
+    /*@Override
+    public String getName(){
+        return super.getName() + "->" + getContent();
+    }*/
+
+    @Override
+    public String getFormatedName() {
+        return "Link " + getPermissions()
+                + " " + getFileOwner().getName()
+                + " " + getId()
+                + " " + super.getName()
+                + "->" + getContent();
+    }
+
+
+    @Override
+    public File getFileByName(User user, String file){
+        if (user.checkPermission(this, 'x')) {
+            return user.lookup(this.getContent()).getFileByName(user,file);
+        } else {
+            throw new NoPermissionException("delete");
+        }
     }
 
     @Override
