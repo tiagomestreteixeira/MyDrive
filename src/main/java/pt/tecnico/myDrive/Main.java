@@ -42,7 +42,7 @@ public class Main {
         SuperUser root = SuperUser.getInstance();
         Dir homeDir = (Dir) root.getFileByName("home");
 
-        homeDir.getFileByName("README").remove();
+        homeDir.getFileByName(root,"README").remove();
         homeDir.listFileSet();
     }
 
