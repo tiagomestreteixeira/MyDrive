@@ -80,9 +80,6 @@ public class Main {
 
     @Atomic
     public static void importXML(File file) {
-        log.trace("importXML: " + FenixFramework.getDomainRoot());
-
-        // MyDrive Singleton must be implemented
         MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
@@ -96,7 +93,6 @@ public class Main {
 
     @Atomic
     public static void xmlPrint() {
-        log.trace("xmlPrint: " + FenixFramework.getDomainRoot());
         Document doc = MyDrive.getInstance().xmlExport();
         XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
         try {
@@ -108,7 +104,6 @@ public class Main {
 
     @Atomic
     public static File resourceFile(String filename) {
-        log.trace("Resource: " + filename);
         ClassLoader classLoader = MyDrive.getInstance().getClass().getClassLoader();
         if (classLoader.getResource(filename) == null) return null;
         return new java.io.File(classLoader.getResource(filename).getFile());
