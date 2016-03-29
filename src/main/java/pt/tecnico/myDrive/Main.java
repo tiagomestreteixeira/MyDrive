@@ -27,6 +27,8 @@ public class Main {
             for (String s : args) {
                 log.info("command line argument: " + s);
                 File fileToImport = resourceFile(s);
+                if(fileToImport == null)
+                    throw new ImportDocumentException(s,"File cannot be loaded. Please make sure that it exists.");
                 importXML(fileToImport);
             }
             xmlPrint();
@@ -104,7 +106,7 @@ public class Main {
         }
     }
 
-
+    @Atomic
     public static File resourceFile(String filename) {
         log.trace("Resource: " + filename);
         ClassLoader classLoader = MyDrive.getInstance().getClass().getClassLoader();
