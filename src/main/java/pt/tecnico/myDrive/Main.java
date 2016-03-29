@@ -24,9 +24,10 @@ public class Main {
 
         try {
             setup();
-            for (String s : args){
+            for (String s : args) {
                 log.info("command line argument: " + s);
-                importXML(new File(s));
+                File fileToImport = resourceFile(s);
+                importXML(fileToImport);
             }
             xmlPrint();
             end();
@@ -42,7 +43,7 @@ public class Main {
         SuperUser root = SuperUser.getInstance();
         Dir homeDir = (Dir) root.getFileByName("home");
 
-        homeDir.getFileByName(root,"README").remove();
+        homeDir.getFileByName(root, "README").remove();
         homeDir.listFileSet();
     }
 
@@ -83,7 +84,7 @@ public class Main {
         MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
-            Document document = (Document)builder.build(file);
+            Document document = (Document) builder.build(file);
             md.xmlImport(document.getRootElement());
 
         } catch (ImportDocumentException | JDOMException | IOException e) {
@@ -96,10 +97,19 @@ public class Main {
         log.trace("xmlPrint: " + FenixFramework.getDomainRoot());
         Document doc = MyDrive.getInstance().xmlExport();
         XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
-        try { xmlOutput.output(doc, new PrintStream(System.out));
-        } catch (IOException e) { System.out.println(e); }
+        try {
+            xmlOutput.output(doc, new PrintStream(System.out));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
 
+    public static File resourceFile(String filename) {
+        log.trace("Resource: " + filename);
+        ClassLoader classLoader = MyDrive.getInstance().getClass().getClassLoader();
+        if (classLoader.getResource(filename) == null) return null;
+        return new java.io.File(classLoader.getResource(filename).getFile());
+    }
 
 }
