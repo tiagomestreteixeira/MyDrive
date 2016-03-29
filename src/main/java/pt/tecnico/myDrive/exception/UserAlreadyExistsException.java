@@ -7,7 +7,7 @@ public class UserAlreadyExistsException extends MyDriveException {
     private String conflictingName;
 
     public UserAlreadyExistsException(String conflictingName) {
-        conflictingName = conflictingName;
+        this.conflictingName = conflictingName;
     }
 
     public String getConflictingName() {
