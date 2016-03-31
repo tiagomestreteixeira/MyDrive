@@ -20,6 +20,10 @@ public class File extends File_Base {
         init(name, user, directory, permissions);
     }
 
+    public File(String name, Dir directory, String permissions) throws MyDriveException {
+        init(name, SuperUser.getInstance() , directory, permissions);
+    }
+
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
 

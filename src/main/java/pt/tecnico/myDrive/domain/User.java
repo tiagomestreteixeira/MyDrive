@@ -14,14 +14,32 @@ public class User extends User_Base {
         super();
     }
 	  
-	  public User (String username, String name, String umask, String home, String password){
-		  
-	    setUsername(username);
-	    setName(username);
-	    setPassword(username);
+	public User (MyDrive md, String username, String name, String umask, String password){
+
+
+		setUsername(username);
+	    setName(name);
+	    setPassword(password);
 	    setMask(umask);
-	    setHome(home);
-	  }
+		setMyDrive(md);
+	    //TODO: add home dir relation.
+	}
+
+	public User (MyDrive md, String username){
+
+		setUsername(username);
+		setName(username);
+		setPassword(username);
+		setMask("rwxd---");
+		setMyDrive(md);
+		//TODO: add home dir relation.
+	}
+
+	public User(MyDrive md, String username, Element xml) {
+		super();
+		xmlImport(username, xml);
+		setMyDrive(md);
+	}
 	  
 	  public File createFile(String name, User user, Dir directory, String permissions){
 		  File file= new File(name,user,directory,permissions);
@@ -87,12 +105,6 @@ public class User extends User_Base {
 	    setMyDrive(null);
 	    deleteDomainObject();
 	  }
-
-    public User(MyDrive md, String username, Element xml) {
-        super();
-        xmlImport(username, xml);
-        setMyDrive(md);
-    }
 
     @Override
     public void setMyDrive(MyDrive md) {
