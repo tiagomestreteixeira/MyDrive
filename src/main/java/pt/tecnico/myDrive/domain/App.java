@@ -1,8 +1,12 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.omg.CORBA.StringHolder;
+import pt.tecnico.myDrive.exception.MethodNotValidException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
+
+import java.lang.reflect.Method;
 
 public class App extends App_Base {
 
@@ -24,8 +28,17 @@ public class App extends App_Base {
     }
 
     @Override
+    public void setContent(String method) {
+        if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*"))
+            super.setContent(method);
+        else
+            throw new MethodNotValidException(method);
+    }
+
+    @Override
     public void write(User user, String methodName) {
-            // TODO  Check for correct formating of method.
+        if (user.checkPermission(this, 'w'))
+            setContent(methodName);
     }
 
     @Override
