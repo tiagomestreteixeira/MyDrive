@@ -36,6 +36,12 @@
     <name>bin</name>
     <perm>rwxd--x-</perm>
   </dir>
+  <dir id="666">
+    <path>/home/1/2/3/4/5/6</path>
+    <owner>jtb</owner>
+    <name>uuid</name>
+    <perm>rwxd--x-</perm>
+  </dir>
   <app id="9">
     <path>/home/jtb/bin</path>
     <name>hello</name>
@@ -43,4 +49,11 @@
     <perm>rwxd--x-</perm>
     <method>pt.tecnico.myDrive.app.Hello</method>
   </app>
+  <link id="51">
+    <path>/a/b/c/d/e/f/g/h/i</path>
+    <name>docweq</name>
+    <owner>jtb</owner>
+    <perm>r-xdr-x-</perm>
+    <value>/home/jtb/documents</value>
+  </link>
 </myDrive>

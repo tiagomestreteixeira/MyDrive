@@ -132,13 +132,20 @@ public class Dir extends Dir_Base {
 			}
 		}
 
-		setId(MyDrive.getInstance().getNewId());
+		/*setId(MyDrive.getInstance().getNewId());
 		Dir d = owner.makeDir(path);
 		defaultPermissions = owner.getUmask();
 		setName(name);
 		setPermissions(defaultPermissions);
 		setOwner(owner);
-		addDir(d);
+		addDir(d);*/
+
+		setId(MyDrive.getInstance().getNewId());
+		setName(name);
+		setPermissions(defaultPermissions);
+		setOwner(owner);
+		//setContent(contents);
+		addDir((Dir) SuperUser.getInstance().makeDir(path));
 	}
 
 }
