@@ -93,59 +93,7 @@ public class Dir extends Dir_Base {
 	}
 
 	public void xmlImport(Element dirElement) throws ImportDocumentException {
-
-		String path,
-				name,
-				ownerUsername,
-				defaultPermissions;
-
-		path = name = ownerUsername = defaultPermissions = null;
-
-		for (Element child : dirElement.getChildren()) {
-
-			if (child.getName().equals("path"))
-				path = child.getText();
-			if (child.getName().equals("name"))
-				name = child.getText();
-			if (child.getName().equals("owner"))
-				ownerUsername = child.getText();
-			if (child.getName().equals("perm"))
-				defaultPermissions = child.getText();
-
-
-			log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
-
-		}
-
-		if (path == null)
-			throw new ImportDocumentException("Dir", "<path> node cannot be read properly.");
-		if (name == null)
-			throw new ImportDocumentException("Dir", "<name> node cannot be read properly.");
-		if (ownerUsername == null)
-			ownerUsername = "root";
-
-		User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
-
-		if (defaultPermissions == null) {
-			if (owner == null) {
-				owner = MyDrive.getInstance().getUserByUsername("root");
-			}
-		}
-
-		/*setId(MyDrive.getInstance().getNewId());
-		Dir d = owner.makeDir(path);
-		defaultPermissions = owner.getUmask();
-		setName(name);
-		setPermissions(defaultPermissions);
-		setOwner(owner);
-		addDir(d);*/
-
-		setId(MyDrive.getInstance().getNewId());
-		setName(name);
-		setPermissions(defaultPermissions);
-		setOwner(owner);
-		//setContent(contents);
-		addDir((Dir) SuperUser.getInstance().makeDir(path));
+		xmlImport(dirElement,"Dir");
 	}
 
 }

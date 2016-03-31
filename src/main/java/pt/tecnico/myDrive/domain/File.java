@@ -176,6 +176,47 @@ public class File extends File_Base {
         deleteDomainObject();
     }
 
+    public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
+
+        String path,
+                name,
+                ownerUsername,
+                defaultPermissions;
+
+        path = name = ownerUsername = defaultPermissions = null;
+
+        for (Element child : FileDomainElement.getChildren()) {
+
+            if (child.getName().equals("path"))
+                path = child.getText();
+            if (child.getName().equals("name"))
+                name = child.getText();
+            if (child.getName().equals("owner"))
+                ownerUsername = child.getText();
+            if (child.getName().equals("perm"))
+                defaultPermissions = child.getText();
+            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
+        }
+
+        if (path == null)
+            throw new ImportDocumentException(elementDomain, "<path> node cannot be read properly.");
+        if (name == null)
+            throw new ImportDocumentException(elementDomain, "<name> node cannot be read properly.");
+        if (ownerUsername == null)
+            ownerUsername = "root";
+
+        User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
+
+        if (defaultPermissions == null) {
+            if (owner == null) {
+                owner = MyDrive.getInstance().getUserByUsername("root");
+            }
+        }
+
+        defaultPermissions = owner.getUmask();
+
+        init(name, owner, (Dir) SuperUser.getInstance().makeDir(path), defaultPermissions);
+    }
 
     public Element xmlExport(){
         return null;
