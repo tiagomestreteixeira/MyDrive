@@ -3,12 +3,12 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.pattern.IntegerPatternConverter;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.exception.*;
+
+
 
 
 public class File extends File_Base {
@@ -230,17 +230,27 @@ public class File extends File_Base {
         Element pathElement = new Element("path");
         Element ownerElement = new Element("owner");
         Element permElement = new Element("perm");
+        Element lastModifiedDateElement = new Element("lastModification");
 
         nameElement.addContent(getName());
         pathElement.addContent(getPath());
         ownerElement.addContent(getFileOwner().getUsername());
         permElement.addContent(getPermissions());
 
+        DateTime lastModification = getLastModification();
+        String lastModificationConvertedToString="";
+
+        if(lastModification != null){
+            lastModificationConvertedToString = lastModification.toString();
+        }
+
+        lastModifiedDateElement.addContent(lastModificationConvertedToString);
 
         el.addContent(nameElement);
         el.addContent(pathElement);
         el.addContent(ownerElement);
         el.addContent(permElement);
+        el.addContent(lastModifiedDateElement);
 
         return el;
     }
