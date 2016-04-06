@@ -55,6 +55,7 @@ public class MyDrive extends MyDrive_Base {
         if (getUserByUsername(user.getUsername()) == null) {
             super.addUser(user);
         }
+		else
         throw new UserAlreadyExistsException(user.getName());
     }
 

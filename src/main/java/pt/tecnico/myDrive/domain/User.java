@@ -13,7 +13,7 @@ public class User extends User_Base {
     public User() {
         super();
     }
-	  
+
 	public User (MyDrive md, String username, String name, String umask, String password){
 
 
@@ -21,7 +21,7 @@ public class User extends User_Base {
 	    setName(name);
 	    setPassword(password);
 	    setMask(umask);
-		setMyDrive(md);
+		md.addUser(this);
 	    //TODO: add home dir relation.
 	}
 
@@ -31,40 +31,40 @@ public class User extends User_Base {
 		setName(username);
 		setPassword(username);
 		setMask("rwxd---");
-		setMyDrive(md);
+		md.addUser(this);
 		//TODO: add home dir relation.
 	}
 
 	public User(MyDrive md, String username, Element xml) {
 		super();
 		xmlImport(username, xml);
-		setMyDrive(md);
+		md.addUser(this);
 	}
-	  
+
 	  public File createFile(String name, User user, Dir directory, String permissions){
 		  File file= new File(name,user,directory,permissions);
 		  return file;
 	  }
-	  
+
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
 		  if(hasFile(fileToBeAdded.getName()))
 			  throw new FileAlreadyExistsException(fileToBeAdded.getName());
-		  
+
 		  super.addFile(fileToBeAdded);
 	  }
-	  
+
 	  public File getFileByName(String name){
 		  for (File file: getFileSet())
 			  if (file.getName().equals(name))
 				  return file;
 		  return null;
 	  }
-	  
+
 	  public boolean hasFile(String fileName){
 		  return getFileByName(fileName)!= null;
 	  }
-	  
+
 	  public boolean isAlphanumeric(String str) {
 		  for (int i=0; i<str.length(); i++) {
 			  char c = str.charAt(i);
@@ -73,10 +73,10 @@ public class User extends User_Base {
 		    }
 		  return true;
 		}
-	  
+
 	  @Override
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
-		  
+
 	    if (username == null){
 	      throw new InvalidUsernameException("Username cannot be empty");
 	    }
@@ -88,8 +88,8 @@ public class User extends User_Base {
 	    } else {
 	    	throw new InvalidUsernameException("not valid");
 	    }
-	  }  
-	 
+	  }
+
 	  public void setMask(String umask) throws InvalidUsernameException{
 	    if (umask.equals("rwxd----")){
 	      super.setUmask(umask);
@@ -97,7 +97,7 @@ public class User extends User_Base {
 	      throw new InvalidUsernameException("Mask not valid");
 	    }
 	  }
-	 	
+
 	  public void remove(){
 	    for(File f: getFileSet()){
 	      f.remove();
