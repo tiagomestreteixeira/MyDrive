@@ -19,7 +19,7 @@ public class MyDrive extends MyDrive_Base {
     private MyDrive() {
 		// TODO: Create basic structure
         setRoot(FenixFramework.getDomainRoot());
-        setIdCounter(0);
+        super.setIdCounter(0);
     }
 
     public static MyDrive getInstance() {
@@ -66,14 +66,12 @@ public class MyDrive extends MyDrive_Base {
 
     @Override
     public Integer getIdCounter() {
-        // TODO: Check if access should be allowed
-        return super.getIdCounter();
+        throw new NoPermissionException("getIdCounter");
     }
 
     @Override
     public void setIdCounter(Integer idCounter) {
-        // TODO: Check if access should be allowed
-        super.setIdCounter(idCounter);
+        throw new NoPermissionException("setIdCounter");
     }
 
     public int getNewId() {
