@@ -52,8 +52,10 @@ public class MyDrive extends MyDrive_Base {
 
     @Override
     public void addUser(User user) {
-        // TODO: Make necessary checks
-        super.addUser(user);
+        if (getUserByUsername(user.getUsername()) == null) {
+            super.addUser(user);
+        }
+        throw new UserAlreadyExistsException(user.getName());
     }
 
     @Override
