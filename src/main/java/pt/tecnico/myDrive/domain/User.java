@@ -30,7 +30,7 @@ public class User extends User_Base {
 		setUsername(username);
 		setName(username);
 		setPassword(username);
-		setMask("rwxd---");
+		setMask("rwxd----");
 		md.addUser(this);
 		//TODO: add home dir relation.
 	}
