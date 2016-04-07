@@ -37,10 +37,11 @@ public class User extends User_Base {
 		// Dir homeDir = makeDir("/home/"+username);
 		// log.debug("HOME PATH STRING:", homeDir.getPath());
 		// Remove this setHome(String) when the relation is made
+		//setHomeDir(x);
 		setHome(homePath);
 		md.addUser(this);
 	}
-
+	
 	public File createFile(String name, User user, Dir directory, String permissions){
 		  File file= new File(name,user,directory,permissions);
 		  return file;
