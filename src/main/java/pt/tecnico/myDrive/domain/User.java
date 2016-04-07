@@ -22,6 +22,7 @@ public class User extends User_Base {
 	    setPassword(password);
 	    setMask(umask);
 		md.addUser(this);
+		//setHomeDir(x);
 	    //TODO: add home dir relation.
 	}
 
@@ -30,8 +31,9 @@ public class User extends User_Base {
 		setUsername(username);
 		setName(username);
 		setPassword(username);
-		setMask("rwxd---");
+		setMask("rwxd----");
 		md.addUser(this);
+		//setHomeDir(x);
 		//TODO: add home dir relation.
 	}
 

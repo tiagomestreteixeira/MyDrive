@@ -64,6 +64,18 @@ relation MyDriveContainsUsers
   }
 }
 
+relation UserHasHomeDir
+{
+    User playsRole homeOwner
+    {
+    multiplicity 0..1;
+    }
+    Dir playsRole homeDir
+    {
+    multiplicity 0..1;
+    }
+}
+
 relation UserContainsFiles 
 {
   User playsRole user

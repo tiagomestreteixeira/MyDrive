@@ -1,10 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import pt.tecnico.myDrive.exception.FileAlreadyExistsException;
-import pt.tecnico.myDrive.exception.FileDoesNotExistException;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
+import pt.tecnico.myDrive.exception.*;
 
 public class Dir extends Dir_Base {
 
@@ -78,12 +75,16 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
-	public void remove() {
+	public void remove() throws MyDriveException {
 		for (User u : getUserSet())
 			u.removeFile(this);
 		for (Dir d : getDirSet())
 			d.removeFile(this);
 		getFileSet().forEach(File::remove);
+		if (getHomeOwner() != null){
+			//Do not allow?
+			setHomeOwner(null);
+		}
 		deleteDomainObject();
 	}
 
