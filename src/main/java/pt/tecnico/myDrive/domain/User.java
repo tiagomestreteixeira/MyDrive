@@ -9,42 +9,42 @@ import java.util.Stack;
 public class User extends User_Base {
 
     static final Logger log = LogManager.getRootLogger();
+	private static final String USER_DEFAULT_UMASK = "rwxd----";
 
     public User() {
         super();
     }
 
 	public User (MyDrive md, String username, String name, String umask, String password){
-
-
-		setUsername(username);
-	    setName(name);
-	    setPassword(password);
-	    setMask(umask);
-		md.addUser(this);
-	    //TODO: add home dir relation.
+		init(md,username,name,umask,password,"/home/"+username);
 	}
 
 	public User (MyDrive md, String username){
-
-		setUsername(username);
-		setName(username);
-		setPassword(username);
-		setMask("rwxd----");
-		md.addUser(this);
-		//TODO: add home dir relation.
+		init(md,username,username,USER_DEFAULT_UMASK,username,"/home/"+username);
 	}
 
 	public User(MyDrive md, String username, Element xml) {
 		super();
-		xmlImport(username, xml);
+		xmlImport(md,username, xml);
+	}
+
+	public void init(MyDrive md, String username, String name, String umask, String password,String homePath){
+		setUsername(username);
+		setName(name);
+		setPassword(password);
+		setMask(umask);
+		//TODO: add home dir relation.
+		// Dir homeDir = makeDir("/home/"+username);
+		// log.debug("HOME PATH STRING:", homeDir.getPath());
+		// Remove this setHome(String) when the relation is made
+		setHome(homePath);
 		md.addUser(this);
 	}
 
-	  public File createFile(String name, User user, Dir directory, String permissions){
+	public File createFile(String name, User user, Dir directory, String permissions){
 		  File file= new File(name,user,directory,permissions);
 		  return file;
-	  }
+	}
 
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
@@ -90,8 +90,9 @@ public class User extends User_Base {
 	    }
 	  }
 
+
 	  public void setMask(String umask) throws InvalidPermissionsFormatException{
-	    if (umask.equals("rwxd----")){
+	    if (umask.equals(USER_DEFAULT_UMASK)){
 	      super.setUmask(umask);
 	    } else {
 	      throw new InvalidPermissionsFormatException(umask + " you're setting in user " + getUsername() + " mask");
@@ -195,7 +196,7 @@ public class User extends User_Base {
 		return (Dir)file;
 	}
 
-    public void xmlImport(String username, Element userElement) throws ImportDocumentException {
+    public void xmlImport(MyDrive md, String username, Element userElement) throws ImportDocumentException {
 
         String defaultHome = "/home/" + username;
         String defaultMask = "rwxd----";
@@ -214,11 +215,7 @@ public class User extends User_Base {
             log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
-        setUsername(username);
-        setHome(defaultHome);
-        setUmask(defaultMask);
-        setName(defaultName);
-        setPassword(defaultPassword);
+		init(md,username,defaultName,defaultMask,defaultPassword,defaultHome);
     }
 
 	public Element xmlExport() {
