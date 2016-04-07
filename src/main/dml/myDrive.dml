@@ -92,7 +92,7 @@ relation DirectoryContainsFiles
 {
   Dir playsRole dir
   {
-    multiplicity *;
+    multiplicity 0..1;
   }
   File playsRole file
   {
