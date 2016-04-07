@@ -77,7 +77,7 @@ public class User extends User_Base {
 	  @Override
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 
-	    if (username == null){
+	    if (username == null || username == ""){
 	      throw new InvalidUsernameException(username, "is empty");
 	    }
 	    /*if (username.equals("root")){
