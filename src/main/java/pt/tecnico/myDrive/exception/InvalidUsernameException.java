@@ -5,18 +5,18 @@ public class InvalidUsernameException extends MyDriveException {
    private static final long serialVersionUID = 1L;
 
     private String username;
+    private String errorMessage;
 
-    public InvalidUsernameException(String username) {
-        username = username;
+    public InvalidUsernameException(String username, String errorMessage) {
+        this.errorMessage = errorMessage;
+        this.username = username;
     }
 
-    public String getInvalidUsernameException() {
-        return username;
-    }
+
 
     @Override
     public String getMessage() {
-        return "Usernames cannot be empty and cannot contain " +
-                "non-alphanumeric characters." + "Invalid username: " + username;
+        return "Usernames cannot be empty or contain " +
+                "non-alphanumeric characters." + "Invalid username: " + username + errorMessage;
     }
 }

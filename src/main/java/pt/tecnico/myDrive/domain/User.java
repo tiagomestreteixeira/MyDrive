@@ -78,7 +78,7 @@ public class User extends User_Base {
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 
 	    if (username == null){
-	      throw new InvalidUsernameException("Username cannot be empty");
+	      throw new InvalidUsernameException(username, "is empty");
 	    }
 	    /*if (username.equals("root")){
 	      throw new UserAlreadyExistsException(username);
@@ -86,15 +86,15 @@ public class User extends User_Base {
 		  if(isAlphanumeric(username)){
 	    	super.setUsername(username);
 	    } else {
-	    	throw new InvalidUsernameException("not valid");
+	    	throw new InvalidUsernameException(username, " has non-alphanumeric characters");
 	    }
 	  }
 
-	  public void setMask(String umask) throws InvalidUsernameException{
+	  public void setMask(String umask) throws InvalidPermissionsFormatException{
 	    if (umask.equals("rwxd----")){
 	      super.setUmask(umask);
 	    } else {
-	      throw new InvalidUsernameException("Mask not valid");
+	      throw new InvalidPermissionsFormatException(umask + " you're setting in user " + getUsername() + " mask");
 	    }
 	  }
 

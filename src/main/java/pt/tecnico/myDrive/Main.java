@@ -76,6 +76,7 @@ public class Main {
 
 
         binDir.remove();
+        new User(md,"");
     }
 
     @Atomic
