@@ -16,6 +16,7 @@ public class InvalidUsernameException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Invalid cenas: " + username;
+        return "Usernames cannot be empty and cannot contain " +
+                "non-alphanumeric characters." + "Invalid username: " + username;
     }
 }
