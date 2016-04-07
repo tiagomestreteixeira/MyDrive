@@ -88,10 +88,7 @@ public class File extends File_Base {
     }
 
     public User getFileOwner() {
-        for (User u : getUserSet()) {
-            return u;
-        }
-        return null;
+        return getUser();
     }
 
     public String getPath(){
@@ -110,11 +107,10 @@ public class File extends File_Base {
     }
 
     public boolean isOwner(User user) {
-        for (User u : getUserSet()) {
-            if (u.equals(user)) {
-                return true;
+        User u = getUser();
+        if (u.equals(user)) {
+            return true;
             }
-        }
         return false;
     }
 
@@ -151,24 +147,26 @@ public class File extends File_Base {
     }
 
     @Override
-    public void addUser(User user) {
+    public void setUser(User user) {
        throw new NoPermissionException("addUser");
     }
 
     public void setOwner(User user) {
-        for (User u : getUserSet())
+        User u = getUser();
+        if (u != null) {
             u.removeFile(this);
+        }
 
         if (user == null) {
-            super.addUser(SuperUser.getInstance());
+            super.setUser(SuperUser.getInstance());
             return;
         }
         user.addFile(this);
     }
 
     public void remove() {
-        for (User u : getUserSet())
-            u.removeFile(this);
+        User u = getUser();
+        u.removeFile(this);
         getDir().removeFile(this);
         deleteDomainObject();
     }

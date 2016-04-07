@@ -80,7 +80,7 @@ relation UserContainsFiles
 {
   User playsRole user
   {
-    multiplicity *;
+    multiplicity 0..1;
   }
   File playsRole file 
   {

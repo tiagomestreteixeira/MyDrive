@@ -76,8 +76,8 @@ public class Dir extends Dir_Base {
 
 	@Override
 	public void remove() throws MyDriveException {
-		for (User u : getUserSet())
-			u.removeFile(this);
+
+		getUser().removeFile(this);
 		getDir().removeFile(this);
 		getFileSet().forEach(File::remove);
 		if (getHomeOwner() != null){
