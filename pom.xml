@@ -119,6 +119,7 @@
         <fenix.framework.backend>jvstm-ojb</fenix.framework.backend>
         <version.pt.ist.fenix.framework>2.6.2</version.pt.ist.fenix.framework>
 
+        <version.junit>4.12</version.junit>
         <version.slf4j.api>1.7.7</version.slf4j.api>
         <version.ch.qos.logback.logback.classic>1.1.2</version.ch.qos.logback.logback.classic>
 
@@ -240,6 +241,12 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.0-rc1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
