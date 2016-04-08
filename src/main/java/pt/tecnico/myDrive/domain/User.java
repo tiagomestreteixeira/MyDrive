@@ -45,8 +45,10 @@ public class User extends User_Base {
 
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
-		  if(hasFile(fileToBeAdded.getName()))
-			  throw new FileAlreadyExistsException(fileToBeAdded.getName());
+		  for(File f : getFileSet()) {
+			  if(f.getName().equals(fileToBeAdded.getName()) && f.getPath().equals(fileToBeAdded.getPath()))
+				  throw new FileAlreadyExistsException(fileToBeAdded.getName());
+		  }
 
 		  super.addFile(fileToBeAdded);
 	  }
