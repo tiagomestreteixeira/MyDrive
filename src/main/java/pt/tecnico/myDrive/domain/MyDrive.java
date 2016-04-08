@@ -22,6 +22,12 @@ public class MyDrive extends MyDrive_Base {
         super.setIdCounter(0);
     }
 
+    public void cleanup() {
+        super.setIdCounter(0);
+        for(User u : getUserSet())
+            u.remove();
+    }
+
     public static MyDrive getInstance() {
         MyDrive md = FenixFramework.getDomainRoot().getMyDrive();
 
