@@ -32,12 +32,8 @@ public class User extends User_Base {
 		setUsername(username);
 		setName(name);
 		setPassword(password);
-		setMask(umask);
-		//TODO: add home dir relation.
-		// Dir homeDir = makeDir("/home/"+username);
-		// log.debug("HOME PATH STRING:", homeDir.getPath());
-		// Remove this setHome(String) when the relation is made
-		//setHomeDir(x);
+		setUmask(umask);
+		setHomeDir(makeDir(homePath));
 		setHome(homePath);
 		md.addUser(this);
 	}
@@ -91,9 +87,10 @@ public class User extends User_Base {
 	    }
 	  }
 
-
-	  public void setMask(String umask) throws InvalidPermissionsFormatException{
-	    if (umask.equals(USER_DEFAULT_UMASK)){
+	  // TODO: This Method needs to be worked out
+	  @Override
+	  public void setUmask(String umask) throws InvalidPermissionsFormatException{
+	    if (umask.equals(USER_DEFAULT_UMASK) || 1==1){
 	      super.setUmask(umask);
 	    } else {
 	      throw new InvalidPermissionsFormatException(umask + " you're setting in user " + getUsername() + " mask");
