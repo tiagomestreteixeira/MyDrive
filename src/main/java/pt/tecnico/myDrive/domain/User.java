@@ -87,14 +87,13 @@ public class User extends User_Base {
 	    }
 	  }
 
-	  // TODO: This Method needs to be worked out
 	  @Override
 	  public void setUmask(String umask) throws InvalidPermissionsFormatException{
-	    if (umask.equals(USER_DEFAULT_UMASK) || 1==1){
-	      super.setUmask(umask);
-	    } else {
-	      throw new InvalidPermissionsFormatException(umask + " you're setting in user " + getUsername() + " mask");
-	    }
+		  if (umask.matches("(r|-)(w|-)(x|-)(d|-)(r|-)(w|-)(x|-)(d|-)")){
+	      	super.setUmask(umask);
+	    	} else {
+	      	throw new InvalidPermissionsFormatException(umask + " you're setting in user " + getUsername() + " mask");
+		  }
 	  }
 
 	  public void remove(){
