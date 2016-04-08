@@ -116,13 +116,7 @@ public class File extends File_Base {
 
     @Override
     public void setDir(Dir directory) {
-        Dir d = getDir();
-        if (d != null) {
-            for (File f : d.getFileSet())
-                if (f.getName().equals(this.getName()))
-                    throw new FileAlreadyExistsException(this.getName());
-        }
-        super.setDir(directory);
+        directory.addFile(this);
     }
 
     @Override
