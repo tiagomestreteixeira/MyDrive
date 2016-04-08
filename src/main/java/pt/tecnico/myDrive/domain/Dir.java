@@ -17,29 +17,29 @@ public class Dir extends Dir_Base {
 
 		return rootDir;
 	}
-	
+
     public Dir(){
 		super();
     }
-	
+
 	public Dir(String name, User user, Dir directory, String permissions){
 		super();
 		init(name, user, directory, permissions);
 	}
-	
+
 	@Override
 	public void addFile(File fileToBeAdded) throws FileAlreadyExistsException {
 		if(hasFile(fileToBeAdded.getName()))
 			throw new FileAlreadyExistsException(fileToBeAdded.getName());
-		
+
 		super.addFile(fileToBeAdded);
 	}
-	
+
 	@Override
 	public void removeFile(File fileToBeRemoved) throws FileDoesNotExistException {
 		if(!hasFile(fileToBeRemoved.getName()))
 			throw new FileDoesNotExistException(fileToBeRemoved.getName());
-		
+
 		super.removeFile(fileToBeRemoved);
 	}
 
@@ -47,7 +47,7 @@ public class Dir extends Dir_Base {
 		for(File file : getFileSet())
 			System.out.println(file.getFormatedName());
 	}
-	
+
 	@Override
 	public File getFileByName(User user, String name){
 		if (user.checkPermission(this, 'x')) {
@@ -59,7 +59,7 @@ public class Dir extends Dir_Base {
 			throw new NoPermissionException("getFileByName");
 		}
 	}
-	
+
 	public boolean hasFile(String fileName){
 		for(File file : getFileSet())
 			if(file.getName().equals(fileName))
@@ -76,10 +76,9 @@ public class Dir extends Dir_Base {
 
 	@Override
 	public void remove() throws MyDriveException {
-		for (User u : getUserSet())
-			u.removeFile(this);
-		for (Dir d : getDirSet())
-			d.removeFile(this);
+
+		getUser().removeFile(this);
+		getDir().removeFile(this);
 		getFileSet().forEach(File::remove);
 		if (getHomeOwner() != null){
 			//Do not allow?

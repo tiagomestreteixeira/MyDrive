@@ -31,7 +31,7 @@ public class File extends File_Base {
         setOwner(user);
         setName(name);
         setPermissions(permissions);
-        addDir(directory);
+        setDir(directory);
         setLastModification(new DateTime());
 
     }
@@ -80,10 +80,7 @@ public class File extends File_Base {
     }
 
     public Dir getDirectory(){
-        for (Dir d : getDirSet()) {
-            return d;
-        }
-        return null;
+        return getDir();
     }
 
     public File getFileByName(User u, String s) throws InvalidFileTypeException{
@@ -91,10 +88,7 @@ public class File extends File_Base {
     }
 
     public User getFileOwner() {
-        for (User u : getUserSet()) {
-            return u;
-        }
-        return null;
+        return getUser();
     }
 
     public String getPath(){
@@ -113,22 +107,22 @@ public class File extends File_Base {
     }
 
     public boolean isOwner(User user) {
-        for (User u : getUserSet()) {
-            if (u.equals(user)) {
-                return true;
+        User u = getUser();
+        if (u.equals(user)) {
+            return true;
             }
-        }
         return false;
     }
 
     @Override
-    public void addDir(Dir directory) {
-        for (Dir d : getDirSet()) {
+    public void setDir(Dir directory) {
+        Dir d = getDir();
+        if (d != null) {
             for (File f : d.getFileSet())
                 if (f.getName().equals(this.getName()))
-                        throw new FileAlreadyExistsException(this.getName());
+                    throw new FileAlreadyExistsException(this.getName());
         }
-        super.addDir(directory);
+        super.setDir(directory);
     }
 
     @Override
@@ -153,26 +147,27 @@ public class File extends File_Base {
     }
 
     @Override
-    public void addUser(User user) {
+    public void setUser(User user) {
        throw new NoPermissionException("addUser");
     }
 
     public void setOwner(User user) {
-        for (User u : getUserSet())
+        User u = getUser();
+        if (u != null) {
             u.removeFile(this);
+        }
 
         if (user == null) {
-            super.addUser(SuperUser.getInstance());
+            super.setUser(SuperUser.getInstance());
             return;
         }
         user.addFile(this);
     }
 
     public void remove() {
-        for (User u : getUserSet())
-            u.removeFile(this);
-        for (Dir d : getDirSet())
-            d.removeFile(this);
+        User u = getUser();
+        u.removeFile(this);
+        getDir().removeFile(this);
         deleteDomainObject();
     }
 

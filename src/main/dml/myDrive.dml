@@ -80,7 +80,7 @@ relation UserContainsFiles
 {
   User playsRole user
   {
-    multiplicity *;
+    multiplicity 0..1;
   }
   File playsRole file 
   {
@@ -92,7 +92,7 @@ relation DirectoryContainsFiles
 {
   Dir playsRole dir
   {
-    multiplicity *;
+    multiplicity 0..1;
   }
   File playsRole file
   {
