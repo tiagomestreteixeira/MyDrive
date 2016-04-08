@@ -20,6 +20,10 @@ public class MyDrive extends MyDrive_Base {
 		// TODO: Create basic structure
         setRoot(FenixFramework.getDomainRoot());
         super.setIdCounter(0);
+        SuperUser root = SuperUser.getInstance();
+        Dir rootDir = new Dir();
+        rootDir.init("/", root, rootDir, root.getUmask());
+        root.setHomeDir(root.makeDir("/home/root"));
     }
 
     public void cleanup() {
@@ -31,10 +35,19 @@ public class MyDrive extends MyDrive_Base {
     public static MyDrive getInstance() {
         MyDrive md = FenixFramework.getDomainRoot().getMyDrive();
 
-        if (md != null)
+        if (md != null) {
             return md;
+        }
 
         return new MyDrive();
+    }
+
+    public SuperUser getSuperUser() {
+        return SuperUser.getInstance();
+    }
+
+    public Dir getRootDir() {
+        return Dir.getRootDir();
     }
 
     public User getUserByUsername(String username) {
