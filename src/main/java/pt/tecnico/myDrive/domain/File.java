@@ -13,6 +13,8 @@ import pt.tecnico.myDrive.exception.*;
 
 public class File extends File_Base {
 
+    private static final int MAX_PATH_LENGTH = 1024;
+
     protected File() { /* for derived classes */ }
 
     static final Logger log = LogManager.getRootLogger();
@@ -26,7 +28,7 @@ public class File extends File_Base {
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
-
+        checkPathLengthConstrain(directory,name);
         setId(MyDrive.getInstance().getNewId());
         setOwner(user);
         setName(name);
@@ -242,5 +244,16 @@ public class File extends File_Base {
         el.addContent(lastModifiedDateElement);
 
         return el;
+    }
+
+
+    public void checkPathLengthConstrain(Dir directory, String fileName) throws FilePathTooLongException {
+        String pathName = directory.getName();
+
+        if(pathName==null)
+            return;
+
+        if((pathName.length() + fileName.length() + 1)> MAX_PATH_LENGTH)
+            throw new FilePathTooLongException(pathName,fileName);
     }
 }
