@@ -28,13 +28,14 @@ public class File extends File_Base {
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
-        checkPathLengthConstrain(directory,name);
+
         setId(MyDrive.getInstance().getNewId());
         setOwner(user);
         setName(name);
         setPermissions(permissions);
         setDir(directory);
         setLastModification(new DateTime());
+        checkPathLengthConstrain(directory,name);
 
     }
 
@@ -248,12 +249,9 @@ public class File extends File_Base {
 
 
     public void checkPathLengthConstrain(Dir directory, String fileName) throws FilePathTooLongException {
-        String pathName = directory.getName();
+        String path = directory.getPath();
 
-        if(pathName==null)
-            return;
-
-        if((pathName.length() + fileName.length() + 1)> MAX_PATH_LENGTH)
-            throw new FilePathTooLongException(pathName,fileName);
+        if((path.length() + fileName.length() + 1)> MAX_PATH_LENGTH)
+            throw new FilePathTooLongException(path,fileName);
     }
 }
