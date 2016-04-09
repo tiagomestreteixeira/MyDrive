@@ -16,7 +16,7 @@ public class InvalidUsernameException extends MyDriveException {
 
     @Override
     public String getMessage() {
-        return "Usernames cannot be empty or contain " +
+        return "Usernames length cannot be less than 3 characters or contain " +
                 "non-alphanumeric characters." + "Invalid username: " + username + errorMessage;
     }
 }

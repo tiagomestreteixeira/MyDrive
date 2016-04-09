@@ -8,6 +8,7 @@ public class ImportDocumentException extends MyDriveException {
     public ImportDocumentException() {
         super("Error importing from XML");
     }
+
     public ImportDocumentException(String domainElement, String msg) {
         super("Error in importing " + domainElement + " from XML : " + msg);
     }
