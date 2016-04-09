@@ -10,6 +10,7 @@ public class User extends User_Base {
 
     static final Logger log = LogManager.getRootLogger();
 	private static final String USER_DEFAULT_UMASK = "rwxd----";
+	private static final int USERNAME_MIN_LENGTH = 3;
 
     public User() {
         super();
@@ -28,7 +29,7 @@ public class User extends User_Base {
 		xmlImport(md,username, xml);
 	}
 
-	public void init(MyDrive md, String username, String name, String umask, String password,String homePath){
+	protected void init(MyDrive md, String username, String name, String umask, String password,String homePath){
 		setUsername(username);
 		setName(name);
 		setPassword(password);
@@ -76,8 +77,9 @@ public class User extends User_Base {
 	  @Override
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 
-	    if (username == null || username == ""){
-	      throw new InvalidUsernameException(username, "is empty");
+	    if (username == null || username.length()<USERNAME_MIN_LENGTH){
+	      throw new InvalidUsernameException(username, " : username has fewer than "
+				  										 + Integer.toString(USERNAME_MIN_LENGTH));
 	    }
 	    /*if (username.equals("root")){
 	      throw new UserAlreadyExistsException(username);
@@ -198,7 +200,7 @@ public class User extends User_Base {
     public void xmlImport(MyDrive md, String username, Element userElement) throws ImportDocumentException {
 
         String defaultHome = "/home/" + username;
-        String defaultMask = "rwxd----";
+        String defaultMask = USER_DEFAULT_UMASK;
         String defaultName = username;
         String defaultPassword = username;
 
@@ -238,4 +240,5 @@ public class User extends User_Base {
 
 		return userNode;
 	}
+
 }
