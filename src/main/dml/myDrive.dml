@@ -47,7 +47,7 @@ class Session;
 
 class LoginToken
 {
-    String identifier;
+    Long identifier;
     DateTime loginDate;
 }
 

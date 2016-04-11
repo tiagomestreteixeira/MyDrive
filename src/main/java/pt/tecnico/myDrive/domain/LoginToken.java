@@ -1,6 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
 import org.joda.time.DateTime;
+
+import java.math.BigInteger;
+
 import java.util.Random;
 
 import pt.tecnico.myDrive.domain.User;
@@ -9,29 +12,33 @@ public class LoginToken extends LoginToken_Base {
     
     public LoginToken(User user) {
         super();
+        
+        Long tokenId = new BigInteger(64, new Random()).longValue();
+        
         this.setUser(user);
         this.setLoginDate(new DateTime());
         if (user.getUsername().equals("root")){
-     	   this.setIdentifier(user.getUsername());
+     	   this.setIdentifier(tokenId);
         }
         else{
-     	   int r = (new Random().nextInt(10));
-     	   this.setIdentifier(user.getUsername()+r);
+     	   this.setIdentifier(tokenId);
         }
     }
     
-    public LoginToken(User user, int old) {
+    public LoginToken(User user, long oldToken) {
         super();
+        
+        Long tokenId = new BigInteger(64, new Random()).longValue();
+        
         this.setUser(user);
         this.setLoginDate(new DateTime());
         if (user.getUsername().equals("root")){
-     	   this.setIdentifier(user.getUsername());
+     	   this.setIdentifier(tokenId);
         }
         else{
         	while(true){
-        		int r = (new Random().nextInt(10));
-        		if (r != old){
-        			this.setIdentifier(user.getUsername()+r);
+        		if (tokenId != oldToken){
+        			this.setIdentifier(tokenId);
         			break;
         		}
         	}
@@ -43,12 +50,13 @@ public class LoginToken extends LoginToken_Base {
     		this.setLoginDate(new DateTime());
     	}
     	else{	
-	    	int r = (new Random().nextInt(9));
-	    	if (this.getIdentifier().equals(this.getUser().getUsername()+r)){ //gerou mesmo random
+    		Long tokenId = new BigInteger(64, new Random()).longValue();
+    		
+	    	if (this.getIdentifier().equals(tokenId)){ //gerou mesmo random
 	    		this.refreshToken();
 	    	}
 	    	else{
-	    		this.setIdentifier(this.getUser().getUsername()+r);
+	    		this.setIdentifier(tokenId);
 	        	this.setLoginDate(new DateTime());
 	    	}
     	}	

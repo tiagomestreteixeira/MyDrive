@@ -25,9 +25,9 @@ public class Session extends Session_Base {
     
     public void maintenance(){
     	if (this.hasOnlineUsers()){
-    		for (LoginToken tok : getTokensSet()){
-    			if (!tok.isDateValid(new DateTime())){
-    				this.removeUserFromSession(tok.getIdentifier());
+    		for (LoginToken token : getTokensSet()){
+    			if (!token.isDateValid(new DateTime())){
+    				this.removeUserFromSession(token.getIdentifier());
     			}
     				
     		}
@@ -35,9 +35,9 @@ public class Session extends Session_Base {
     }
     
     
-    public boolean isRootToken(String tok){
+    public boolean isRootToken(String token){
     	for(User u : this.getMydrive().getUserSet()){
-    		if(u.getUsername().equals("root") && u.getLogintoken().getIdentifier().equals(tok)){
+    		if(u.getUsername().equals("root") && u.getLogintoken().getIdentifier().equals(token)){
     				return true;
     			}
     		}
@@ -46,8 +46,8 @@ public class Session extends Session_Base {
     
     public boolean hasUsernameInSession(String username){
     	if(this.hasOnlineUsers()){
-    		for(LoginToken tok: this.getTokensSet()){
-    			if(tok.getUser().getUsername().equals(username)){
+    		for(LoginToken token: this.getTokensSet()){
+    			if(token.getUser().getUsername().equals(username)){
     				return true;
     			}
     		}
@@ -56,7 +56,7 @@ public class Session extends Session_Base {
     	return false;
     }
     
-    public boolean isOnline(String token){
+    public boolean isOnline(Long token){
     	if(this.hasOnlineUsers()){
     		for(LoginToken t : this.getTokensSet()){
     			if(t.getIdentifier().equals(token)){
@@ -72,55 +72,55 @@ public class Session extends Session_Base {
     	if (users.isEmpty()){
     		return null;
     	}
-    	for (LoginToken tk: users){
-    		if (tk.getUser().getUsername().equals(username))
-    			return tk;
+    	for (LoginToken t: users){
+    		if (t.getUser().getUsername().equals(username))
+    			return t;
     	}
     	return null;
     }
     
-    public String addUsertoSession(String username) throws UserDoesNotExistException{
-    	User u = this.getMydrive().getUserByUsername(username);
-    	if(u!=null){
-    		LoginToken tok = new LoginToken(u);
-    		this.addTokens(tok);
-    		return tok.getIdentifier();
+    public Long addUsertoSession(String username) throws UserDoesNotExistException{
+    	User user = this.getMydrive().getUserByUsername(username);
+    	if(user != null){
+    		LoginToken token = new LoginToken(user);
+    		this.addTokens(token);
+    		return token.getIdentifier();
     	}
     	else{
     		throw new UserDoesNotExistException(username);
     	}
     }
     
-    public String addUsertoSession(String username,String old) throws UserDoesNotExistException{
-    	User u = this.getMydrive().getUserByUsername(username);
-    	if(u!=null){
-    		Integer randomOld = Integer.parseInt(old.substring(old.length()-1)); 
-    		LoginToken tok = new LoginToken(u,randomOld);
-    		this.addTokens(tok);
-    		return tok.getIdentifier();
+    public Long addUsertoSession(String username, Long oldToken) throws UserDoesNotExistException{
+    	User user = this.getMydrive().getUserByUsername(username);
+    	if(user != null){
+    		//Integer oldRandom = Integer.parseInt(oldToken.substring(oldToken.length()-1)); 
+    		LoginToken token = new LoginToken(user, oldToken);
+    		this.addTokens(token);
+    		return token.getIdentifier();
     	}
     	else{
     		throw new UserDoesNotExistException(username);
     	}
     }
     
-    public void removeUserFromSession(String usertoken){
+    public void removeUserFromSession(Long userToken){
     	if(this.hasOnlineUsers()){
-    		if(this.isOnline(usertoken)){
-    			for(LoginToken tok : this.getTokensSet()){
-    				if(tok.getIdentifier().equals(usertoken)){
-    					this.removeTokens(tok);
+    		if(this.isOnline(userToken)){
+    			for(LoginToken token : this.getTokensSet()){
+    				if(token.getIdentifier().equals(userToken)){
+    					this.removeTokens(token);
     				}
     			}
     		}
     	}	
     }
     
-    public User getUserFromSession(String usertoken){
+    public User getUserFromSession(String userToken){
     	if(this.hasOnlineUsers()){
-    		for(LoginToken tok: this.getTokensSet()){
-    			if(tok.getIdentifier().equals(usertoken)){
-    				return tok.getUser();
+    		for(LoginToken token: this.getTokensSet()){
+    			if(token.getIdentifier().equals(userToken)){
+    				return token.getUser();
     			}
     		}
     	}
