@@ -16,6 +16,12 @@ public class App extends App_Base {
 
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
+        this.setContent("main");
+    }
+
+    public App(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
+        init(name, user, directory, permissions);
+        this.setContent(content);
     }
 
     public App(Element node){
