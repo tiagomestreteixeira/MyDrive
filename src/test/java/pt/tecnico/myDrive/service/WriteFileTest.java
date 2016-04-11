@@ -4,6 +4,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.DirHaveNoContentException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -13,7 +14,7 @@ public class WriteFileTest extends AbstractServiceTest {
     private String name = "joao";
     private User userObject;
     private MyDrive md;
-
+    private SuperUser root = MyDriveService.getMyDrive().getSuperUser();
     private String testPlainFileName = "testPlainFile";
 
     private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
@@ -23,9 +24,6 @@ public class WriteFileTest extends AbstractServiceTest {
         md = MyDriveService.getMyDrive();
         userObject = new User(md, name);
 
-        new Dir("DirSetContent",userObject,userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
-
-        new PlainFile("testEmptyPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
         new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
 
         new Link("testLinkFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS,"contentOfLink");
@@ -44,9 +42,20 @@ public class WriteFileTest extends AbstractServiceTest {
 
     }
 
+    @Test
+    public void writeEmptyFile() {
+
+        new PlainFile("testEmptyPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
+
+        WriteFileService service = new WriteFileService(login, "testEmptyPlainFile","ReplaceText");
+        service.execute();
+
+        PlainFile pf = (PlainFile) userObject.lookup(userObject.getHomeDir().getPath()+testPlainFileName);
+        assertEquals("Content was not written to file", "ReplaceTex", pf.getContent());
+    }
 
     @Test
-    public void basicWrite() {
+    public void writeBasic() {
 
         WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceText");
         service.execute();
@@ -57,7 +66,7 @@ public class WriteFileTest extends AbstractServiceTest {
 
 
     @Test
-    public void doubleWrite() {
+    public void writeDouble() {
 
         WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceTextOne");
         service.execute();
@@ -71,34 +80,45 @@ public class WriteFileTest extends AbstractServiceTest {
 
 
     @Test(expected = DirHaveNoContentException.class)
-    public void dirWrite() {
+    public void writeDir() {
 
+        new Dir("DirSetContent",userObject,userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
         WriteFileService service = new WriteFileService(login, "DirSetContent","Content to Write on a Dir-File");
         service.execute();
 
     }
 
-    //@Test
-    //public void ReadBlankContent() {
-        //final String filename = "testFile";
-        //ReadFileService service = new ReadFileService(login, "test");
-        //service.execute();
-        //String result = service.result();
+    @Test(expected = NoPermissionException.class)
+    public void writeNotOwnerNoPermission() throws Exception {
 
-        // check basic read
-        //assertEquals("Content does not match", "", result);
-    //}
+        PlainFile rootPlainFile =
+                new PlainFile("plainfile", root, userObject.getHomeDir(), "rwxd----");
+        rootPlainFile.setContent("CreatedFile");
 
-	/*@Test
-	public void ReadNoPermissions() {
-		final String filename = "testFile";
-		ReadFileService service = new ReadFileService(login, "test");
-		service.execute();
-		String result = service.result();
+        WriteFileService service = new WriteFileService(login, "plainfile","Anything");
+        service.execute();
+    }
 
-		// check basic read
-		assertEquals("Content does not match", "", result);
-	}*/
+    @Test(expected = NoPermissionException.class)
+    public void writeIsOwnerNoPermission() throws Exception {
 
+        new PlainFile("plainfile", userObject, userObject.getHomeDir(), "----rwxd");
+
+        WriteFileService service = new WriteFileService(login, "plainfile","Anything");
+        service.execute();
+    }
+
+    @Test
+    public void writeNotOwnerHavePermission() {
+
+        PlainFile pf =
+                new PlainFile("testFileNotOwner", root, userObject.getHomeDir(), "rwxdrwxd");
+
+        pf.setContent("Content Of File\n NotBeing The Owner");
+        WriteFileService service = new WriteFileService(login, "testFileNotOwner","I\nCan\nChange");
+        service.execute();
+
+        assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
+    }
 
 }
