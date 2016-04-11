@@ -1,5 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -10,6 +13,8 @@ import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 
 public class Session extends Session_Base {
     
+	static final Logger log = LogManager.getRootLogger();
+	
     public Session() {
         super();
     }
@@ -35,12 +40,13 @@ public class Session extends Session_Base {
     }
     
     
-    public boolean isRootToken(String token){
-    	for(User u : this.getMydrive().getUserSet()){
-    		if(u.getUsername().equals("root") && u.getLogintoken().getIdentifier().equals(token)){
+    public boolean isRootToken(Long token){
+    	for(User user : this.getMydrive().getUserSet()){
+    		if(user.getUsername().equals("root") && user.getLogintoken().getIdentifier().equals(token)){
     				return true;
     			}
     		}
+    	log.warn("Given token does not match existing root token.");
     	return false;
     }
     
@@ -64,6 +70,7 @@ public class Session extends Session_Base {
     			}
     		}
     	}
+    	log.warn("Given token does not match existing tokens.");
 		return false;
     }
     
@@ -110,6 +117,8 @@ public class Session extends Session_Base {
     			for(LoginToken token : this.getTokensSet()){
     				if(token.getIdentifier().equals(userToken)){
     					this.removeTokens(token);
+    				}else{
+    					log.warn("Given token does not match any existing token.");
     				}
     			}
     		}
@@ -121,6 +130,8 @@ public class Session extends Session_Base {
     		for(LoginToken token: this.getTokensSet()){
     			if(token.getIdentifier().equals(userToken)){
     				return token.getUser();
+    			}else{
+    				log.warn("Given token does not match any existing token.");
     			}
     		}
     	}
