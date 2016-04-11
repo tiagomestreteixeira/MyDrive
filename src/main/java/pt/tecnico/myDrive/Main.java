@@ -41,6 +41,11 @@ public class Main {
     }
 
     @Atomic
+    public static void cleanup() {
+        MyDrive.getInstance().cleanup();
+    }
+
+    @Atomic
     private static void end() {
         SuperUser root = SuperUser.getInstance();
         Dir homeDir = (Dir) root.getFileByName("home");
