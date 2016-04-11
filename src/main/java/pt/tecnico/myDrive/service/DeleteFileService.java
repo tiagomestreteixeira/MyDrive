@@ -1,7 +1,19 @@
 package pt.tecnico.myDrive.service;
 
-/**
- * Created by tiagoteixeira on 11/04/16.
- */
-public class DeleteFileService {
+import pt.tecnico.myDrive.exception.MyDriveException;
+
+public class DeleteFileService extends MyDriveService {
+
+    public DeleteFileService(long token, String filename) {
+
+    }
+
+    @Override
+    protected void dispatch() throws MyDriveException {
+
+    }
+
+    public String result() {
+        return null;
+    }
 }
