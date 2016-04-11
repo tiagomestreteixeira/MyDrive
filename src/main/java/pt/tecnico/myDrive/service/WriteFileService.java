@@ -3,7 +3,7 @@ package pt.tecnico.myDrive.service;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class WriteFileService extends MyDriveService {
-    public WriteFileService(long token, String filename) {
+    public WriteFileService(long token, String filename,String content) {
 
     }
 
