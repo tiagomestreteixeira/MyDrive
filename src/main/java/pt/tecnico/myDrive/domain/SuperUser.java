@@ -20,7 +20,8 @@ public class SuperUser extends SuperUser_Base {
         return root;
     }
 
-    public boolean checkPermission(File file) {
+    @Override
+    public boolean checkPermission(File file, Character c) {
         return true;
     }
 
