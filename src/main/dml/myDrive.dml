@@ -43,10 +43,12 @@ class App extends PlainFile
 {
 }
 
-class Login
+class Session;
+
+class LoginToken
 {
-    long token;
-    DateTime lastAccess;
+    String identifier;
+    DateTime loginDate;
 }
 
 relation DomainRootHasMyDriveApplication 
@@ -106,40 +108,38 @@ relation DirectoryContainsFiles
   }
 }
 
-relation LoginBelongsToUser
-{
-   Login playsRole login
-   {
-     multiplicity *;
-   }
-   User playsRole user
-   {
-     multiplicity 0..1;
-   }
+
+relation UserHasToken{
+	LoginToken playsRole logintoken
+	{
+		multiplicity 0..1;
+	}
+	User playsRole user
+	{
+		multiplicity 0..1;
+	}
 }
 
-relation MyDriveContainsLogin
-{
-   Login playsRole login
-   {
-     multiplicity *;
-   }
-   MyDrive playsRole myDrive
-   {
-     multiplicity 0..1;
-   }
+relation SessionHasTokens{
+	Session playsRole session
+	{
+		multiplicity 0..1;
+	}
+	LoginToken playsRole tokens
+	{
+		multiplicity *;
+	}
 }
 
-relation LoginHasCurrentDirectory
-{
-   Login playsRole login
-   {
-     multiplicity 0..1;
-   }
-   Dir playsRole currentDir
-   {
-     multiplicity 0..1;
-   }
+relation MyDriveHasSession{
+	MyDrive playsRole mydrive
+	{
+		multiplicity 0..1;
+	}
+	Session playsRole session
+	{
+		multiplicity 0..1;
+	}
 }
 
 

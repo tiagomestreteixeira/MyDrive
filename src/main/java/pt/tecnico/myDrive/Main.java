@@ -64,7 +64,7 @@ public class Main {
         Dir rootDir = Dir.getRootDir();
 
         // TODO: Change to use User File creation
-        Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
+        //Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
 
         // Create README file
         PlainFile readme = new PlainFile();
@@ -72,7 +72,7 @@ public class Main {
         readme.setOwner(root);
         readme.setId(md.getNewId());
         readme.setPermissions("rwxdr-x-");
-        readme.setDir(homeDir);
+        readme.setDir(rootDir);
         readme.setContent("lista de utilizadores");
 
         Dir binDir = root.makeDir("/usr/local/bin");
