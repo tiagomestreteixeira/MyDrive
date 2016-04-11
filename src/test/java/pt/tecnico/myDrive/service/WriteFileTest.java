@@ -2,79 +2,86 @@ package pt.tecnico.myDrive.service;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.DirHaveNoContentException;
+import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 
 import static junit.framework.TestCase.assertEquals;
 
 public class WriteFileTest extends AbstractServiceTest {
 
-    private long token;
-    private String name;
-    private User userClass;
+    private long login;
+    private String name = "joao";
+    private User userObject;
     private MyDrive md;
+
+    private String testPlainFileName = "testPlainFile";
 
     private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
 
     protected void populate() {
 
-        name = "Joana";
-        LoginUserService loginUserService = new LoginUserService(name, name);
-        token = loginUserService.result();
         md = MyDriveService.getMyDrive();
-        userClass = new User(md, name);
+        userObject = new User(md, name);
 
-        new PlainFile("testEmptyPlainFile", userClass, userClass.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
-        new PlainFile("testPlainFileWithOneLineContent",
-                userClass, userClass.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentTestFileOfOneLine");
-        new PlainFile("testPlainFileWithMultiLineContent",
-                userClass, userClass.getHomeDir(), USER_DEFAULT_PERMISSIONS,
-                "contentTestFileOfMultiLine\nLine1\nLine2\nLine4");
+        new Dir("DirSetContent",userObject,userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
 
-        new App("testApp",userClass,userClass.getHomeDir(),USER_DEFAULT_PERMISSIONS);
+        new PlainFile("testEmptyPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
+        new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
 
+        new Link("testLinkFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS,"contentOfLink");
+        new App("testAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS).setContent("contentOfApp");
 
+        LoginUserService loginUserService = new LoginUserService(name, name);
+        login = loginUserService.result();
 
-        MyDriveService.getUser("");
+    }
+
+    @Test(expected = FileDoesNotExistException.class)
+    public void writeNonExistingFile() throws Exception {
+
+        WriteFileService service = new WriteFileService(login, "filenameUnexisting","Content to Write on Non-Existing File");
+        service.execute();
+
     }
 
 
     @Test
     public void basicWrite() {
-        String filename = "testFile";
-        userClass.getFileByName(filename).write(userClass,"abc");
 
-        WriteFileTest service = new WriteFileTest(token, "testFile");
+        WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceText");
         service.execute();
-        String result = service.result();
 
-        // check basic read
-        assertEquals("Content does not match", "abc", result);
+        PlainFile pf = (PlainFile) userObject.lookup(userObject.getHomeDir().getPath()+testPlainFileName);
+        assertEquals("Content was not written to file", "ReplaceTex", pf.getContent());
     }
 
-    /*@Test
-    public void linkRead() {
 
+    @Test
+    public void doubleWrite() {
 
-        String linkContent = userClass.getHomeDir().getFileByName(userClass,"testfile").getPath();
-        String filename = "testLink";
-
-
-
-        new Link(filename, userClass, userClass.getHomeDir(),"rwxd----", linkContent);
-
-
-        ReadFileService service = new ReadFileService(token, "testLink");
+        WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceTextOne");
         service.execute();
-        String result = service.result();
 
-        // check link read
-        assertEquals("Content does not match", userClass.getHomeDir().getFileByName(userClass,"testfile").read(userClass), result);
+        service = new WriteFileService(login, testPlainFileName,"ReplaceTextTwo");
+        service.execute();
 
-    }*/
+        PlainFile pf = (PlainFile) userObject.lookup(userObject.getHomeDir().getPath()+testPlainFileName);
+        assertEquals("Content was not written to file", "ReplaceTextTwo", pf.getContent());
+    }
+
+
+    @Test(expected = DirHaveNoContentException.class)
+    public void dirWrite() {
+
+        WriteFileService service = new WriteFileService(login, "DirSetContent","Content to Write on a Dir-File");
+        service.execute();
+
+    }
 
     //@Test
     //public void ReadBlankContent() {
         //final String filename = "testFile";
-        //ReadFileService service = new ReadFileService(token, "test");
+        //ReadFileService service = new ReadFileService(login, "test");
         //service.execute();
         //String result = service.result();
 
@@ -85,7 +92,7 @@ public class WriteFileTest extends AbstractServiceTest {
 	/*@Test
 	public void ReadNoPermissions() {
 		final String filename = "testFile";
-		ReadFileService service = new ReadFileService(token, "test");
+		ReadFileService service = new ReadFileService(login, "test");
 		service.execute();
 		String result = service.result();
 
