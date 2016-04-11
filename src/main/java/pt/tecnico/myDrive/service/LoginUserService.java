@@ -14,7 +14,7 @@ public class LoginUserService extends MyDriveService {
 
 	}
 
-	public Long result() {
-		return null;
+	public long result() {
+		return 0;
 	}
 }
