@@ -1,7 +1,20 @@
 package pt.tecnico.myDrive.service;
 
-/**
- * Created by andre on 11-04-2016.
- */
-public class LoginUserService {
+
+import pt.tecnico.myDrive.exception.MyDriveException;
+
+public class LoginUserService extends MyDriveService {
+	public LoginUserService(String username, String Password) {
+
+
+	}
+
+	@Override
+	protected void dispatch() throws MyDriveException {
+
+	}
+
+	public Long result() {
+		return null;
+	}
 }
