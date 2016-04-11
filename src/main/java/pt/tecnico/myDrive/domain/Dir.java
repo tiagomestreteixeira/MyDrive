@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import com.sun.org.apache.bcel.internal.generic.NOP;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
@@ -25,6 +26,17 @@ public class Dir extends Dir_Base {
 	public Dir(String name, User user, Dir directory, String permissions){
 		super();
 		init(name, user, directory, permissions);
+	}
+
+	@Override
+	public void delete(User user) throws MyDriveException {
+		if (getPath().equals("/") || getPath().equals("/home"))
+			throw new FileCanNotBeRemovedException(getPath());
+
+		if (user.checkPermission(this, 'd'))
+			this.remove();
+		else
+			throw new NoPermissionException("delete");
 	}
 
 	@Override
@@ -76,10 +88,6 @@ public class Dir extends Dir_Base {
 
 	@Override
 	public void remove() throws MyDriveException {
-
-		if (getPath().equals("/") || getPath().equals("/home"))
-			throw new FileCanNotBeRemovedException(getPath());
-
 		getUser().removeFile(this);
 		getDir().removeFile(this);
 		getFileSet().forEach(File::remove);

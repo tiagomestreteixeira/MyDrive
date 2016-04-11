@@ -21,7 +21,7 @@ public abstract class AbstractServiceTest {
     @BeforeClass // run once berfore each test class
     public static void setUpBeforeAll() throws Exception {
         // run tests with a clean database!!!
-        MyDrive.getInstance().cleanup();
+        Main.cleanup();
     }
 
     @Before // run before each test

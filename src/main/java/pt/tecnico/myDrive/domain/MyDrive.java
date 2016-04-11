@@ -27,9 +27,10 @@ public class MyDrive extends MyDrive_Base {
     }
 
     public void cleanup() {
-        super.setIdCounter(0);
         for(User u : getUserSet())
             u.remove();
+        setRoot(null);
+        deleteDomainObject();
     }
 
     public static MyDrive getInstance() {
