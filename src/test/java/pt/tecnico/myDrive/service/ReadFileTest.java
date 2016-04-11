@@ -6,74 +6,121 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class ReadFileTest extends AbstractServiceTest {
 
-	private long token;
-	private String user;
-	private User userClass;
+	private long login;
+	private String user, rootUser;
+	private User userObject;
+	private SuperUser root;
+
 	private MyDrive md;
 
 	protected void populate() {
 
 		user = "Joao";
+		rootUser = "root";
 		LoginUserService loginUserService = new LoginUserService(user, user);
-		token = loginUserService.result();
+		login = loginUserService.result();
 		md = MyDriveService.getMyDrive();
-		userClass = new User(md, user);
-		new PlainFile("testFile", userClass, userClass.getHomeDir(), "rwxd----");
+		userObject = new User(md, user);
+		root = MyDriveService.getMyDrive().getSuperUser();
+		new PlainFile("testFile", userObject, userObject.getHomeDir(), "rwxd----", "abc");
 
 	}
 	@Test
 	public void basicRead() {
-		final String filename = "testFile";
-		userClass.getFileByName(filename).write(userClass,"abc");
 
-		ReadFileService service = new ReadFileService(token, "testFile");
+		final String filename = "testFile";
+
+		ReadFileService service = new ReadFileService(login, filename);
 		service.execute();
 		String result = service.result();
 
-		// check basic read
 		assertEquals("Content does not match", "abc", result);
 	}
 
 	@Test
 	public void linkRead() {
-		String linkContent = userClass.getHomeDir().getFileByName(userClass,"testfile").getPath();
-		String filename = "testLink";
 
-		new Link(filename, userClass, userClass.getHomeDir(),"rwxd----", linkContent);
+		final String filename = "testLink";
+		final String linkContent = userObject.getHomeDir().getFileByName(userObject,"testFile").getPath();
 
-		ReadFileService service = new ReadFileService(token, "testLink");
+		new Link(filename, userObject, userObject.getHomeDir(),"rwxd----", linkContent);
+
+		ReadFileService service = new ReadFileService(login, "testLink");
 		service.execute();
 		String result = service.result();
 
-		// check link read
-		assertEquals("Content does not match", userClass.getHomeDir().getFileByName(userClass,"testfile").read(userClass), result);
+		assertEquals("Content does not match", userObject.getHomeDir().getFileByName(userObject,"testFile").read(userObject), result);
 	}
 
 	@Test
 	public void ReadBlankContent() {
-		final String filename = "testFile";
-		ReadFileService service = new ReadFileService(token, "test");
+
+		final String filename = "testFileBlank";
+
+		new PlainFile(filename, userObject, userObject.getHomeDir(), "rwxd----");
+
+		ReadFileService service = new ReadFileService(login, filename);
 		service.execute();
 		String result = service.result();
 
-		// check basic read
 		assertEquals("Content does not match", "", result);
 	}
 
-	/*@Test
-	public void ReadNoPermissions() {
-		final String filename = "testFile";
-		ReadFileService service = new ReadFileService(token, "test");
+	@Test
+	public void ReadNotOwner() {
+
+		final String filename = "testFileNoPermissions";
+
+		new PlainFile("testFileNoPermissions", root, userObject.getHomeDir(), "----rwxd");
+
+		ReadFileService service = new ReadFileService(login, filename);
 		service.execute();
 		String result = service.result();
 
-		// check basic read
-		assertEquals("Content does not match", "", result);
-	}*/
+		assertEquals("Content does not match", "abc", result);
+	}
 
+	@Test (expected = NoPermissionException.class)
+	public void ReadNoPermissionsOwner() {
+
+		new PlainFile("testFileNoPermissions", userObject, userObject.getHomeDir(), "----rwxd");
+
+		final String filename = "testFileNoPermissions";
+		ReadFileService service = new ReadFileService(login, filename);
+		service.execute();
+	}
+
+	@Test (expected = NoPermissionException.class)
+	public void ReadNoPermissionsNotOwner() {
+
+		new PlainFile("testFileNoPermissions", root, userObject.getHomeDir(), "rwxd----");
+
+		final String filename = "testFileNoPermissions";
+		ReadFileService service = new ReadFileService(login, filename);
+		service.execute();
+	}
+
+	@Test
+	public void ReadOverWrittenContent() {
+
+		final String filename = "testFile";
+		ReadFileService service = new ReadFileService(login, filename);
+		service.execute();
+		String result = service.result();
+
+		assertEquals("Content does not match", "abc", result);
+		userObject.getHomeDir().getFileByName(userObject, filename).write(userObject, "qqq");
+
+		service = new ReadFileService(login, filename);
+		service.execute();
+		result = service.result();
+
+		assertEquals("Content does not match", "qqq", result);
+	}
 
 }
 
