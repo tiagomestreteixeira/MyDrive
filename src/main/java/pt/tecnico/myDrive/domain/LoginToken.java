@@ -13,6 +13,8 @@ import pt.tecnico.myDrive.domain.User;
 
 public class LoginToken extends LoginToken_Base {
     
+	static final Logger log = LogManager.getRootLogger();
+	
     public LoginToken(User user) {
         super();
         
