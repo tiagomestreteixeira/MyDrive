@@ -58,7 +58,7 @@ public class ReadFileTest extends AbstractServiceTest {
 	@Test
 	public void ReadNotOwner() {
 		final String filename = "testFileNoPermissions";
-		new PlainFile("testFileNoPermissions", root, userObject.getHomeDir(), "----rwxd");
+		new PlainFile("testFileNoPermissions", root, userObject.getHomeDir(), "----rwxd", "abc");
 		ReadFileService service = new ReadFileService(login, filename);
 		service.execute();
 		String result = service.result();
