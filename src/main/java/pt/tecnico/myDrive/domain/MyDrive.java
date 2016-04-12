@@ -4,12 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.joda.time.DateTime;
+
 import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
 
 import java.util.Set;
 
@@ -102,6 +105,85 @@ public class MyDrive extends MyDrive_Base {
         return id;
     }
 
+    @Override
+    public void addLogins(Login login){
+    	if(loginExists(login)){
+    		log.warn("Login already exists with this token.");
+    	}
+    	super.addLogins(login);
+    }
+    
+    @Override
+    public void removeLogins(Login login){
+    	if(loginExists(login)){
+    		super.removeLogins(login);
+    	}
+    	log.warn("No login matches this token.");
+    }
+    
+    @Override
+    public Set<Login> getLoginsSet(){
+    	//TODO: Permissions?
+    	return super.getLoginsSet();
+    }
+    
+    public boolean loginExists(Login login){
+    	for(Login l : getLoginsSet()){
+    		if(l.getIdentifier().equals(login.getIdentifier())){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public boolean hasSessions(){
+    	Set<Login> sessions = getLoginsSet();
+    	if(sessions.isEmpty()){
+    		return false;
+    	}
+    	return true;
+    }
+    
+    public Long createLogin(String username, String password){
+    	User user = this.getUserByUsername(username);
+    	if (user != null && password.equals(user.getPassword())){
+    		Login login = new Login(user);
+    		this.addLogins(login);
+    		return login.getIdentifier();
+    	}
+    	throw new UserPasswordDoesNotMatchException(username);
+    }
+    
+    public Long createLogin(String username, String password, Long oldLogin){
+    	User user = this.getUserByUsername(username);
+    	if (user != null && password.equals(user.getPassword())){
+    		Login login = new Login(user, oldLogin);
+    		this.addLogins(login);
+    		return login.getIdentifier();
+    	}
+    	throw new UserPasswordDoesNotMatchException(username);
+    }
+    
+    public void removeLogin(Long login){
+    	if(this.hasSessions()){
+    		for(Login session : this.getLoginsSet()){
+    			if(session.getIdentifier().equals(login)){
+    				this.removeLogins(session);
+    			}
+    		}
+    	}
+    }
+    
+    public void loginMaintenance(){
+    	if(this.hasSessions()){
+    		for(Login session : this.getLoginsSet()){
+    			if(!session.isDateValid(new DateTime())){
+    				this.removeLogin(session.getIdentifier());
+    			}
+    		}
+    	}
+    }
+    
     public void xmlImport(Element element) throws ImportDocumentException {
 
         for (Element node: element.getChildren("user")) {
