@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
@@ -122,7 +123,7 @@ public class MyDrive extends MyDrive_Base {
     }
     
     @Override
-    public Set<Login> getLoginsSet(){
+    public Set<Login> getLoginsSet() throws MyDriveException{
     	throw new NoPermissionException("getLoginsSet");
     }
     
@@ -143,7 +144,9 @@ public class MyDrive extends MyDrive_Base {
     	return true;
     }
     
-    public Long createLogin(String username, String password){
+    public long createLogin(String username, String password){
+    	loginMaintenance();
+    	
     	User user = this.getUserByUsername(username);
     	if (user != null && password.equals(user.getPassword())){
     		Login login = new Login(user);
@@ -153,7 +156,9 @@ public class MyDrive extends MyDrive_Base {
     	throw new UserPasswordDoesNotMatchException(username);
     }
     
-    public Long createLogin(String username, String password, Long oldLogin){
+    public long createLogin(String username, String password, long oldLogin){
+    	loginMaintenance();
+    	
     	User user = this.getUserByUsername(username);
     	if (user != null && password.equals(user.getPassword())){
     		Login login = new Login(user, oldLogin);
@@ -163,11 +168,12 @@ public class MyDrive extends MyDrive_Base {
     	throw new UserPasswordDoesNotMatchException(username);
     }
     
-    private void removeLogin(Long login){
+    private void removeLogin(long login){
     	if(this.hasSessions()){
     		for(Login session : super.getLoginsSet()){
     			if(session.getIdentifier().equals(login)){
     				this.removeLogins(session);
+    				session.delete();
     			}
     		}
     	}
@@ -181,6 +187,17 @@ public class MyDrive extends MyDrive_Base {
     			}
     		}
     	}
+    }
+    
+    public Login getLoginFromId(long identifier) throws MyDriveException{
+    	if(this.hasSessions()){
+    		for(Login l : super.getLoginsSet()){
+    			if(l.getIdentifier().equals(identifier)){
+    				return l;
+    			}
+    		}
+    	}
+    	throw new InvalidLoginTokenException(identifier);
     }
     
     public void xmlImport(Element element) throws ImportDocumentException {
