@@ -49,6 +49,12 @@ class Login
     DateTime loginDate;
 }
 
+class EnvVariables
+{
+	String name;
+	String value;
+}
+
 relation DomainRootHasMyDriveApplication 
 {
   .pt.ist.fenixframework.DomainRoot playsRole root 
@@ -104,6 +110,17 @@ relation DirectoryContainsFiles
   {
     multiplicity *;
   }
+}
+
+relation LoginHasEnvironmentVariables{
+	Login playsRole login
+	{
+		multiplicity 0..1;
+	}
+	EnvVariables playsRole envVar
+	{
+		multiplicity *;
+	}
 }
 
 relation LoginHasCurrentDir{
