@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class ReadFileTest extends AbstractServiceTest {
@@ -120,6 +121,13 @@ public class ReadFileTest extends AbstractServiceTest {
 		result = service.result();
 
 		assertEquals("Content does not match", "qqq", result);
+	}
+
+	@Test(expected = FileDoesNotExistException.class)
+	public void ReadNonExistentFile() {
+		final String filename = "nullFile";
+		ReadFileService service = new ReadFileService(login, filename);
+		service.execute();
 	}
 
 }
