@@ -47,11 +47,11 @@ public class Main {
 
     @Atomic
     private static void end() {
-        SuperUser root = SuperUser.getInstance();
+        /*SuperUser root = SuperUser.getInstance();
         Dir homeDir = (Dir) root.getFileByName("home");
 
         homeDir.getFileByName(root, "README").remove();
-        homeDir.listFileSet();
+        homeDir.listFileSet();*/
     }
 
     @Atomic
@@ -60,6 +60,7 @@ public class Main {
 
         SuperUser root = SuperUser.getInstance();
 
+        md.createLogin("root", "***");
         // TODO: Change to use User File creation
         Dir rootDir = Dir.getRootDir();
 

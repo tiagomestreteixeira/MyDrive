@@ -25,9 +25,6 @@ public class Login extends Login_Base {
         if (user.getUsername().equals("root")){
      	   this.setIdentifier(tokenId);
         }
-        else{
-     	   this.setIdentifier(tokenId);
-        }
     }
     
     public Login(User user, long oldToken) {
@@ -42,6 +39,7 @@ public class Login extends Login_Base {
         }
         else{
         	while(true){
+        		tokenId = new BigInteger(64, new Random()).longValue();
         		if (tokenId != oldToken){
         			this.setIdentifier(tokenId);
         			break;
@@ -78,6 +76,12 @@ public class Login extends Login_Base {
     public void delete(){
     	this.setUser(null);
     	this.setCurrentDir(null);
+    	
+    	for(EnvVariables env : super.getEnvVarSet()){
+	    	super.removeEnvVar(env);
+	    	//env.delete();
+	    }
+    	
     	deleteDomainObject();
     }
 }

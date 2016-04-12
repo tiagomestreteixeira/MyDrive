@@ -123,12 +123,11 @@ public class MyDrive extends MyDrive_Base {
     
     @Override
     public Set<Login> getLoginsSet(){
-    	//TODO: Permissions?
-    	return super.getLoginsSet();
+    	throw new NoPermissionException("getLoginsSet");
     }
     
-    public boolean loginExists(Login login){
-    	for(Login l : getLoginsSet()){
+    private boolean loginExists(Login login){
+    	for(Login l : super.getLoginsSet()){
     		if(l.getIdentifier().equals(login.getIdentifier())){
     			return true;
     		}
@@ -136,8 +135,8 @@ public class MyDrive extends MyDrive_Base {
     	return false;
     }
     
-    public boolean hasSessions(){
-    	Set<Login> sessions = getLoginsSet();
+    private boolean hasSessions(){
+    	Set<Login> sessions = super.getLoginsSet();
     	if(sessions.isEmpty()){
     		return false;
     	}
@@ -164,9 +163,9 @@ public class MyDrive extends MyDrive_Base {
     	throw new UserPasswordDoesNotMatchException(username);
     }
     
-    public void removeLogin(Long login){
+    private void removeLogin(Long login){
     	if(this.hasSessions()){
-    		for(Login session : this.getLoginsSet()){
+    		for(Login session : super.getLoginsSet()){
     			if(session.getIdentifier().equals(login)){
     				this.removeLogins(session);
     			}
@@ -174,9 +173,9 @@ public class MyDrive extends MyDrive_Base {
     	}
     }
     
-    public void loginMaintenance(){
+    private void loginMaintenance(){
     	if(this.hasSessions()){
-    		for(Login session : this.getLoginsSet()){
+    		for(Login session : super.getLoginsSet()){
     			if(!session.isDateValid(new DateTime())){
     				this.removeLogin(session.getIdentifier());
     			}
