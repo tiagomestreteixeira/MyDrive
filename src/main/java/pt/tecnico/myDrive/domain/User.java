@@ -104,14 +104,12 @@ public class User extends User_Base {
 		    for(File f: getFileSet()){
 		      f.remove();
 		    }
-		    
 		    setMyDrive(null);
 		    
 		    for(Login l : this.getLoginsSet()){
 		    	this.removeLogins(l);
 		    	l.delete();
 		    }
-		    
 		    deleteDomainObject();
 		  }
 

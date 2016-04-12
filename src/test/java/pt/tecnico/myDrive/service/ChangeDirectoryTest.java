@@ -29,7 +29,6 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		Dir l1 = new Dir("level1", userObject, userObject.getHomeDir(), userObject.getUmask());
 		Dir l2 = new Dir("level2", userObject, l1, userObject.getUmask());
 		l3 = new Dir("level3", userObject, l2, userObject.getUmask());
-		log.info(l3.getPath());
 	}
 
 	@Test
@@ -38,8 +37,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		String result = service.result();
-		log.info(md.getLoginFromId(login).getCurrentDir().getPath());
-		assertEquals("Service did not execute properly", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
 		assertEquals("Returned path does not match", pathname, result);
 	}
 
@@ -56,50 +54,54 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 
 	@Test
 	public void changeDirCurrentPathWithOther() {
-		final String pathname = "/home/Andre/level1/level2";
+		String pathname = "/home/Andre/level1/level2";
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		service = new ChangeDirectoryService(login, "././././level3");
 		service.execute();
 		String result = service.result();
-		//Check that current Pathname is updated in domain in the current login session.
-		assertEquals("Returned path does not match", "/home/Andre/level1/level2/level3", result);
+		pathname = "/home/Andre/level1/level2/level3";
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Returned path does not match", pathname, result);
 	}
 
 	@Test
 	public void changeDirParentPath() {
-		final String pathname = "/home/Andre/level1/level2";
+		String pathname = "/home/Andre/level1/level2";
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		service = new ChangeDirectoryService(login, "..");
 		service.execute();
 		String result = service.result();
-		//Check that current Pathname is updated in domain in the current login session.
-		assertEquals("Returned path does not match", "/home/Andre/level1", result);
+		pathname = "/home/Andre/level1";
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Returned path does not match", pathname, result);
 	}
 
 	@Test
 	public void changeDirRelativePath() {
-		final String pathname = "/home/Andre/level1/level2";
+		String pathname = "/home/Andre/level1/level2";
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		service = new ChangeDirectoryService(login, "level3");
 		service.execute();
 		String result = service.result();
-		//Check that current Pathname is updated in domain in the current login session.
-		assertEquals("Returned path does not match", "/home/Andre/level1/level2/level3", result);
+		pathname = "/home/Andre/level1/level2/level3";
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Returned path does not match", pathname, result);
 	}
 
 	@Test
 	public void changeDirParentPathMultiple() {
-		final String pathname = "/home/Andre/level1/level2/level3";
+		String pathname = "/home/Andre/level1/level2/level3";
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		service = new ChangeDirectoryService(login, "../../../../../../../..");
 		service.execute();
 		String result = service.result();
-		//Check that current Pathname is updated in domain in the current login session.
-		assertEquals("Returned path does not match", "/", result);
+		pathname = "/";
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Returned path does not match", pathname, result);
 	}
 
 	@Test(expected = FileDoesNotExistException.class)
@@ -124,7 +126,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		String result = service.result();
-		//Check that current Pathname is updated in domain in the current login session.
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
 		assertEquals("Returned path does not match", pathname, result);
 	}
 

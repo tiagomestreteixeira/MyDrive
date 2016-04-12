@@ -98,7 +98,6 @@ public class File extends File_Base {
         String path = "";
         File f = this;
         while (!f.getName().equals("/")){
-            log.debug(f.getName());
             path = "/"+f.getName()+path;
             f = f.getDirectory();
         }
