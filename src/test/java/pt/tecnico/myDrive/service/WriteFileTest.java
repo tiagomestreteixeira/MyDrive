@@ -23,6 +23,7 @@ public class WriteFileTest extends AbstractServiceTest {
 
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
+
         userObject = new User(md, name);
 
         new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
@@ -37,7 +38,6 @@ public class WriteFileTest extends AbstractServiceTest {
 
     @Test(expected = FileDoesNotExistException.class)
     public void writeNonExistingFile() throws Exception {
-
         WriteFileService service = new WriteFileService(login, "filenameUnexisting","Content to Write on Non-Existing File");
         service.execute();
 
@@ -45,22 +45,17 @@ public class WriteFileTest extends AbstractServiceTest {
 
     @Test
     public void writeEmptyFile() {
-
         new PlainFile("testEmptyPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
-
         WriteFileService service = new WriteFileService(login, "testEmptyPlainFile","ReplaceText");
         service.execute();
-
         PlainFile pf = (PlainFile) userObject.getHomeDir().getFileByName(userObject,testPlainFileName);
         assertEquals("Content was not written to file", "ReplaceTex", pf.getContent());
     }
 
     @Test
     public void writeBasic() {
-
         WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceText");
         service.execute();
-
         PlainFile pf = (PlainFile) userObject.getHomeDir().getFileByName(userObject,testPlainFileName);
         assertEquals("Content was not written to file", "ReplaceTex", pf.getContent());
     }
@@ -68,13 +63,10 @@ public class WriteFileTest extends AbstractServiceTest {
 
     @Test
     public void writeDouble() {
-
         WriteFileService service = new WriteFileService(login, testPlainFileName,"ReplaceTextOne");
         service.execute();
-
         service = new WriteFileService(login, testPlainFileName,"ReplaceTextTwo");
         service.execute();
-
         PlainFile pf = (PlainFile) userObject.getHomeDir().getFileByName(userObject,testPlainFileName);
         assertEquals("Content was not written to file", "ReplaceTextTwo", pf.getContent());
     }
@@ -82,7 +74,6 @@ public class WriteFileTest extends AbstractServiceTest {
 
     @Test(expected = DirHaveNoContentException.class)
     public void writeDir() {
-
         new Dir("DirSetContent",userObject,userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
         WriteFileService service = new WriteFileService(login, "DirSetContent","Content to Write on a Dir-File");
         service.execute();
@@ -91,20 +82,15 @@ public class WriteFileTest extends AbstractServiceTest {
 
     @Test(expected = NoPermissionException.class)
     public void writeNotOwnerNoPermission() throws Exception {
-
-        PlainFile rootPlainFile =
-                new PlainFile("plainfile", root, userObject.getHomeDir(), "rwxd----");
+        PlainFile rootPlainFile = new PlainFile("plainfile", root, userObject.getHomeDir(), "rwxd----");
         rootPlainFile.setContent("CreatedFile");
-
         WriteFileService service = new WriteFileService(login, "plainfile","Anything");
         service.execute();
     }
 
     @Test(expected = NoPermissionException.class)
     public void writeIsOwnerNoPermission() throws Exception {
-
         new PlainFile("plainfile", userObject, userObject.getHomeDir(), "----rwxd");
-
         WriteFileService service = new WriteFileService(login, "plainfile","Anything");
         service.execute();
     }
@@ -112,13 +98,10 @@ public class WriteFileTest extends AbstractServiceTest {
     @Test
     public void writeNotOwnerHavePermission() {
 
-        PlainFile pf =
-                new PlainFile("testFileNotOwner", root, userObject.getHomeDir(), "rwxdrwxd");
-
+        PlainFile pf = new PlainFile("testFileNotOwner", root, userObject.getHomeDir(), "rwxdrwxd");
         pf.setContent("Content Of File\n NotBeing The Owner");
         WriteFileService service = new WriteFileService(login, "testFileNotOwner","I\nCan\nChange");
         service.execute();
-
         assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
     }
 

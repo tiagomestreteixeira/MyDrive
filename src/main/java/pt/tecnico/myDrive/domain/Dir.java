@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.domain;
 
-import com.sun.org.apache.bcel.internal.generic.NOP;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
