@@ -21,10 +21,8 @@ public class ReadFileTest extends AbstractServiceTest {
 		user = "Joao";
 		userObject = new User(md, user);
 		root = MyDriveService.getMyDrive().getSuperUser();
-		LoginUserService loginUserService = new LoginUserService(user, user);
-		login = loginUserService.result();
+		login = md.createLogin(user,user);
 		new PlainFile("testFile", userObject, userObject.getHomeDir(), userObject.getUmask(), "abc");
-
 	}
 
 	@Test
