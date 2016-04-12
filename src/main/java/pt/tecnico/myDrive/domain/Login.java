@@ -22,9 +22,8 @@ public class Login extends Login_Base {
         
         this.setUser(user);
         this.setLoginDate(new DateTime());
-        if (user.getUsername().equals("root")){
-     	   this.setIdentifier(tokenId);
-        }
+     	this.setIdentifier(tokenId);
+     	this.setCurrentDir(user.getHomeDir());
     }
     
     public Login(User user, long oldToken) {
@@ -49,13 +48,9 @@ public class Login extends Login_Base {
      }
     
     public void refreshToken(){
-    	if(this.getIdentifier().equals("root")){
-    		this.setLoginDate(new DateTime());
-    	}
-    	else{	
     		Long tokenId = new BigInteger(64, new Random()).longValue();
     		
-	    	if (this.getIdentifier().equals(tokenId)){
+	    	if (this.getIdentifier() == tokenId){
 	    		this.refreshToken();
 	    	}
 	    	else{
@@ -63,7 +58,6 @@ public class Login extends Login_Base {
 	        	this.setLoginDate(new DateTime());
 	    	}
     	}	
-    }
     
     public boolean isDateValid(DateTime data){
     	double hours = (data.getMillis() - this.getLoginDate().getMillis()) /1000/60/60;

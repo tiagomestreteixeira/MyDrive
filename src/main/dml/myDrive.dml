@@ -45,7 +45,7 @@ class App extends PlainFile
 
 class Login
 {
-    Long identifier;
+    long identifier;
     DateTime loginDate;
 }
 

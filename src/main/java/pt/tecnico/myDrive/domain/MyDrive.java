@@ -129,7 +129,7 @@ public class MyDrive extends MyDrive_Base {
     
     private boolean loginExists(Login login){
     	for(Login l : super.getLoginsSet()){
-    		if(l.getIdentifier().equals(login.getIdentifier())){
+    		if((l.getIdentifier()) == (login.getIdentifier())){
     			return true;
     		}
     	}
@@ -171,7 +171,7 @@ public class MyDrive extends MyDrive_Base {
     private void removeLogin(long login){
     	if(this.hasSessions()){
     		for(Login session : super.getLoginsSet()){
-    			if(session.getIdentifier().equals(login)){
+    			if(session.getIdentifier() == login){
     				this.removeLogins(session);
     				session.delete();
     			}
@@ -192,7 +192,7 @@ public class MyDrive extends MyDrive_Base {
     public Login getLoginFromId(long identifier) throws MyDriveException{
     	if(this.hasSessions()){
     		for(Login l : super.getLoginsSet()){
-    			if(l.getIdentifier().equals(identifier)){
+    			if(l.getIdentifier() == identifier){
     				return l;
     			}
     		}

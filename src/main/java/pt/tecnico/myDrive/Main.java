@@ -61,6 +61,11 @@ public class Main {
         SuperUser root = SuperUser.getInstance();
 
         md.createLogin("root", "***");
+        
+        User u = new User(md,"joao");
+        long token = md.createLogin("joao","joao");
+        //Login session = md.getLoginFromId(token);
+        //log.info(session.getCurrentDir().getPath());
         // TODO: Change to use User File creation
         Dir rootDir = Dir.getRootDir();
 
