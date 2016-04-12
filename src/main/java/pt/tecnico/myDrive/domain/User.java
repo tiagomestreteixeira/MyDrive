@@ -101,12 +101,19 @@ public class User extends User_Base {
 	  }
 
 	  public void remove(){
-	    for(File f: getFileSet()){
-	      f.remove();
-	    }
-	    setMyDrive(null);
-	    deleteDomainObject();
-	  }
+		    for(File f: getFileSet()){
+		      f.remove();
+		    }
+		    
+		    setMyDrive(null);
+		    
+		    for(Login l : this.getLoginsSet()){
+		    	this.removeLogins(l);
+		    	l.delete();
+		    }
+		    
+		    deleteDomainObject();
+		  }
 
     @Override
     public void setMyDrive(MyDrive md) {

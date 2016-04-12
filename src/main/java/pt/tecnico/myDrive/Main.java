@@ -47,11 +47,11 @@ public class Main {
 
     @Atomic
     private static void end() {
-        SuperUser root = SuperUser.getInstance();
+        /*SuperUser root = SuperUser.getInstance();
         Dir homeDir = (Dir) root.getFileByName("home");
 
         homeDir.getFileByName(root, "README").remove();
-        homeDir.listFileSet();
+        homeDir.listFileSet();*/
     }
 
     @Atomic
@@ -60,11 +60,17 @@ public class Main {
 
         SuperUser root = SuperUser.getInstance();
 
+        md.createLogin("root", "***");
+        
+        User u = new User(md,"joao");
+        long token = md.createLogin("joao","joao");
+        //Login session = md.getLoginFromId(token);
+        //log.info(session.getCurrentDir().getPath());
         // TODO: Change to use User File creation
         Dir rootDir = Dir.getRootDir();
 
         // TODO: Change to use User File creation
-        Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
+        //Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
 
         // Create README file
         PlainFile readme = new PlainFile();
@@ -72,7 +78,7 @@ public class Main {
         readme.setOwner(root);
         readme.setId(md.getNewId());
         readme.setPermissions("rwxdr-x-");
-        readme.setDir(homeDir);
+        readme.setDir(rootDir);
         readme.setContent("lista de utilizadores");
 
         Dir binDir = root.makeDir("/usr/local/bin");

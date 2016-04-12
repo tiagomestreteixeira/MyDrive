@@ -45,8 +45,14 @@ class App extends PlainFile
 
 class Login
 {
-    long token;
-    DateTime lastAccess;
+    long identifier;
+    DateTime loginDate;
+}
+
+class EnvVariables
+{
+	String name;
+	String value;
 }
 
 relation DomainRootHasMyDriveApplication 
@@ -106,40 +112,48 @@ relation DirectoryContainsFiles
   }
 }
 
-relation LoginBelongsToUser
-{
-   Login playsRole login
-   {
-     multiplicity *;
-   }
-   User playsRole user
-   {
-     multiplicity 0..1;
-   }
+relation LoginHasEnvironmentVariables{
+	Login playsRole login
+	{
+		multiplicity 0..1;
+	}
+	EnvVariables playsRole envVar
+	{
+		multiplicity *;
+	}
 }
 
-relation MyDriveContainsLogin
-{
-   Login playsRole login
-   {
-     multiplicity *;
-   }
-   MyDrive playsRole myDrive
-   {
-     multiplicity 0..1;
-   }
+relation LoginHasCurrentDir{
+	Login playsRole login
+	{
+		multiplicity 0..1;
+	}
+	Dir playsRole currentDir
+	{
+		multiplicity 0..1;
+	}
 }
 
-relation LoginHasCurrentDirectory
-{
-   Login playsRole login
-   {
-     multiplicity 0..1;
-   }
-   Dir playsRole currentDir
-   {
-     multiplicity 0..1;
-   }
+relation UserHasLogins{
+	Login playsRole logins
+	{
+		multiplicity *;
+	}
+	User playsRole user
+	{
+		multiplicity 0..1;
+	}
+}
+
+relation MyDriveHasLogins{
+	MyDrive playsRole mydrive
+	{
+		multiplicity 0..1;
+	}
+	Login playsRole logins
+	{
+		multiplicity *;
+	}
 }
 
 
