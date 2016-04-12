@@ -20,9 +20,6 @@ public class MyDrive extends MyDrive_Base {
 		// TODO: Create basic structure
         setRoot(FenixFramework.getDomainRoot());
         super.setIdCounter(0);
-        
-        setSession(new Session());
-        
         SuperUser root = SuperUser.getInstance();
         Dir rootDir = new Dir();
         rootDir.init("/", root, rootDir, root.getUmask());
