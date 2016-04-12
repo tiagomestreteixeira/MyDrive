@@ -18,7 +18,7 @@ import pt.tecnico.myDrive.domain.MyDrive;
 public abstract class AbstractServiceTest {
     protected static final Logger log = LogManager.getRootLogger();
 
-    @BeforeClass // run once berfore each test class
+    @BeforeClass // run once before each test class
     public static void setUpBeforeAll() throws Exception {
         // run tests with a clean database!!!
         Main.cleanup();
