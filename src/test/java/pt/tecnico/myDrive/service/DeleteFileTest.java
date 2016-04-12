@@ -18,7 +18,8 @@ public class DeleteFileTest extends AbstractServiceTest {
 
 	@Override
 	protected void populate() {
-		u = new User(MyDriveService.getMyDrive(), "Ivan");
+		MyDrive md = MyDriveService.getMyDrive();
+		u = new User(md, "Ivan");
 		Dir home = u.getHomeDir();
 
 		new PlainFile("test", u, home, u.getUmask());
@@ -27,9 +28,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 		Dir subDir = new Dir("subDir", u, dir, u.getUmask());
 		new PlainFile("test", u, subDir, u.getUmask());
 
-		LoginUserService service = new LoginUserService("Ivan", "Ivan");
-		service.execute();
-		login = service.result();
+		login = md.createLogin(u.getUsername(), u.getPassword());
 	}
 
 	@Test
