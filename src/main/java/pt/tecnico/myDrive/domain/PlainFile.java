@@ -19,6 +19,7 @@ public class PlainFile extends PlainFile_Base {
 
     public PlainFile(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
+        setContent("");
     }
 
     public PlainFile(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
