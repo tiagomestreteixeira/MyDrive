@@ -1,9 +1,10 @@
 package pt.tecnico.myDrive.domain;
 
-import pt.tecnico.myDrive.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
+import pt.tecnico.myDrive.exception.*;
+
 import java.util.Stack;
 
 public class User extends User_Base {
@@ -38,7 +39,7 @@ public class User extends User_Base {
 		setHome(homePath);
 		md.addUser(this);
 	}
-	
+
 	public File createFile(String name, User user, Dir directory, String permissions){
 		  File file= new File(name,user,directory,permissions);
 		  return file;
@@ -105,7 +106,7 @@ public class User extends User_Base {
 		      f.remove();
 		    }
 		    setMyDrive(null);
-		    
+
 		    for(Login l : this.getLoginsSet()){
 		    	this.removeLogins(l);
 		    	l.delete();
@@ -193,10 +194,11 @@ public class User extends User_Base {
 		while (!st.empty()) {
 				String temp = st.pop();
 				Dir d = (Dir)file;
-				file = file.getFileByName(this,temp);
-				if (file == null) {
-					file = new Dir(temp,this,d,this.getUmask());
-				}
+			try {
+				file = file.getFileByName(this, temp);
+			} catch (FileDoesNotExistException e) {
+				file = new Dir(temp,this,d,this.getUmask());
+			}
 
 		}
 		return (Dir)file;

@@ -3,6 +3,8 @@ package pt.tecnico.myDrive.domain;
 import org.jdom2.Element;
 import pt.tecnico.myDrive.exception.*;
 
+import java.io.FileNotFoundException;
+
 public class Dir extends Dir_Base {
 
 	public static Dir getRootDir() {
@@ -65,7 +67,7 @@ public class Dir extends Dir_Base {
 			for(File file : getFileSet())
 				if(file.getName().equals(name))
 					return file;
-			return null;
+			throw new FileDoesNotExistException(name);
 		} else {
 			throw new NoPermissionException("getFileByName");
 		}
