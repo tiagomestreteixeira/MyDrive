@@ -8,15 +8,35 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.domain.MyDrive;
-import pt.tecnico.myDrive.domain.User;
-import pt.tecnico.myDrive.domain.Dir;
+import pt.tecnico.myDrive.domain.*;
+
 
 public class LoginUserTest extends AbstractServiceTest{
 
+	private MyDrive md;
+	private SuperUser root;
+	private User user;
+	private long loginId;
+	
+	private static final String USER =  "testUser"; //Password is = user name
+	private static final String USERPW = "testUserPW";
+	private static final String WRONGPW = "testUserWrongPW";
+	private static final String UNKNOWNUSER = "unknownTestUser";
+	
+	
 	@Override
 	protected void populate() {
-		// TODO Auto-generated method stub
+        md = MyDriveService.getMyDrive();
+        root = md.getSuperUser();
+        user = new User(md, USER);	
+	}
+	
+	@Test
+	public void success(){
+		LoginUserService service = new LoginUserService(USER, USERPW);
+		service.execute();
+		loginId = service.result();
+		
 		
 	}
 
