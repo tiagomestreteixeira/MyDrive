@@ -47,6 +47,8 @@ public class LoginUserTest extends AbstractServiceTest{
 		LoginUserService service = new LoginUserService(USER, USERPW);
 		service.execute();
 		loginId1 = service.result();
+		
+		service.execute();
 		loginId2 = service.result();
 		
 		assertEquals(user, md.getUserFromLoginId(loginId1));
