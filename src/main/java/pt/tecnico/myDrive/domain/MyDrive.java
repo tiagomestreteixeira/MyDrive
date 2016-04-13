@@ -247,6 +247,13 @@ public class MyDrive extends MyDrive_Base {
 
     }
 
+	public boolean isTokenValid(long token){
+		if (getLoginFromId(token).isDateValid(new DateTime())){
+			return true;
+		}
+		log.warn("This login is no longer valid.");
+		return false;
+	}
 
     public Document xmlExport() {
         Element myDriveElement = new Element("myDrive");
