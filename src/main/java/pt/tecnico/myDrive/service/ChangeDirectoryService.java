@@ -6,25 +6,25 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ChangeDirectoryService extends MyDriveService {
-	private Login login;
-	private User user;
-	private Dir currentDir;
+	private long token;
 	private String pathname;
 
 	private String result;
 
 	public ChangeDirectoryService(long token, String pathname) {
-		login = getMyDrive().getLoginFromId(token);
-		user = login.getUser();
-		currentDir = login.getCurrentDir();
-		if (pathname.startsWith("/"))
-			this.pathname = pathname;
-		else
-			this.pathname = currentDir.getPath() + "/" + pathname;
+		this.token = token;
+		this.pathname = pathname;
 	}
 
 	@Override
 	protected void dispatch() throws MyDriveException {
+		Login login = getMyDrive().getLoginFromId(token);
+		User user = login.getUser();
+		Dir currentDir = login.getCurrentDir();
+		
+		if (!pathname.startsWith("/"))
+			pathname = currentDir.getPath() + "/" + pathname;
+
 		Dir d = (Dir) user.lookup(pathname);
 		login.setCurrentDir(d);
 		result = d.getPath();
