@@ -31,8 +31,7 @@ public class WriteFileTest extends AbstractServiceTest {
         new Link("testLinkFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS,"contentOfLink");
         new App("testAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS).setContent("contentOfApp");
 
-        LoginUserService loginUserService = new LoginUserService(name, name);
-        login = loginUserService.result();
+        login = md.createLogin(name,name);
 
     }
 
