@@ -6,21 +6,22 @@ import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ReadFileService extends MyDriveService {
-	private User user;
-	private Dir currentDir;
+	private long token;
 	private String filename;
 
 	private String result;
 
 	public ReadFileService(long token, String filename) {
-		Login login = getMyDrive().getLoginFromId(token);
-		user = login.getUser();
-		currentDir = login.getCurrentDir();
+		this.token = token;
 		this.filename = filename;
 	}
 
 	@Override
 	protected void dispatch() throws MyDriveException {
+		Login login = getMyDrive().getLoginFromId(token);
+		User user = login.getUser();
+		Dir currentDir = login.getCurrentDir();
+
 		result = currentDir.getFileByName(user, filename).read(user);
 	}
 
