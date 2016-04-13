@@ -5,6 +5,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.DirHaveNoContentException;
 import pt.tecnico.myDrive.exception.InvalidFileTypeCreateFileServiceException;
+import pt.tecnico.myDrive.exception.MissingArgumentsServiceException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertEquals;
@@ -18,11 +19,9 @@ public class CreateFileTest extends  AbstractServiceTest {
     private User userObject;
     private MyDrive md;
     private SuperUser root;
-    private String testPlainFileName = "testPlainFile";
 
     @Override
     protected void populate() {
-
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
         userObject = new User(md, name);
@@ -30,17 +29,27 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     }
 
-    @Test(expected = DirHaveNoContentException.class)
-    public void createFileDirWithContent() throws Exception {
-        CreateFileService service = new CreateFileService(login,"MyDirectory","Dir","ContentOfADir");
-        service.execute();
-    }
+    @Test(expected = InvalidFileTypeCreateFileServiceException.class)
+    public void createFileAlreadyExists() throws Exception{
+        new PlainFile("testCreateAlreadyExistingPlain", userObject, userObject.getHomeDir(), "rwxd----" ,"contentOflainFile");
 
+        CreateFileService service = new CreateFileService(login,"testCreateAlreadyExistingPlain","Plain","Content");
+        service.execute();
+
+    }
 
     @Test(expected = InvalidFileTypeCreateFileServiceException.class)
     public void createFileInputFileType() throws Exception{
 
         CreateFileService service = new CreateFileService(login,"MyDirectory","INVALIDFILETYPE","Content");
+        service.execute();
+
+    }
+
+    @Test(expected = DirHaveNoContentException.class)
+    public void createFileDirWithContent() throws Exception {
+
+        CreateFileService service = new CreateFileService(login,"MyDirectory","Dir","ContentOfADir");
         service.execute();
 
     }
@@ -51,23 +60,30 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir");
         service.execute();
 
-        assertNotNull("Dir File Not Created", userObject.lookup("/home/joao/MyDirectory"));
+        assertNotNull("Dir File Not Created", userObject.getHomeDir().getFileByName(userObject,"MyDirectory"));
 
+    }
+
+
+    public void plainsAppAndLinksWithAndWithoutContentProvided(PlainFile plainFile,
+                                                               String contentExpected,
+                                                               String fileType){
+        assertNotNull(fileType + " File Not Created", plainFile);
+        assertEquals("Content of " + fileType + " file should be ", contentExpected, plainFile.getContent());
     }
 
     @Test
     public void createFileCreateLinkWithContentProvided() {
 
-        CreateFileService service = new CreateFileService(login,"MyLinkFile","Link","contentlink");
+        String expectedContent = "contentlink";
+        CreateFileService service = new CreateFileService(login,"MyLinkFile","Link",expectedContent);
         service.execute();
 
-        Link linkFile = (Link) userObject.lookup("/home/joao/MyLinkFile");
-
-        assertNotNull("Link File Not Created", linkFile);
-        assertEquals("Content link should be", "contentlink", linkFile.getContent());
+        plainsAppAndLinksWithAndWithoutContentProvided(
+                (Link) userObject.getHomeDir().getFileByName(userObject,"MyLinkFile"), expectedContent, "Link");
     }
 
-    @Test(expected = )
+    @Test(expected = MissingArgumentsServiceException.class)
     public void createFileCreateLinkNoContentProvided() {
 
         CreateFileService service = new CreateFileService(login,"MyLinkFile","Link");
@@ -76,64 +92,55 @@ public class CreateFileTest extends  AbstractServiceTest {
     }
 
     @Test
+    public void createFileCreateAppWithContentProvided() {
+
+        String expectedContent = "contentapp";
+        CreateFileService service = new CreateFileService(login,"MyAppFile","App",expectedContent);
+        service.execute();
+
+        plainsAppAndLinksWithAndWithoutContentProvided(
+                (App) userObject.getHomeDir().getFileByName(userObject,"MyAppFile"), expectedContent, "App");
+    }
+
+    @Test
     public void createFileCreateAppNoContentProvided() {
 
+        String expectedContent = "";
         CreateFileService service = new CreateFileService(login,"MyAppFile","App");
         service.execute();
 
-        App appFile = (App) userObject.lookup("/home/joao/MyAppFile");
+        plainsAppAndLinksWithAndWithoutContentProvided(
+                (App) userObject.getHomeDir().getFileByName(userObject,"MyAppnFile"), expectedContent, "App");
+    }
 
-        assertNotNull("App File Not Created", appFile);
-        // TODO: What is the app default content in domain?
-        assertEquals("Content App should be", "", appFile.getContent());
+    @Test
+    public void createFileCreatePlainWithContentProvided() {
+
+        String expectedContent = "contentplain";
+        CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile",expectedContent);
+        service.execute();
+
+        plainsAppAndLinksWithAndWithoutContentProvided(
+                (PlainFile) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile"), expectedContent, "Plain");
+    }
+
+    @Test
+    public void createFileCreatePlainWithNoContentProvided() {
+
+        String expectedContent = "";
+        CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile");
+        service.execute();
+
+        plainsAppAndLinksWithAndWithoutContentProvided(
+                (PlainFile) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile")/*lookup("/home/joao/MyPlainFile")*/, expectedContent, "Plain");
     }
 
 
-    @Test
-    public void createFileCreateDirR() {
-
+    @Test(expected = NoPermissionException.class)
+    public void createFileOwnerDirectoryNoPermission() {
+        userObject.getHomeDir().setPermissions("r-xdr-xd");
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir");
         service.execute();
-
-        assertNotNull("Dir File Not Created", userObject.lookup("/home/joao/MyDirectory"));
-
-    }
-
-
-    @Test(expected = InvalidFileTypeCreateFileServiceException.class)
-    public void writeDir() {
-        new Dir("DirSetContent",userObject,userObject.getHomeDir(),);
-        WriteFileService service = new WriteFileService(login, "DirSetContent","Content to Write on a Dir-File");
-        service.execute();
-
-    }
-
-    @Test(expected = NoPermissionException.class)
-    public void createFileNotOwnerDirectoryPermission() throws Exception {
-        //PlainFile rootPlainFile = new PlainFile("plainfile", root, userObject.getHomeDir(), "rwxd----");
-        //rootPlainFile.setContent("CreatedFile");
-        //WriteFileService service = new WriteFileService(login, "plainfile","Anything");
-        //service.execute();
-
-        CreateFileService service = new CreateFileService(login,"MyPlainFile","Dir");
-        service.execute();
-    }
-
-    @Test(expected = NoPermissionException.class)
-    public void writeIsOwnerNoPermission() throws Exception {
-        new PlainFile("plainfile", userObject, userObject.getHomeDir(), "----rwxd");
-        WriteFileService service = new WriteFileService(login, "plainfile","Anything");
-        service.execute();
-    }
-
-    @Test
-    public void writeNotOwnerHavePermission() {
-
-        PlainFile pf = new PlainFile("testFileNotOwner", root, userObject.getHomeDir(), "rwxdrwxd");
-        pf.setContent("Content Of File\n NotBeing The Owner");
-        WriteFileService service = new WriteFileService(login, "testFileNotOwner","I\nCan\nChange");
-        service.execute();
-        assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
     }
 
 }

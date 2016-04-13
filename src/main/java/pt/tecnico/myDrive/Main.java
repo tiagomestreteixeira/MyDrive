@@ -84,8 +84,7 @@ public class Main {
         Dir binDir = root.makeDir("/usr/local/bin");
 
         System.out.println(readme.getContent());
-
-
+        
         binDir.remove();
         //new User(md,"");
     }
