@@ -1,15 +1,12 @@
 package pt.tecnico.myDrive.service;
 
 
+import junit.framework.Assert;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.DirHaveNoContentException;
-import pt.tecnico.myDrive.exception.InvalidFileTypeCreateFileServiceException;
-import pt.tecnico.myDrive.exception.MissingArgumentsServiceException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
+import pt.tecnico.myDrive.exception.*;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.*;
 
 
 public class CreateFileTest extends  AbstractServiceTest {
@@ -29,7 +26,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     }
 
-    @Test(expected = InvalidFileTypeCreateFileServiceException.class)
+    @Test(expected = FileAlreadyExistsException.class)
     public void createFileAlreadyExists() throws Exception{
         new PlainFile("testCreateAlreadyExistingPlain", userObject, userObject.getHomeDir(), "rwxd----" ,"contentOflainFile");
 
@@ -60,14 +57,17 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir");
         service.execute();
 
-        assertNotNull("Dir File Not Created", userObject.getHomeDir().getFileByName(userObject,"MyDirectory"));
-
+        try {
+            assertNotNull("Dir File Not Created", userObject.getHomeDir().getFileByName(userObject, "MyDirectory"));
+        }catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
 
-    public void plainsAppAndLinksWithAndWithoutContentProvided(PlainFile plainFile,
-                                                               String contentExpected,
-                                                               String fileType){
+    public void checkFileCreationAndMatchingContentCreated(PlainFile plainFile,
+                                                           String contentExpected,
+                                                           String fileType){
         assertNotNull(fileType + " File Not Created", plainFile);
         assertEquals("Content of " + fileType + " file should be ", contentExpected, plainFile.getContent());
     }
@@ -79,8 +79,13 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyLinkFile","Link",expectedContent);
         service.execute();
 
-        plainsAppAndLinksWithAndWithoutContentProvided(
-                (Link) userObject.getHomeDir().getFileByName(userObject,"MyLinkFile"), expectedContent, "Link");
+        try {
+            checkFileCreationAndMatchingContentCreated(
+                    (Link) userObject.getHomeDir().getFileByName(userObject, "MyLinkFile"), expectedContent, "Link");
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
     @Test(expected = MissingArgumentsServiceException.class)
@@ -98,8 +103,14 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyAppFile","App",expectedContent);
         service.execute();
 
-        plainsAppAndLinksWithAndWithoutContentProvided(
-                (App) userObject.getHomeDir().getFileByName(userObject,"MyAppFile"), expectedContent, "App");
+        try {
+            checkFileCreationAndMatchingContentCreated(
+                    (App) userObject.getHomeDir().getFileByName(userObject, "MyAppFile"), expectedContent, "App");
+
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
     @Test
@@ -109,8 +120,13 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyAppFile","App");
         service.execute();
 
-        plainsAppAndLinksWithAndWithoutContentProvided(
-                (App) userObject.getHomeDir().getFileByName(userObject,"MyAppnFile"), expectedContent, "App");
+        try{
+            checkFileCreationAndMatchingContentCreated(
+                (App) userObject.getHomeDir().getFileByName(userObject,"MyAppFile"), expectedContent, "App");
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
     @Test
@@ -120,8 +136,13 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile",expectedContent);
         service.execute();
 
-        plainsAppAndLinksWithAndWithoutContentProvided(
+        try{
+            checkFileCreationAndMatchingContentCreated(
                 (PlainFile) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile"), expectedContent, "Plain");
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
     @Test
@@ -131,8 +152,13 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile");
         service.execute();
 
-        plainsAppAndLinksWithAndWithoutContentProvided(
-                (PlainFile) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile")/*lookup("/home/joao/MyPlainFile")*/, expectedContent, "Plain");
+        try {
+            checkFileCreationAndMatchingContentCreated(
+                    (PlainFile) userObject.getHomeDir().getFileByName(userObject, "MyPlainFile"), expectedContent, "Plain");
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 
 
