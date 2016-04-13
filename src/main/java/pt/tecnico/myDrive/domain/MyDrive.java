@@ -13,6 +13,7 @@ import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
 
 import java.util.Set;
@@ -146,26 +147,34 @@ public class MyDrive extends MyDrive_Base {
     
     public long createLogin(String username, String password){
     	loginMaintenance();
-    	
     	User user = this.getUserByUsername(username);
-    	if (user != null && password.equals(user.getPassword())){
+     	
+    	if (user != null){
+    		if(password.equals(user.getPassword())){
     		Login login = new Login(user);
     		this.addLogins(login);
-    		return login.getIdentifier();
-    	}
-    	throw new UserPasswordDoesNotMatchException(username);
-    }
+			return login.getIdentifier();
+		}
+		throw new UserPasswordDoesNotMatchException(username);
+	}else{
+		throw new UserDoesNotExistException(username);
+	}
+}
     
     public long createLogin(String username, String password, long oldLogin){
     	loginMaintenance();
-    	
     	User user = this.getUserByUsername(username);
-    	if (user != null && password.equals(user.getPassword())){
-    		Login login = new Login(user, oldLogin);
-    		this.addLogins(login);
-    		return login.getIdentifier();
+    	
+    	if (user != null){
+    		if(password.equals(user.getPassword())){
+    			Login login = new Login(user, oldLogin);
+    			this.addLogins(login);
+    			return login.getIdentifier();
+    		}
+    		throw new UserPasswordDoesNotMatchException(username);
+    	}else{
+    		throw new UserDoesNotExistException(username);
     	}
-    	throw new UserPasswordDoesNotMatchException(username);
     }
     
     private void removeLogin(long login){
