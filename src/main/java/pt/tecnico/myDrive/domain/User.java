@@ -170,6 +170,9 @@ public class User extends User_Base {
 
 	public File lookup(String pathname) throws MyDriveException {
 
+		if (pathname == null || pathname.equals("" ))
+			throw new FileDoesNotExistException(pathname);
+		
 		File file = Dir.getRootDir();
 		Stack<String> st = toStack(pathname);
 
