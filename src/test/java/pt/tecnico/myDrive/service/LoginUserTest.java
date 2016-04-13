@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
 
 
@@ -58,6 +59,12 @@ public class LoginUserTest extends AbstractServiceTest{
 	public void LoginWrongPassword(){
 		
 		LoginUserService service = new LoginUserService(USER, WRONGPW);
+		service.execute();
+	}
+	
+	@Test (expected = UserDoesNotExistException.class)
+	public void LoginNoUser(){
+		LoginUserService service = new LoginUserService(UNKNOWNUSER, USERPW);
 		service.execute();
 	}
 }
