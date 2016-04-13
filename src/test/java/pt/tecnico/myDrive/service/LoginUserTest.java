@@ -27,7 +27,6 @@ public class LoginUserTest extends AbstractServiceTest{
 	private static final String UNKNOWNUSER = "unknownTestUser";
 	
 	
-	@Override
 	protected void populate() {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
@@ -44,7 +43,7 @@ public class LoginUserTest extends AbstractServiceTest{
 	}
 
 	@Test
-	public void success(){
+	public void LoginTwice(){
 		LoginUserService service = new LoginUserService(USER, USERPW);
 		service.execute();
 		loginId1 = service.result();
