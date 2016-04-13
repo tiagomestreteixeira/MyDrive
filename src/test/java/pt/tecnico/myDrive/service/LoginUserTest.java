@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
 
 
 public class LoginUserTest extends AbstractServiceTest{
@@ -16,7 +17,8 @@ public class LoginUserTest extends AbstractServiceTest{
 	private MyDrive md;
 	private SuperUser root;
 	private User user;
-	private long loginId;
+	private long loginId1;
+	private long loginId2;
 	
 	private static final String USER =  "testUser"; //Password is = user name
 	private static final String USERPW = "testUserPW";
@@ -35,9 +37,27 @@ public class LoginUserTest extends AbstractServiceTest{
 	public void success(){
 		LoginUserService service = new LoginUserService(USER, USERPW);
 		service.execute();
-		loginId = service.result();
+		loginId1 = service.result();
 		
-		
+		assertEquals(user, md.getUserFromLoginId(loginId1));
 	}
 
+	@Test
+	public void success(){
+		LoginUserService service = new LoginUserService(USER, USERPW);
+		service.execute();
+		loginId1 = service.result();
+		loginId2 = service.result();
+		
+		assertEquals(user, md.getUserFromLoginId(loginId1));
+		assertEquals(user, md.getUserFromLoginId(loginId2));
+		assertEquals(md.getUserFromLoginId(loginId1), md.getUserFromLoginId(loginId2));
+	}
+	
+	@Test (expected = UserPasswordDoesNotMatchException.class)
+	public void LoginWrongPassword(){
+		
+		LoginUserService service = new LoginUserService(USER, WRONGPW);
+		service.execute();
+	}
 }
