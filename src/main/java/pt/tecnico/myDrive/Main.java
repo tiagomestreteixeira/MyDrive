@@ -42,7 +42,7 @@ public class Main {
 
     @Atomic
     public static void cleanup() {
-        MyDrive.getInstance().cleanup();
+    	MyDrive.getInstance().cleanup();
     }
 
     @Atomic
@@ -60,7 +60,7 @@ public class Main {
 
         SuperUser root = SuperUser.getInstance();
 
-        md.createLogin("root", "***");
+       /* md.createLogin("root", "***");
         
         User u = new User(md,"joao");
         long token = md.createLogin("joao","joao");
@@ -86,7 +86,7 @@ public class Main {
         System.out.println(readme.getContent());
         
         binDir.remove();
-        //new User(md,"");
+        //new User(md,"");*/
     }
 
     @Atomic
