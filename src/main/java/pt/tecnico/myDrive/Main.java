@@ -57,8 +57,7 @@ public class Main {
     @Atomic
     public static void setup() {
         MyDrive md = MyDrive.getInstance();
-
-        SuperUser root = SuperUser.getInstance();
+        SuperUser root = md.getSuperUser();
 
        /* md.createLogin("root", "***");
         

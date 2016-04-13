@@ -23,17 +23,17 @@ public class File extends File_Base {
     }
 
     public File(String name, Dir directory, String permissions) throws MyDriveException {
-        init(name, SuperUser.getInstance() , directory, permissions);
+        init(name, directory.getFileOwner().getMyDrive().getSuperUser() , directory, permissions);
     }
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
 
-        setId(MyDrive.getInstance().getNewId());
-        setOwner(user, user);
+        setId(directory.getFileOwner().getMyDrive().getNewId());
+        setDir(directory);
         setName(name);
         setPermissions(permissions);
-        setDir(directory);
+        setOwner(user, user);
         setLastModification(new DateTime());
         checkPathLengthConstrain(directory,name);
 
@@ -127,7 +127,7 @@ public class File extends File_Base {
             throw new InvalidFileNameException(name);
         }
         if (name.contains("/")) {
-            if (this.isOwner(SuperUser.getInstance())) {
+            if (this.isOwner(getFileOwner().getMyDrive().getSuperUser())) {
                 super.setName(name);
             }
         }
@@ -142,23 +142,21 @@ public class File extends File_Base {
             throw new InvalidPermissionsFormatException(permissions);
     }
 
-    @Override
-    public void setUser(User user) {
-       throw new NoPermissionException("addUser");
-    }
-
 	public void setOwner(User requester, User newOwner) throws MyDriveException {
-		User u = getUser();
-		if (requester.equals(u) || requester.equals(SuperUser.getInstance())) {
-			if (u != null) {
-				u.removeFile(this);
-			}
 
+        SuperUser superUser = getDirectory().getFileOwner().getMyDrive().getSuperUser();
+		User fileOwner = getFileOwner();
+
+		if (requester.equals(fileOwner) || requester.equals(superUser) || fileOwner == null) {
 			if (newOwner == null) {
-				super.setUser(SuperUser.getInstance());
+				superUser.addFile(this);
+                this.setUser(superUser);
 				return;
 			}
-			newOwner.addFile(this);
+            if(!newOwner.hasFile(this.getPath())){
+                newOwner.addFile(this);
+                this.setUser(newOwner);
+            }
 			return;
 		}
 		throw new NoPermissionException("setOwner");
@@ -172,6 +170,8 @@ public class File extends File_Base {
     }
 
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
+
+	    MyDrive md = getFileOwner().getMyDrive();
 
         String path,
                 name,
@@ -200,17 +200,17 @@ public class File extends File_Base {
         if (ownerUsername == null)
             ownerUsername = "root";
 
-        User owner = MyDrive.getInstance().getUserByUsername(ownerUsername);
+        User owner = md.getUserByUsername(ownerUsername);
 
         if (defaultPermissions == null) {
             if (owner == null) {
-                owner = MyDrive.getInstance().getUserByUsername("root");
+                owner = md.getUserByUsername("root");
             }
         }
 
         defaultPermissions = owner.getUmask();
 
-        init(name, owner, (Dir) SuperUser.getInstance().makeDir(path), defaultPermissions);
+        init(name, owner, md.getSuperUser().makeDir(path), defaultPermissions);
     }
 
     public Element xmlExport(){

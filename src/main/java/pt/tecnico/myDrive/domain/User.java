@@ -31,13 +31,13 @@ public class User extends User_Base {
 	}
 
 	protected void init(MyDrive md, String username, String name, String umask, String password,String homePath){
+		md.addUser(this);
 		setUsername(username);
 		setName(name);
 		setPassword(password);
 		setUmask(umask);
 		setHomeDir(makeDir(homePath));
 		setHome(homePath);
-		md.addUser(this);
 	}
 
 	public File createFile(String name, User user, Dir directory, String permissions){
@@ -172,8 +172,8 @@ public class User extends User_Base {
 
 		if (pathname == null || pathname.equals("" ))
 			throw new FileDoesNotExistException(pathname);
-		
-		File file = Dir.getRootDir();
+
+		File file = this.getMyDrive().getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
@@ -191,7 +191,7 @@ public class User extends User_Base {
 
 	public Dir makeDir(String pathname){
 
-		File file = Dir.getRootDir();
+		File file = this.getMyDrive().getRootDir();
 
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
