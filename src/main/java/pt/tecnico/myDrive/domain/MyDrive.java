@@ -200,6 +200,11 @@ public class MyDrive extends MyDrive_Base {
     	throw new InvalidLoginTokenException(identifier);
     }
     
+    public User getUserFromLoginId(long identifier){
+    	User user = getLoginFromId(identifier).getUser();
+    	return user;
+    }
+    
     public void xmlImport(Element element) throws ImportDocumentException {
 
         for (Element node: element.getChildren("user")) {
