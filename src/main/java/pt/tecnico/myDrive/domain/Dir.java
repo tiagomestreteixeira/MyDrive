@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.FileNotFoundException;
@@ -44,7 +45,7 @@ public class Dir extends Dir_Base {
 	public void addFile(File fileToBeAdded) throws FileAlreadyExistsException {
 		if(hasFile(fileToBeAdded.getName()))
 			throw new FileAlreadyExistsException(fileToBeAdded.getName());
-
+		this.setLastModification(new DateTime());
 		super.addFile(fileToBeAdded);
 	}
 
@@ -52,7 +53,7 @@ public class Dir extends Dir_Base {
 	public void removeFile(File fileToBeRemoved) throws FileDoesNotExistException {
 		if(!hasFile(fileToBeRemoved.getName()))
 			throw new FileDoesNotExistException(fileToBeRemoved.getName());
-
+		this.setLastModification(new DateTime());
 		super.removeFile(fileToBeRemoved);
 	}
 
