@@ -30,7 +30,7 @@ public class File extends File_Base {
 
 
         setId(MyDrive.getInstance().getNewId());
-        setOwner(user);
+        setOwner(user, user);
         setName(name);
         setPermissions(permissions);
         setDir(directory);
@@ -147,18 +147,22 @@ public class File extends File_Base {
        throw new NoPermissionException("addUser");
     }
 
-    public void setOwner(User user) {
-        User u = getUser();
-        if (u != null) {
-            u.removeFile(this);
-        }
+	public void setOwner(User requester, User newOwner) throws MyDriveException {
+		User u = getUser();
+		if (requester.equals(u) || requester.equals(SuperUser.getInstance())) {
+			if (u != null) {
+				u.removeFile(this);
+			}
 
-        if (user == null) {
-            super.setUser(SuperUser.getInstance());
-            return;
-        }
-        user.addFile(this);
-    }
+			if (newOwner == null) {
+				super.setUser(SuperUser.getInstance());
+				return;
+			}
+			newOwner.addFile(this);
+			return;
+		}
+		throw new NoPermissionException("setOwner");
+	}
 
     public void remove() {
         User u = getUser();
