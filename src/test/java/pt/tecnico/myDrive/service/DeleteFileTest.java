@@ -23,7 +23,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 		Dir home = u.getHomeDir();
 
 		new PlainFile("test", u, home, u.getUmask());
-		new Link("link", u, home, u.getUmask(), home.getPath() + "test");
+		new Link("link", u, home, u.getUmask(), home.getPath() + "/" + "test");
 		Dir dir = new Dir("testDir", u, home, u.getUmask());
 		Dir subDir = new Dir("subDir", u, dir, u.getUmask());
 		new PlainFile("test", u, subDir, u.getUmask());
