@@ -64,6 +64,11 @@ public class Dir extends Dir_Base {
 	@Override
 	public File getFileByName(User user, String name){
 		if (user.checkPermission(this, 'x')) {
+			if (name.equals("."))
+				return this;
+			if (name.equals(".."))
+				return getDirectory();
+			
 			for(File file : getFileSet())
 				if(file.getName().equals(name))
 					return file;
