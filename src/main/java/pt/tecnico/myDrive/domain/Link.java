@@ -6,7 +6,7 @@ import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class Link extends Link_Base {
     
-    public Link() {
+    protected Link() {
     	super();
     }
 

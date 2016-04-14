@@ -11,13 +11,12 @@ import java.lang.reflect.Method;
 
 public class App extends App_Base {
 
-    public App() {
+    protected App() {
         super();
     }
 
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
-        this.setContent("main");
     }
 
     public App(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
@@ -30,24 +29,17 @@ public class App extends App_Base {
         xmlImport(node,"app","method");
     }
 
-    public String getContent(){
-        return super.getContent();
-    }
-
     @Override
     public void setContent(String method) {
+        if (method == null || method.equals("")) {
+            super.setContent("");
+            return;
+        }
+
         if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*"))
             super.setContent(method);
         else
             throw new MethodNotValidException(method);
-    }
-
-    @Override
-    public void write(User user, String methodName) {
-        if (user.checkPermission(this, 'w')) {
-            setContent(methodName);
-            this.setLastModification(new DateTime());
-        }
     }
 
     @Override

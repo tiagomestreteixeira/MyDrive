@@ -13,7 +13,7 @@ public class User extends User_Base {
 	private static final String USER_DEFAULT_UMASK = "rwxd----";
 	private static final int USERNAME_MIN_LENGTH = 3;
 
-    public User() {
+    protected User() {
         super();
     }
 
@@ -36,12 +36,9 @@ public class User extends User_Base {
 		setName(name);
 		setPassword(password);
 		setUmask(umask);
-		setHomeDir(makeDir("/home/"+username));
-	}
-
-	public File createFile(String name, User user, Dir directory, String permissions){
-		  File file= new File(name,user,directory,permissions);
-		  return file;
+		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
+		getHomeDir().setOwner(md.getSuperUser(), this);
+		getHomeDir().setPermissions(umask);
 	}
 
 	  @Override

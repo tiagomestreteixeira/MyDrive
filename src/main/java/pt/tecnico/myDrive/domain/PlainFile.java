@@ -9,7 +9,7 @@ import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class PlainFile extends PlainFile_Base {
 
-    public PlainFile() {
+    protected PlainFile() {
         super();
     }
 

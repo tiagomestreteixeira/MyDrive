@@ -4,16 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
-import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
-import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 
 public class DeleteFileTest extends AbstractServiceTest {
 	static Logger log = LogManager.getLogger();
@@ -91,12 +87,8 @@ public class DeleteFileTest extends AbstractServiceTest {
 	public void deleteWithInvalidLogin() throws Exception {
 		Login l = MyDrive.getInstance().getLoginFromId(login);
 		l.setLoginDate(new DateTime(0));
-		try {
-			DeleteFileService service = new DeleteFileService(1, "test");
-			service.execute();
-			fail("Login token should be verified before service execution.");
-		} catch (InvalidLoginTokenException e) {
-			assertNotNull("File should still exist.", u.lookup("/home/Ivan/test"));
-		}
+		DeleteFileService service = new DeleteFileService(login, "test");
+		service.execute();
+		assertNotNull("File should still exist.", u.lookup("/home/Ivan/test"));
 	}
 }

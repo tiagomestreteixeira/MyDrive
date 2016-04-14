@@ -35,7 +35,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     }
 
-    @Test(expected = InvalidFileTypeCreateFileServiceException.class)
+    @Test(expected = InvalidFileTypeException.class)
     public void createFileInputFileType() throws Exception{
 
         CreateFileService service = new CreateFileService(login,"MyDirectory","INVALIDFILETYPE","Content");
@@ -43,7 +43,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     }
 
-    @Test(expected = DirHaveNoContentException.class)
+    @Test(expected = DirCanNotHaveContentException.class)
     public void createFileDirWithContent() throws Exception {
 
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir","ContentOfADir");
@@ -88,7 +88,7 @@ public class CreateFileTest extends  AbstractServiceTest {
         }
     }
 
-    @Test(expected = MissingArgumentsServiceException.class)
+    @Test(expected = FileDoesNotExistException.class)
     public void createFileCreateLinkNoContentProvided() {
 
         CreateFileService service = new CreateFileService(login,"MyLinkFile","Link");
@@ -133,7 +133,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     public void createFileCreatePlainWithContentProvided() {
 
         String expectedContent = "contentplain";
-        CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile",expectedContent);
+        CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain",expectedContent);
         service.execute();
 
         try{
@@ -149,7 +149,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     public void createFileCreatePlainWithNoContentProvided() {
 
         String expectedContent = "";
-        CreateFileService service = new CreateFileService(login,"MyPlainFile","MyPlainFile");
+        CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
         service.execute();
 
         try {
@@ -164,7 +164,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     @Test(expected = NoPermissionException.class)
     public void createFileOwnerDirectoryNoPermission() {
-        userObject.getHomeDir().setPermissions("r-xdr-xd");
+        md.getSuperUser().setPermissions(userObject.getHomeDir(),"r-xdr-xd");
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir");
         service.execute();
     }

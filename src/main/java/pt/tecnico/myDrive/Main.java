@@ -20,72 +20,9 @@ import java.io.PrintStream;
 public class Main {
     static final Logger log = LogManager.getRootLogger();
 
-    public static void main(String[] args) throws IOException {
-
-        try {
-            setup();
-            for (String s : args) {
-                log.info("command line argument: " + s);
-                File fileToImport = resourceFile(s);
-                if(fileToImport == null)
-                    throw new ImportDocumentException(s,"File cannot be loaded. Please make sure that it exists.");
-                importXML(fileToImport);
-            }
-            xmlPrint();
-            end();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            FenixFramework.shutdown();
-        }
-    }
-
     @Atomic
     public static void cleanup() {
     	MyDrive.getInstance().cleanup();
-    }
-
-    @Atomic
-    private static void end() {
-        /*SuperUser root = SuperUser.getInstance();
-        Dir homeDir = (Dir) root.getFileByName("home");
-
-        homeDir.getFileByName(root, "README").remove();
-        homeDir.listFileSet();*/
-    }
-
-    @Atomic
-    public static void setup() {
-        MyDrive md = MyDrive.getInstance();
-        SuperUser root = md.getSuperUser();
-
-       /* md.createLogin("root", "***");
-        
-        User u = new User(md,"joao");
-        long token = md.createLogin("joao","joao");
-        //Login session = md.getLoginFromId(token);
-        //log.info(session.getCurrentDir().getPath());
-        // TODO: Change to use User File creation
-        Dir rootDir = Dir.getRootDir();
-
-        // TODO: Change to use User File creation
-        //Dir homeDir = new Dir("home", root, rootDir, "rwxdr-x-");
-
-        // Create README file
-        PlainFile readme = new PlainFile();
-        readme.setName("README");
-        readme.setOwner(root);
-        readme.setId(md.getNewId());
-        readme.setPermissions("rwxdr-x-");
-        readme.setDir(rootDir);
-        readme.setContent("lista de utilizadores");
-
-        Dir binDir = root.makeDir("/usr/local/bin");
-
-        System.out.println(readme.getContent());
-        
-        binDir.remove();
-        //new User(md,"");*/
     }
 
     @Atomic

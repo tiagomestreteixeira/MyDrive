@@ -26,27 +26,6 @@ public class Login extends Login_Base {
      	this.setCurrentDir(user.getHomeDir());
     }
 
-    public Login(User user, long oldToken) {
-        super();
-
-        Long tokenId = new BigInteger(64, new Random()).longValue();
-
-        this.setUser(user);
-        this.setLoginDate(new DateTime());
-        if (user.getUsername().equals("root")){
-     	   this.setIdentifier(tokenId);
-        }
-        else{
-        	while(true){
-        		tokenId = new BigInteger(64, new Random()).longValue();
-        		if (tokenId != oldToken){
-        			this.setIdentifier(tokenId);
-        			break;
-        		}
-        	}
-        }
-     }
-
 	public void refreshToken() {
 		this.setLoginDate(new DateTime());
 	}
