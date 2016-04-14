@@ -8,19 +8,6 @@ import java.io.FileNotFoundException;
 
 public class Dir extends Dir_Base {
 
-	public static Dir getRootDir() {
-		SuperUser root = SuperUser.getInstance();
-
-		Dir rootDir = (Dir) root.getFileByName("/");
-
-		if (rootDir == null) {
-			rootDir = new Dir();
-			rootDir.init("/", root, rootDir, "rwxdr-x-");
-		}
-
-		return rootDir;
-	}
-
     public Dir(){
 		super();
     }

@@ -27,7 +27,8 @@ public class MyDrive extends MyDrive_Base {
         super.setIdCounter(0);
         SuperUser root = SuperUser.getInstance();
         Dir rootDir = new Dir();
-        rootDir.init("/", root, rootDir, root.getUmask());
+	    rootDir.setUser(root);
+	    rootDir.init("/",root,rootDir,root.getUmask());
         root.setHomeDir(root.makeDir("/home/root"));
     }
 
@@ -49,11 +50,11 @@ public class MyDrive extends MyDrive_Base {
     }
 
     public SuperUser getSuperUser() {
-        return SuperUser.getInstance();
+        return (SuperUser)getUserByUsername("root");
     }
 
     public Dir getRootDir() {
-        return Dir.getRootDir();
+        return (Dir)getSuperUser().getFileByName("/");
     }
 
     public User getUserByUsername(String username) {

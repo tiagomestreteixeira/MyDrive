@@ -18,11 +18,11 @@ public class User extends User_Base {
     }
 
 	public User (MyDrive md, String username, String name, String umask, String password){
-		init(md,username,name,umask,password,"/home/"+username);
+		init(md,username,name,umask,password);
 	}
 
 	public User (MyDrive md, String username){
-		init(md,username,username,USER_DEFAULT_UMASK,username,"/home/"+username);
+		init(md,username,username,USER_DEFAULT_UMASK,username);
 	}
 
 	public User(MyDrive md, String username, Element xml) {
@@ -30,14 +30,13 @@ public class User extends User_Base {
 		xmlImport(md,username, xml);
 	}
 
-	protected void init(MyDrive md, String username, String name, String umask, String password,String homePath){
+	protected void init(MyDrive md, String username, String name, String umask, String password){
+		md.addUser(this);
 		setUsername(username);
 		setName(name);
 		setPassword(password);
 		setUmask(umask);
-		setHomeDir(makeDir(homePath));
-		setHome(homePath);
-		md.addUser(this);
+		setHomeDir(makeDir("/home/"+username));
 	}
 
 	public File createFile(String name, User user, Dir directory, String permissions){
@@ -172,8 +171,8 @@ public class User extends User_Base {
 
 		if (pathname == null || pathname.equals("" ))
 			throw new FileDoesNotExistException(pathname);
-		
-		File file = Dir.getRootDir();
+
+		File file = this.getMyDrive().getRootDir();
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {
@@ -191,7 +190,7 @@ public class User extends User_Base {
 
 	public Dir makeDir(String pathname){
 
-		File file = Dir.getRootDir();
+		File file = this.getMyDrive().getRootDir();
 
 		Stack<String> st = toStack(pathname);
 		while (!st.empty()) {
@@ -209,14 +208,11 @@ public class User extends User_Base {
 
     public void xmlImport(MyDrive md, String username, Element userElement) throws ImportDocumentException {
 
-        String defaultHome = "/home/" + username;
         String defaultMask = USER_DEFAULT_UMASK;
         String defaultName = username;
         String defaultPassword = username;
 
         for (Element child : userElement.getChildren()) {
-            if (child.getName().equals("home"))
-                defaultHome = child.getText();
             if (child.getName().equals("mask"))
                 defaultMask = child.getText();
             if (child.getName().equals("name"))
@@ -226,7 +222,7 @@ public class User extends User_Base {
             log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
-		init(md,username,defaultName,defaultMask,defaultPassword,defaultHome);
+		init(md,username,defaultName,defaultMask,defaultPassword);
     }
 
 	public Element xmlExport() {
@@ -235,17 +231,14 @@ public class User extends User_Base {
 
 		Element nameElement = new Element("name");
 		Element maskElement = new Element("mask");
-		Element homeElement = new Element("home");
 		Element passwordElement = new Element("password");
 
 		nameElement.addContent(getName());
 		maskElement.addContent(getUmask());
-		homeElement.addContent(getHome());
 		passwordElement.addContent(getPassword());
 
 		userNode.addContent(nameElement);
 		userNode.addContent(maskElement);
-		userNode.addContent(homeElement);
 		userNode.addContent(passwordElement);
 
 		return userNode;
