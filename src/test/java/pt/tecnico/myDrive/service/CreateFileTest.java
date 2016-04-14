@@ -100,7 +100,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     @Test
     public void createFileCreateAppWithContentProvided() {
 
-        String expectedContent = "contentapp";
+        String expectedContent = "content.app.main";
         CreateFileService service = new CreateFileService(login,"MyAppFile","App",expectedContent);
         service.execute();
 
@@ -180,7 +180,68 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
         service.execute();
 
-        assertNull("File with an Invalid login should not be created",
-                (App) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile"));
+        try{
+            userObject.getHomeDir().getFileByName(userObject,"MyPlainFile");
+        } catch (FileDoesNotExistException e){
+            return;
+        }
+
+        fail("Create File Service with an expired login should not create files");
+    }
+
+
+    @Test(expected = FilePathTooLongException.class)
+    public void createPathTooLong() throws Exception {
+        final String pathTooLong =
+                        "aaaaIIIIaaaaaaaaaIIIaaaaaIIIaaaaaaIIIaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaIIaaaaaIIIIIaaaaaIIIaaaaaaIIIaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaIIaaIIaaIIIaaaaaIIIaaaaaaIIIaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaIIIaaaaIIIaaaaaIIIIIIIIIIIIaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaaaaaaaaIIIaaaaaaaaaIIIaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaaaaaaaaIIIaaaaaaaaaIIIaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaaaaaaaaIIIaaaaaaaaaIIIaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaIIIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+
+        CreateFileService service = new CreateFileService(login,pathTooLong,"Dir");
+        service.execute();
+
+    }
+
+
+    @Test(expected = MethodNotValidException.class)
+    public void createAppWithInvalidContent() {
+
+        String expectedContent = "ala%@34901ç~~~º´´º´?!§_-._-------´´?";
+        CreateFileService service = new CreateFileService(login,"MyAppFile","App",expectedContent);
+        service.execute();
+
+        try {
+            checkFileCreationAndMatchingContentCreated(
+                    (App) userObject.getHomeDir().getFileByName(userObject, "MyAppFile"), expectedContent, "App");
+
+        }
+        catch (MethodNotValidException e){
+            throw e;
+        }
+        catch(MyDriveException e){
+            fail(e.getMessage());
+        }
     }
 }
