@@ -73,7 +73,7 @@ public class MyDrive extends MyDrive_Base {
 		else
         throw new UserAlreadyExistsException(user.getName());
     }
-	
+
     @Override
     public Integer getIdCounter() {
         throw new NoPermissionException("getIdCounter");
@@ -92,35 +92,10 @@ public class MyDrive extends MyDrive_Base {
     }
 
     @Override
-    public void addLogins(Login login){
-    	if(loginExists(login)){
-    		log.warn("Login already exists with this token.");
-    	}
-    	super.addLogins(login);
-    }
-    
-    @Override
-    public void removeLogins(Login login){
-    	if(loginExists(login)){
-    		super.removeLogins(login);
-    	}
-    	log.warn("No login matches this token.");
-    }
-    
-    @Override
     public Set<Login> getLoginsSet() throws MyDriveException{
     	throw new NoPermissionException("getLoginsSet");
     }
-    
-    private boolean loginExists(Login login){
-    	for(Login l : super.getLoginsSet()){
-    		if((l.getIdentifier()) == (login.getIdentifier())){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
+
     private boolean hasSessions(){
     	Set<Login> sessions = super.getLoginsSet();
     	if(sessions.isEmpty()){
