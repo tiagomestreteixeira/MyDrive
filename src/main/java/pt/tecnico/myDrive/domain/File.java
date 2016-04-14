@@ -28,15 +28,17 @@ public class File extends File_Base {
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
-
-        setId(directory.getFileOwner().getMyDrive().getNewId());
-        setDir(directory);
-        setName(name);
-        setPermissions(permissions);
-        setOwner(user, user);
-        setLastModification(new DateTime());
-        checkPathLengthConstrain(directory,name);
-
+        if (user.checkPermission(directory, 'w')) {
+            setId(MyDrive.getInstance().getNewId());
+            setName(name);
+            setPermissions(permissions);
+            setDir(directory);
+            setOwner(user, user);
+            setLastModification(new DateTime());
+            checkPathLengthConstrain(directory, name);
+        } else {
+            throw new NoPermissionException("init");
+        }
     }
 
     public String read(User user) throws MyDriveException {

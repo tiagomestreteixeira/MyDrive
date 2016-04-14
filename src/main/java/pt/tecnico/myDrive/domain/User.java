@@ -36,7 +36,9 @@ public class User extends User_Base {
 		setName(name);
 		setPassword(password);
 		setUmask(umask);
-		setHomeDir(makeDir("/home/"+username));
+		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
+		getHomeDir().setOwner(md.getSuperUser(), this);
+		getHomeDir().setPermissions(umask);
 	}
 
 	public File createFile(String name, User user, Dir directory, String permissions){
