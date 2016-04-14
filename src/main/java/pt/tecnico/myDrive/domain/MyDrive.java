@@ -151,11 +151,6 @@ public class MyDrive extends MyDrive_Base {
     	}
     	throw new InvalidLoginTokenException(identifier);
     }
-    
-    public User getUserFromLoginId(long identifier){
-    	User user = getLoginFromId(identifier).getUser();
-    	return user;
-    }
 
 	public boolean isTokenValid(long token){
 		if (getLoginFromId(token).isDateValid(new DateTime())){
