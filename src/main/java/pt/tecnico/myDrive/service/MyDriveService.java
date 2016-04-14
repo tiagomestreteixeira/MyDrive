@@ -20,14 +20,5 @@ public abstract class MyDriveService {
 		return MyDrive.getInstance();
 	}
 
-	static User getUser(String username) throws UserDoesNotExistException {
-		User user = getMyDrive().getUserByUsername(username);
-
-		if (user == null)
-			throw new UserDoesNotExistException(username);
-
-		return user;
-	}
-
 	protected abstract void dispatch() throws MyDriveException;
 }
