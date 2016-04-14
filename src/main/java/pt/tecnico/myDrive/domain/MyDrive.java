@@ -162,22 +162,6 @@ public class MyDrive extends MyDrive_Base {
 	}
 }
     
-    public long createLogin(String username, String password, long oldLogin){
-    	loginMaintenance();
-    	User user = this.getUserByUsername(username);
-    	
-    	if (user != null){
-    		if(password.equals(user.getPassword())){
-    			Login login = new Login(user, oldLogin);
-    			this.addLogins(login);
-    			return login.getIdentifier();
-    		}
-    		throw new UserPasswordDoesNotMatchException(username);
-    	}else{
-    		throw new UserDoesNotExistException(username);
-    	}
-    }
-    
     private void removeLogin(long login){
     	if(this.hasSessions()){
     		for(Login session : super.getLoginsSet()){
@@ -214,7 +198,15 @@ public class MyDrive extends MyDrive_Base {
     	User user = getLoginFromId(identifier).getUser();
     	return user;
     }
-    
+
+	public boolean isTokenValid(long token){
+		if (getLoginFromId(token).isDateValid(new DateTime())){
+			return true;
+		}
+		log.warn("This login is no longer valid.");
+		return false;
+	}
+
     public void xmlImport(Element element) throws ImportDocumentException {
 
         for (Element node: element.getChildren("user")) {
@@ -247,14 +239,6 @@ public class MyDrive extends MyDrive_Base {
         }
 
     }
-
-	public boolean isTokenValid(long token){
-		if (getLoginFromId(token).isDateValid(new DateTime())){
-			return true;
-		}
-		log.warn("This login is no longer valid.");
-		return false;
-	}
 
     public Document xmlExport() {
         Element myDriveElement = new Element("myDrive");
