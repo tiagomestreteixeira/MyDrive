@@ -47,7 +47,7 @@ public class WriteFileTest extends AbstractServiceTest {
         new PlainFile("testEmptyPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"");
         WriteFileService service = new WriteFileService(login, "testEmptyPlainFile","ReplaceText");
         service.execute();
-        PlainFile pf = (PlainFile) userObject.getHomeDir().getFileByName(userObject,testPlainFileName);
+        PlainFile pf = (PlainFile) userObject.getHomeDir().getFileByName(userObject,"testEmptyPlainFile");
         assertEquals("Content was not written to file", "ReplaceText", pf.getContent());
     }
 
@@ -103,5 +103,5 @@ public class WriteFileTest extends AbstractServiceTest {
         service.execute();
         assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
     }
-
+    e
 }
