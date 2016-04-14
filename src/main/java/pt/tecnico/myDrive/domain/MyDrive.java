@@ -5,16 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-
-import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
-import pt.tecnico.myDrive.exception.MyDriveException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
-import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.util.Set;
 
@@ -45,7 +37,7 @@ public class MyDrive extends MyDrive_Base {
         if (md != null) {
             return md;
         }
-        
+
         return new MyDrive();
     }
 
@@ -96,61 +88,47 @@ public class MyDrive extends MyDrive_Base {
     	throw new NoPermissionException("getLoginsSet");
     }
 
-    private boolean hasSessions(){
-    	Set<Login> sessions = super.getLoginsSet();
-    	if(sessions.isEmpty()){
-    		return false;
-    	}
-    	return true;
-    }
-    
-    public long createLogin(String username, String password){
-    	loginMaintenance();
-    	User user = this.getUserByUsername(username);
-     	
-    	if (user != null){
-    		if(password.equals(user.getPassword())){
-    		Login login = new Login(user);
-    		this.addLogins(login);
-			return login.getIdentifier();
+	public long createLogin(String username, String password) {
+		loginMaintenance();
+		User user = this.getUserByUsername(username);
+
+		if (user != null) {
+			if (password.equals(user.getPassword())) {
+				Login login = new Login(user);
+				this.addLogins(login);
+				return login.getIdentifier();
+			}
+			throw new UserPasswordDoesNotMatchException(username);
+		} else {
+			throw new UserDoesNotExistException(username);
 		}
-		throw new UserPasswordDoesNotMatchException(username);
-	}else{
-		throw new UserDoesNotExistException(username);
 	}
-}
-    
-    private void removeLogin(long login){
-    	if(this.hasSessions()){
-    		for(Login session : super.getLoginsSet()){
-    			if(session.getIdentifier() == login){
-    				this.removeLogins(session);
-    				session.delete();
-    			}
-    		}
-    	}
-    }
-    
-    private void loginMaintenance(){
-    	if(this.hasSessions()){
-    		for(Login session : super.getLoginsSet()){
-    			if(!session.isDateValid(new DateTime())){
-    				this.removeLogin(session.getIdentifier());
-    			}
-    		}
-    	}
-    }
-    
-    public Login getLoginFromId(long identifier) throws MyDriveException{
-    	if(this.hasSessions()){
-    		for(Login l : super.getLoginsSet()){
-    			if(l.getIdentifier() == identifier){
-    				return l;
-    			}
-    		}
-    	}
-    	throw new InvalidLoginTokenException(identifier);
-    }
+
+	private void removeLogin(long login) {
+		for (Login session : super.getLoginsSet()) {
+			if (session.getIdentifier() == login) {
+				this.removeLogins(session);
+				session.delete();
+			}
+		}
+	}
+
+	private void loginMaintenance() {
+		for (Login session : super.getLoginsSet()) {
+			if (!session.isDateValid(new DateTime())) {
+				this.removeLogin(session.getIdentifier());
+			}
+		}
+	}
+
+	public Login getLoginFromId(long identifier) throws MyDriveException {
+		for (Login l : super.getLoginsSet()) {
+			if (l.getIdentifier() == identifier) {
+				return l;
+			}
+		}
+		throw new InvalidLoginTokenException(identifier);
+	}
 
 	public boolean isTokenValid(long token){
 		if (getLoginFromId(token).isDateValid(new DateTime())){
