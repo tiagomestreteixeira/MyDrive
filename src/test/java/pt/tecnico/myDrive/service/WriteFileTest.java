@@ -2,7 +2,6 @@ package pt.tecnico.myDrive.service;
 
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.DirHaveNoContentException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
