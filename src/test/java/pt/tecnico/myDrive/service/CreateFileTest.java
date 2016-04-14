@@ -180,7 +180,12 @@ public class CreateFileTest extends  AbstractServiceTest {
         CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
         service.execute();
 
-        assertNull("File with an Invalid login should not be created",
-                (App) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile"));
+        try{
+            userObject.getHomeDir().getFileByName(userObject,"MyPlainFile");
+        } catch (FileDoesNotExistException e){
+            return;
+        }
+
+        fail("Create File Service with an expired login should not create files");
     }
 }
