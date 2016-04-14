@@ -118,5 +118,14 @@ public class WriteFileTest extends AbstractServiceTest {
         assertEquals("Invalid Login - file should not be written", "OriginalContent", pf.getContent());
     }
 
+    @Test
+    public void writeOnLink() {
+        PlainFile pf = new PlainFile("plaindestinationfile", userObject, userObject.getHomeDir(), userObject.getUmask(), "aa");
+        new Link("testFile", userObject, userObject.getHomeDir(), userObject.getUmask(), pf.getPath());
+        WriteFileService service = new WriteFileService(login, "testFile","bb");
+        service.execute();
 
+        assertEquals("Content was not written to file", "bb", pf.getContent());
+    }
+    
 }
