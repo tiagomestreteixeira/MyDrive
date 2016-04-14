@@ -2,7 +2,7 @@ package pt.tecnico.myDrive.service.dto;
 
 import org.joda.time.DateTime;
 
-public class FileDto implements Comparable<FileDto> {
+public class FileDto {
 	private int id;
 	private String filename;
 	private DateTime lastModification;
@@ -50,13 +50,5 @@ public class FileDto implements Comparable<FileDto> {
 
 	public final String getType() {
 		return type;
-	}
-
-	@Override
-	public int compareTo(FileDto o) {
-		if (id == o.getId())
-			return 0;
-		else
-			return 1;
 	}
 }
