@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.service;
 
 
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
@@ -169,4 +170,17 @@ public class CreateFileTest extends  AbstractServiceTest {
         service.execute();
     }
 
+
+    @Test
+    public void createWithInvalidLogin() throws Exception {
+        
+        Login session = md.getLoginFromId(login);
+        session.setLoginDate(new DateTime(1));
+
+        CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
+        service.execute();
+
+        assertNull("File with an Invalid login should not be created",
+                (App) userObject.getHomeDir().getFileByName(userObject,"MyPlainFile"));
+    }
 }
