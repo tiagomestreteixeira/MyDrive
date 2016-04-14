@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.service;
 
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.DirCanNotHaveContentException;
 import pt.tecnico.myDrive.exception.InvalidFileTypeException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
@@ -34,6 +35,8 @@ public class CreateFileService extends MyDriveService {
 		if (md.isTokenValid(token)) {
 			switch (fileType) {
 				case "Dir":
+					if (!content.equals(""))
+						throw new DirCanNotHaveContentException();
 					new Dir(filename, user, currentDir, user.getUmask());
 					break;
 				case "Plain":
