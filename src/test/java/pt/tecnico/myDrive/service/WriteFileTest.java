@@ -102,5 +102,5 @@ public class WriteFileTest extends AbstractServiceTest {
         service.execute();
         assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
     }
-    e
+    
 }
