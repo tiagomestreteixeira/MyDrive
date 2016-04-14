@@ -2,9 +2,11 @@ package pt.tecnico.myDrive.service;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
@@ -160,6 +162,16 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		new Dir("level4", root, l3, "--------");
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
+	}
+
+	@Test
+	public void changeDirWithInvalidLogin() throws Exception {
+		final String pathname = "/home/Andre/level1/level2/level3";
+		Login session = md.getLoginFromId(login);
+		session.setLoginDate(new DateTime(1));
+		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
+		service.execute();
+		assertEquals("Login CurrentDir does not match", userObject.getHomeDir().getPath(), md.getLoginFromId(login).getCurrentDir().getPath());
 	}
 }
 

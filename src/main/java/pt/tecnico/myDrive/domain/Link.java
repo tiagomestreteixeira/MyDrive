@@ -42,19 +42,19 @@ public class Link extends Link_Base {
 
     @Override
     public File getFileByName(User user, String file){
-        if (user.checkPermission(this, 'x')) {
+        if (user.checkPermission(this, 'r')) {
             return user.lookup(this.getContent()).getFileByName(user,file);
         } else {
-            throw new NoPermissionException("delete");
+            throw new NoPermissionException("link.read()");
         }
     }
 
     @Override
     public void execute(User user){
-        if (user.checkPermission(this, 'x')) {
+        if (user.checkPermission(this, 'r')) {
             user.lookup(this.getContent()).execute(user);
         } else {
-            throw new NoPermissionException("delete");
+            throw new NoPermissionException("link.read()");
         }
     }
 
@@ -63,7 +63,7 @@ public class Link extends Link_Base {
         if (user.checkPermission(this, 'r')) {
             return user.lookup(this.getContent()).read(user);
         } else {
-            throw new NoPermissionException("read");
+            throw new NoPermissionException("link.read()");
         }
     }
 
@@ -72,7 +72,7 @@ public class Link extends Link_Base {
         if (user.checkPermission(this, 'r')) {
             user.lookup(this.getContent()).write(user,content);
         } else {
-            throw new NoPermissionException("write");
+            throw new NoPermissionException("link.read()");
         }
     }
 

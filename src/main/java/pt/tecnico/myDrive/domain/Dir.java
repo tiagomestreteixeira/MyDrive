@@ -25,7 +25,7 @@ public class Dir extends Dir_Base {
 		if (user.checkPermission(this, 'd'))
 			this.remove();
 		else
-			throw new NoPermissionException("delete");
+			throw new NoPermissionException("Dir.delete()");
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Dir extends Dir_Base {
 					return file;
 			throw new FileDoesNotExistException(name);
 		} else {
-			throw new NoPermissionException("getFileByName");
+			throw new NoPermissionException("Dir.getFileByName()");
 		}
 	}
 

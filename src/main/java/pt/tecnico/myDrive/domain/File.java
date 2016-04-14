@@ -35,22 +35,22 @@ public class File extends File_Base {
     }
 
     public String read(User user) throws MyDriveException {
-        throw new NoPermissionException("read");
+        throw new NoPermissionException("File.read()");
     }
 
     public void write(User user, String content) throws MyDriveException {
-        throw new NoPermissionException("write");
+        throw new NoPermissionException("File.write()");
     }
 
     public void execute(User user) throws MyDriveException {
-        throw new NoPermissionException("execute");
+        throw new NoPermissionException("File.execute()");
     }
 
     public void delete(User user) throws MyDriveException {
         if (user.checkPermission(this, 'd')) {
             this.remove();
         } else {
-            throw new NoPermissionException("delete");
+            throw new NoPermissionException("File.delete()");
         }
     }
 
@@ -150,7 +150,7 @@ public class File extends File_Base {
             }
 			return;
 		}
-		throw new NoPermissionException("setOwner");
+		throw new NoPermissionException("File.setOwner()");
 	}
 
     public void remove() {

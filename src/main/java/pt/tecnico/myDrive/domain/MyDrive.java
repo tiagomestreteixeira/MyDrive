@@ -68,12 +68,12 @@ public class MyDrive extends MyDrive_Base {
 
     @Override
     public Integer getIdCounter() {
-        throw new NoPermissionException("getIdCounter");
+        throw new NoPermissionException("MyDrive.getIdCounter()");
     }
 
     @Override
     public void setIdCounter(Integer idCounter) {
-        throw new NoPermissionException("setIdCounter");
+        throw new NoPermissionException("MyDrive.setIdCounter()");
     }
 
     public int getNewId() {
@@ -85,7 +85,7 @@ public class MyDrive extends MyDrive_Base {
 
     @Override
     public Set<Login> getLoginsSet() throws MyDriveException{
-    	throw new NoPermissionException("getLoginsSet");
+    	throw new NoPermissionException("MyDrive.getLoginsSet()");
     }
 
 	public long createLogin(String username, String password) {
