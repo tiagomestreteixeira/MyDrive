@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.service;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
@@ -102,8 +103,10 @@ public class ReadFileTest extends AbstractServiceTest {
 	@Test
 	public void readWithInvalidLogin() throws Exception {
 		String result = null;
+		Login session = md.getLoginFromId(login);
+		session.setLoginDate(new DateTime(1));
 		try {
-			ReadFileService service = new ReadFileService(1, "testFile");
+			ReadFileService service = new ReadFileService(login, "testFile");
 			service.execute();
 			result = service.result();
 			fail("Login token should be verified before service execution.");
