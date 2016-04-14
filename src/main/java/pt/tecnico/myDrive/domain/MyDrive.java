@@ -5,16 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
-
-import pt.ist.fenixframework.DomainRoot;
 import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.exception.ImportDocumentException;
-import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
-import pt.tecnico.myDrive.exception.MyDriveException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
-import pt.tecnico.myDrive.exception.UserAlreadyExistsException;
-import pt.tecnico.myDrive.exception.UserDoesNotExistException;
-import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
+import pt.tecnico.myDrive.exception.*;
 
 import java.util.Set;
 
@@ -45,7 +37,7 @@ public class MyDrive extends MyDrive_Base {
         if (md != null) {
             return md;
         }
-        
+
         return new MyDrive();
     }
 
@@ -65,17 +57,6 @@ public class MyDrive extends MyDrive_Base {
         return null;
     }
 
-    public void removeUser(String username) {
-        User user = getUserByUsername(username);
-        this.removeUser(user);
-    }
-
-    @Override
-    public void removeUser(User user) {
-        super.removeUser(user);
-        user.remove();
-    }
-
     @Override
     public void addUser(User user) {
         if (getUserByUsername(user.getUsername()) == null) {
@@ -83,12 +64,6 @@ public class MyDrive extends MyDrive_Base {
         }
 		else
         throw new UserAlreadyExistsException(user.getName());
-    }
-
-    @Override
-    public Set<User> getUserSet() {
-        // TODO: Check if access should be allowed
-        return super.getUserSet();
     }
 
     @Override
@@ -109,112 +84,60 @@ public class MyDrive extends MyDrive_Base {
     }
 
     @Override
-    public void addLogins(Login login){
-    	if(loginExists(login)){
-    		log.warn("Login already exists with this token.");
-    	}
-    	super.addLogins(login);
-    }
-    
-    @Override
-    public void removeLogins(Login login){
-    	if(loginExists(login)){
-    		super.removeLogins(login);
-    	}
-    	log.warn("No login matches this token.");
-    }
-    
-    @Override
     public Set<Login> getLoginsSet() throws MyDriveException{
     	throw new NoPermissionException("getLoginsSet");
     }
-    
-    private boolean loginExists(Login login){
-    	for(Login l : super.getLoginsSet()){
-    		if((l.getIdentifier()) == (login.getIdentifier())){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    private boolean hasSessions(){
-    	Set<Login> sessions = super.getLoginsSet();
-    	if(sessions.isEmpty()){
-    		return false;
-    	}
-    	return true;
-    }
-    
-    public long createLogin(String username, String password){
-    	loginMaintenance();
-    	User user = this.getUserByUsername(username);
-     	
-    	if (user != null){
-    		if(password.equals(user.getPassword())){
-    		Login login = new Login(user);
-    		this.addLogins(login);
-			return login.getIdentifier();
+
+	public long createLogin(String username, String password) {
+		loginMaintenance();
+		User user = this.getUserByUsername(username);
+
+		if (user != null) {
+			if (password.equals(user.getPassword())) {
+				Login login = new Login(user);
+				this.addLogins(login);
+				return login.getIdentifier();
+			}
+			throw new UserPasswordDoesNotMatchException(username);
+		} else {
+			throw new UserDoesNotExistException(username);
 		}
-		throw new UserPasswordDoesNotMatchException(username);
-	}else{
-		throw new UserDoesNotExistException(username);
 	}
-}
-    
-    public long createLogin(String username, String password, long oldLogin){
-    	loginMaintenance();
-    	User user = this.getUserByUsername(username);
-    	
-    	if (user != null){
-    		if(password.equals(user.getPassword())){
-    			Login login = new Login(user, oldLogin);
-    			this.addLogins(login);
-    			return login.getIdentifier();
-    		}
-    		throw new UserPasswordDoesNotMatchException(username);
-    	}else{
-    		throw new UserDoesNotExistException(username);
-    	}
-    }
-    
-    private void removeLogin(long login){
-    	if(this.hasSessions()){
-    		for(Login session : super.getLoginsSet()){
-    			if(session.getIdentifier() == login){
-    				this.removeLogins(session);
-    				session.delete();
-    			}
-    		}
-    	}
-    }
-    
-    private void loginMaintenance(){
-    	if(this.hasSessions()){
-    		for(Login session : super.getLoginsSet()){
-    			if(!session.isDateValid(new DateTime())){
-    				this.removeLogin(session.getIdentifier());
-    			}
-    		}
-    	}
-    }
-    
-    public Login getLoginFromId(long identifier) throws MyDriveException{
-    	if(this.hasSessions()){
-    		for(Login l : super.getLoginsSet()){
-    			if(l.getIdentifier() == identifier){
-    				return l;
-    			}
-    		}
-    	}
-    	throw new InvalidLoginTokenException(identifier);
-    }
-    
-    public User getUserFromLoginId(long identifier){
-    	User user = getLoginFromId(identifier).getUser();
-    	return user;
-    }
-    
+
+	private void removeLogin(long login) {
+		for (Login session : super.getLoginsSet()) {
+			if (session.getIdentifier() == login) {
+				this.removeLogins(session);
+				session.delete();
+			}
+		}
+	}
+
+	private void loginMaintenance() {
+		for (Login session : super.getLoginsSet()) {
+			if (!session.isDateValid(new DateTime())) {
+				this.removeLogin(session.getIdentifier());
+			}
+		}
+	}
+
+	public Login getLoginFromId(long identifier) throws MyDriveException {
+		for (Login l : super.getLoginsSet()) {
+			if (l.getIdentifier() == identifier) {
+				return l;
+			}
+		}
+		throw new InvalidLoginTokenException(identifier);
+	}
+
+	public boolean isTokenValid(long token){
+		if (getLoginFromId(token).isDateValid(new DateTime())){
+			return true;
+		}
+		log.warn("This login is no longer valid.");
+		return false;
+	}
+
     public void xmlImport(Element element) throws ImportDocumentException {
 
         for (Element node: element.getChildren("user")) {
@@ -247,14 +170,6 @@ public class MyDrive extends MyDrive_Base {
         }
 
     }
-
-	public boolean isTokenValid(long token){
-		if (getLoginFromId(token).isDateValid(new DateTime())){
-			return true;
-		}
-		log.warn("This login is no longer valid.");
-		return false;
-	}
 
     public Document xmlExport() {
         Element myDriveElement = new Element("myDrive");

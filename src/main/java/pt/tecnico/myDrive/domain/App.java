@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 public class App extends App_Base {
 
-    public App() {
+    protected App() {
         super();
     }
 
@@ -29,10 +29,6 @@ public class App extends App_Base {
         xmlImport(node,"app","method");
     }
 
-    public String getContent(){
-        return super.getContent();
-    }
-
     @Override
     public void setContent(String method) {
         if (method == null || method.equals("")) {
@@ -44,14 +40,6 @@ public class App extends App_Base {
             super.setContent(method);
         else
             throw new MethodNotValidException(method);
-    }
-
-    @Override
-    public void write(User user, String methodName) {
-        if (user.checkPermission(this, 'w')) {
-            setContent(methodName);
-            this.setLastModification(new DateTime());
-        }
     }
 
     @Override
