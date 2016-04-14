@@ -65,17 +65,6 @@ public class MyDrive extends MyDrive_Base {
         return null;
     }
 
-    public void removeUser(String username) {
-        User user = getUserByUsername(username);
-        this.removeUser(user);
-    }
-
-    @Override
-    public void removeUser(User user) {
-        super.removeUser(user);
-        user.remove();
-    }
-
     @Override
     public void addUser(User user) {
         if (getUserByUsername(user.getUsername()) == null) {
