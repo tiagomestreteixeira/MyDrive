@@ -181,7 +181,7 @@ public class User extends User_Base {
 			if (file == null)
 				throw new FileDoesNotExistException(filename);
 			if (!(this.checkPermission(file, 'x'))) {
-				throw new NoPermissionException("execute");
+				throw new NoPermissionException("User.lookup()->Dir.getFileByName()");
 			}
 			//TODO: Check for links.
 		}

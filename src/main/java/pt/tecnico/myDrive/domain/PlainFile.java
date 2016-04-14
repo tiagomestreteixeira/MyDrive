@@ -37,7 +37,7 @@ public class PlainFile extends PlainFile_Base {
         if (user.checkPermission(this, 'r')) {
             return this.getContent();
         } else {
-            throw new NoPermissionException("read");
+            throw new NoPermissionException("PlainFile.read()");
         }
     }
 
@@ -47,7 +47,7 @@ public class PlainFile extends PlainFile_Base {
             this.setContent(string);
             this.setLastModification(new DateTime());
         } else {
-            throw new NoPermissionException("write");
+            throw new NoPermissionException("PlainFile.write()");
         }
     }
 

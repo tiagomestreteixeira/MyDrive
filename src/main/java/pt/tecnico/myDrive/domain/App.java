@@ -60,7 +60,7 @@ public class App extends App_Base {
         if (user.checkPermission(this, 'x')) {
             // TODO Execute Apps.
         } else {
-            throw new NoPermissionException("delete");
+            throw new NoPermissionException("App.execute()");
         }
     }
     
