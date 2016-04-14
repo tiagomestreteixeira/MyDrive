@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.FileCanNotBeRemovedException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
@@ -90,5 +91,13 @@ public class DeleteFileTest extends AbstractServiceTest {
 		DeleteFileService service = new DeleteFileService(login, "test");
 		service.execute();
 		assertNotNull("File should still exist.", u.lookup("/home/Ivan/test"));
+	}
+
+	@Test(expected = FileCanNotBeRemovedException.class)
+	public void deleteHomeDirectory() throws Exception {
+		Login l = MyDrive.getInstance().getLoginFromId(login);
+		l.setCurrentDir(MyDrive.getInstance().getRootDir());
+		DeleteFileService service = new DeleteFileService(login, "home");
+		service.execute();
 	}
 }
