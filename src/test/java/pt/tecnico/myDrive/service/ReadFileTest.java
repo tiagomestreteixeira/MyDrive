@@ -1,12 +1,13 @@
 package pt.tecnico.myDrive.service;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-
+import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
+
+import static junit.framework.TestCase.*;
 
 public class ReadFileTest extends AbstractServiceTest {
 
@@ -97,6 +98,21 @@ public class ReadFileTest extends AbstractServiceTest {
 		final String filename = "nullFile";
 		ReadFileService service = new ReadFileService(login, filename);
 		service.execute();
+	}
+
+	@Test
+	public void readWithInvalidLogin() throws Exception {
+		String result = null;
+		Login session = md.getLoginFromId(login);
+		session.setLoginDate(new DateTime(1));
+		try {
+			ReadFileService service = new ReadFileService(login, "testFile");
+			service.execute();
+			result = service.result();
+			fail("Login token should be verified before service execution.");
+		} catch (InvalidLoginTokenException e) {
+		}
+		assertNull("Result should be null.", result);
 	}
 
 }

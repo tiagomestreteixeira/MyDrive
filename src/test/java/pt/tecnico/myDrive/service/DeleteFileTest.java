@@ -2,8 +2,8 @@ package pt.tecnico.myDrive.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Test;
-import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
@@ -81,5 +81,14 @@ public class DeleteFileTest extends AbstractServiceTest {
 	public void deleteNonExistingFile() throws Exception {
 		DeleteFileService service = new DeleteFileService(login, "test1");
 		service.execute();
+	}
+
+	@Test
+	public void deleteWithInvalidLogin() throws Exception {
+		Login l = MyDrive.getInstance().getLoginFromId(login);
+		l.setLoginDate(new DateTime(0));
+		DeleteFileService service = new DeleteFileService(login, "test");
+		service.execute();
+		assertNotNull("File should still exist.", u.lookup("/home/Ivan/test"));
 	}
 }
