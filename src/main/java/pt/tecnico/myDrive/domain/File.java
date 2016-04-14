@@ -18,13 +18,6 @@ public class File extends File_Base {
     protected File() { /* for derived classes */ }
 
     static final Logger log = LogManager.getRootLogger();
-    public File(String name, User user, Dir directory, String permissions) throws MyDriveException {
-        init(name, user, directory, permissions);
-    }
-
-    public File(String name, Dir directory, String permissions) throws MyDriveException {
-        init(name, directory.getFileOwner().getMyDrive().getSuperUser() , directory, permissions);
-    }
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 

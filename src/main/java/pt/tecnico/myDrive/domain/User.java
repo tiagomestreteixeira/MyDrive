@@ -39,11 +39,6 @@ public class User extends User_Base {
 		setHomeDir(makeDir("/home/"+username));
 	}
 
-	public File createFile(String name, User user, Dir directory, String permissions){
-		  File file= new File(name,user,directory,permissions);
-		  return file;
-	}
-
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
 		  for(File f : getFileSet()) {

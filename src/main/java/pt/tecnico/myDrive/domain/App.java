@@ -30,24 +30,12 @@ public class App extends App_Base {
         xmlImport(node,"app","method");
     }
 
-    public String getContent(){
-        return super.getContent();
-    }
-
     @Override
     public void setContent(String method) {
         if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*"))
             super.setContent(method);
         else
             throw new MethodNotValidException(method);
-    }
-
-    @Override
-    public void write(User user, String methodName) {
-        if (user.checkPermission(this, 'w')) {
-            setContent(methodName);
-            this.setLastModification(new DateTime());
-        }
     }
 
     @Override
