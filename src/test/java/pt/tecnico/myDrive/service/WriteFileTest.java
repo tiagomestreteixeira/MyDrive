@@ -4,10 +4,13 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.MethodNotValidException;
+import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 public class WriteFileTest extends AbstractServiceTest {
 
@@ -17,6 +20,7 @@ public class WriteFileTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser root;
     private String testPlainFileName = "testPlainFile";
+    private App myApp;
 
     private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
 
@@ -30,7 +34,8 @@ public class WriteFileTest extends AbstractServiceTest {
         new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
 
         new Link("testLinkFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS,"contentOfLink");
-        new App("testAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS).setContent("contentOfApp");
+        myApp = new App("testAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
+        myApp.setContent("pt.mydrive.myapp");
 
         login = md.createLogin(name,name);
 
@@ -127,5 +132,22 @@ public class WriteFileTest extends AbstractServiceTest {
 
         assertEquals("Content was not written to file", "bb", pf.getContent());
     }
-    
+
+    @Test(expected = MethodNotValidException.class)
+    public void writeAppInvalidContent() {
+
+        String appContent = "ala%@34901ç~~~º´´º´?!§_-._-------´´?";
+
+        WriteFileService service = new WriteFileService(login, "MyAppFile", appContent);
+        service.execute();
+    }
+
+    @Test
+    public void writeAppValidContent() {
+        WriteFileService service = new WriteFileService(login, "MyAppFile", "edu.mit.mydrive");
+        service.execute();
+
+        assertEquals("Content was not written to App", "edu.mit.mydrive", myApp.getContent());
+    }
+
 }
