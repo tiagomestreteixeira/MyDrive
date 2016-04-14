@@ -20,26 +20,26 @@ public class LoginUserTest extends AbstractServiceTest{
 	private User user;
 	private long loginId1;
 	private long loginId2;
-	
+
 	private static final String USER =  "testUser"; //Password is = user name
 	private static final String USERPW = "testUserPW";
 	private static final String WRONGPW = "testUserWrongPW";
 	private static final String UNKNOWNUSER = "unknownTestUser";
-	
-	
+
+
 	protected void populate() {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
-        user = new User(md, USER);	
+        user = new User(md, USER);
 	}
-	
+
 	@Test
 	public void success(){
 		LoginUserService service = new LoginUserService(USER, USERPW);
 		service.execute();
 		loginId1 = service.result();
-		
-		assertEquals(user, md.getUserFromLoginId(loginId1));
+
+		assertEquals(user, md.getLoginFromId(loginId1).getUser());
 	}
 
 	@Test
@@ -47,22 +47,22 @@ public class LoginUserTest extends AbstractServiceTest{
 		LoginUserService service = new LoginUserService(USER, USERPW);
 		service.execute();
 		loginId1 = service.result();
-		
+
 		service.execute();
 		loginId2 = service.result();
-		
-		assertEquals(user, md.getUserFromLoginId(loginId1));
-		assertEquals(user, md.getUserFromLoginId(loginId2));
-		assertEquals(md.getUserFromLoginId(loginId1), md.getUserFromLoginId(loginId2));
+
+		assertEquals(user, md.getLoginFromId(loginId1).getUser());
+		assertEquals(user, md.getLoginFromId(loginId2).getUser());
+		assertEquals(md.getLoginFromId(loginId1).getUser(), md.getLoginFromId(loginId2).getUser());
 	}
-	
+
 	@Test (expected = UserPasswordDoesNotMatchException.class)
 	public void LoginWrongPassword(){
-		
+
 		LoginUserService service = new LoginUserService(USER, WRONGPW);
 		service.execute();
 	}
-	
+
 	@Test (expected = UserDoesNotExistException.class)
 	public void LoginNoUser(){
 		LoginUserService service = new LoginUserService(UNKNOWNUSER, USERPW);

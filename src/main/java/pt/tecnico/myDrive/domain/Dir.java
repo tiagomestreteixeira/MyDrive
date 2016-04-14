@@ -55,8 +55,8 @@ public class Dir extends Dir_Base {
 			if (name.equals("."))
 				return this;
 			if (name.equals(".."))
-				return getDirectory();
-			
+				return getDir();
+
 			for(File file : getFileSet())
 				if(file.getName().equals(name))
 					return file;

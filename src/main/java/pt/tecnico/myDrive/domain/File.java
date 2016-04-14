@@ -18,25 +18,20 @@ public class File extends File_Base {
     protected File() { /* for derived classes */ }
 
     static final Logger log = LogManager.getRootLogger();
-    public File(String name, User user, Dir directory, String permissions) throws MyDriveException {
-        init(name, user, directory, permissions);
-    }
-
-    public File(String name, Dir directory, String permissions) throws MyDriveException {
-        init(name, directory.getFileOwner().getMyDrive().getSuperUser() , directory, permissions);
-    }
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
-
-        setId(directory.getFileOwner().getMyDrive().getNewId());
-        setDir(directory);
-        setName(name);
-        setPermissions(permissions);
-        setOwner(user, user);
-        setLastModification(new DateTime());
-        checkPathLengthConstrain(directory,name);
-
+        if (user.checkPermission(directory, 'w')) {
+            setId(MyDrive.getInstance().getNewId());
+            setName(name);
+            setPermissions(permissions);
+            setDir(directory);
+            setOwner(user, user);
+            setLastModification(new DateTime());
+            checkPathLengthConstrain(directory, name);
+        } else {
+            throw new NoPermissionException("init");
+        }
     }
 
     public String read(User user) throws MyDriveException {
@@ -74,16 +69,12 @@ public class File extends File_Base {
         return super.getName();
     }
 
-    public String getFormatedName() {
-        return "File " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
+    public String getFormatedName() throws  MyDriveException{
+	    throw new NoPermissionException("File->GetFormatedName()");
     }
 
     public DateTime getLastModification(){
         return super.getLastModification();
-    }
-
-    public Dir getDirectory(){
-        return getDir();
     }
 
     public File getFileByName(User u, String s) throws InvalidFileTypeException{
@@ -99,7 +90,7 @@ public class File extends File_Base {
         File f = this;
         while (!f.getName().equals("/")){
             path = "/"+f.getName()+path;
-            f = f.getDirectory();
+            f = f.getDir();
         }
         if (path == ""){
             return "/";
@@ -144,7 +135,7 @@ public class File extends File_Base {
 
 	public void setOwner(User requester, User newOwner) throws MyDriveException {
 
-        SuperUser superUser = getDirectory().getFileOwner().getMyDrive().getSuperUser();
+        SuperUser superUser = getDir().getFileOwner().getMyDrive().getSuperUser();
 		User fileOwner = getFileOwner();
 
 		if (requester.equals(fileOwner) || requester.equals(superUser) || fileOwner == null) {

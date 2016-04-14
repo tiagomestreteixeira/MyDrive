@@ -43,7 +43,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     }
 
-    @Test(expected = DirHaveNoContentException.class)
+    @Test(expected = DirCanNotHaveContentException.class)
     public void createFileDirWithContent() throws Exception {
 
         CreateFileService service = new CreateFileService(login,"MyDirectory","Dir","ContentOfADir");
