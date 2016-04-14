@@ -22,7 +22,7 @@ public class ReadFileTest extends AbstractServiceTest {
 		user = "Joao";
 		userObject = new User(md, user);
 		root = MyDriveService.getMyDrive().getSuperUser();
-		login = md.createLogin(user,user);
+		login = md.createLogin(user, user);
 		new PlainFile("testFile", userObject, userObject.getHomeDir(), userObject.getUmask(), "abc");
 	}
 
@@ -102,19 +102,14 @@ public class ReadFileTest extends AbstractServiceTest {
 
 	@Test
 	public void readWithInvalidLogin() throws Exception {
-		String result = null;
+		String result;
 		Login session = md.getLoginFromId(login);
 		session.setLoginDate(new DateTime(1));
-		try {
-			ReadFileService service = new ReadFileService(login, "testFile");
-			service.execute();
-			result = service.result();
-			fail("Login token should be verified before service execution.");
-		} catch (InvalidLoginTokenException e) {
-		}
+		ReadFileService service = new ReadFileService(login, "testFile");
+		service.execute();
+		result = service.result();
 		assertNull("Result should be null.", result);
 	}
-
 }
 
 
