@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import org.omg.CORBA.StringHolder;
 import pt.tecnico.myDrive.exception.MethodNotValidException;
 import pt.tecnico.myDrive.exception.MyDriveException;
@@ -43,8 +44,10 @@ public class App extends App_Base {
 
     @Override
     public void write(User user, String methodName) {
-        if (user.checkPermission(this, 'w'))
+        if (user.checkPermission(this, 'w')) {
             setContent(methodName);
+            this.setLastModification(new DateTime());
+        }
     }
 
     @Override

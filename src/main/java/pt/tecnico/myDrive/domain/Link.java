@@ -12,6 +12,7 @@ public class Link extends Link_Base {
 
     public Link(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
         init(name, user, directory, permissions);
+        user.lookup(content);
         this.setContent(content);
     }
 

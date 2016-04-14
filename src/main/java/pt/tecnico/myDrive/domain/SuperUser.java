@@ -6,7 +6,6 @@ public class SuperUser extends SuperUser_Base {
         setName("root");
         setPassword("***");
         setUmask("rwxdr-x-");
-        setHome("/home/root");
         MyDrive.getInstance().addUser(this);
     }
 

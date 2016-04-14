@@ -1,6 +1,7 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
@@ -44,6 +45,7 @@ public class PlainFile extends PlainFile_Base {
     public void write(User user, String string) {
         if (user.checkPermission(this, 'w')) {
             this.setContent(string);
+            this.setLastModification(new DateTime());
         } else {
             throw new NoPermissionException("write");
         }
