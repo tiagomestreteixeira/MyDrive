@@ -17,7 +17,6 @@ public class App extends App_Base {
 
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
-        this.setContent("main");
     }
 
     public App(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
@@ -36,6 +35,11 @@ public class App extends App_Base {
 
     @Override
     public void setContent(String method) {
+        if (method == null || method.equals("")) {
+            super.setContent("");
+            return;
+        }
+
         if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*"))
             super.setContent(method);
         else
