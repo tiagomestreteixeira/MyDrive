@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 public class App extends App_Base {
 
-    public App() {
+    protected App() {
         super();
     }
 
