@@ -73,13 +73,7 @@ public class MyDrive extends MyDrive_Base {
 		else
         throw new UserAlreadyExistsException(user.getName());
     }
-
-    @Override
-    public Set<User> getUserSet() {
-        // TODO: Check if access should be allowed
-        return super.getUserSet();
-    }
-
+	
     @Override
     public Integer getIdCounter() {
         throw new NoPermissionException("getIdCounter");
