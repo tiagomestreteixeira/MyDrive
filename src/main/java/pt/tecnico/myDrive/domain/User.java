@@ -13,7 +13,7 @@ public class User extends User_Base {
 	private static final String USER_DEFAULT_UMASK = "rwxd----";
 	private static final int USERNAME_MIN_LENGTH = 3;
 
-    public User() {
+    protected User() {
         super();
     }
 
