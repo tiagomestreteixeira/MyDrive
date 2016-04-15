@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.joda.time.DateTime;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.exception.*;
 
@@ -115,7 +114,7 @@ public class MyDrive extends MyDrive_Base {
 
 	private void loginMaintenance() {
 		for (Login session : super.getLoginsSet()) {
-			if (!session.isDateValid(new DateTime())) {
+			if (!session.isValid()) {
 				this.removeLogin(session.getIdentifier());
 			}
 		}
@@ -124,18 +123,14 @@ public class MyDrive extends MyDrive_Base {
 	public Login getLoginFromId(long identifier) throws MyDriveException {
 		for (Login l : super.getLoginsSet()) {
 			if (l.getIdentifier() == identifier) {
+				if (!l.isValid())
+					break;
 				return l;
 			}
 		}
-		throw new InvalidLoginTokenException(identifier);
-	}
 
-	public boolean isTokenValid(long token){
-		if (getLoginFromId(token).isDateValid(new DateTime())){
-			return true;
-		}
 		log.warn("This login is no longer valid.");
-		return false;
+		throw new InvalidLoginTokenException(identifier);
 	}
 
     public void xmlImport(Element element) throws ImportDocumentException {
