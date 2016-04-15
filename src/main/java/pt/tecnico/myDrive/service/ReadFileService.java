@@ -18,13 +18,11 @@ public class ReadFileService extends MyDriveService {
 
 	@Override
 	protected void dispatch() throws MyDriveException {
-		if (getMyDrive().isTokenValid(token)) {
-			Login login = getMyDrive().getLoginFromId(token);
-			User user = login.getUser();
-			Dir currentDir = login.getCurrentDir();
+		Login login = getMyDrive().getLoginFromId(token);
+		User user = login.getUser();
+		Dir currentDir = login.getCurrentDir();
 
-			result = currentDir.getFileByName(user, filename).read(user);
-		}
+		result = currentDir.getFileByName(user, filename).read(user);
 	}
 
 	public String result() {
