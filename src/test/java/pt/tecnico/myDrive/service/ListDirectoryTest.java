@@ -63,6 +63,8 @@ public class ListDirectoryTest extends AbstractServiceTest{
 
 		assertEquals("Third file content should be:", testPlain.getPath(), result.get(2).getContent());
 		assertEquals("Fourth file content should be:", "contentOf:\n\nPlainFile", result.get(3).getContent());
+		assertTrue("Fourth file id should be:", testPlain.getId() == result.get(3).getId());
+		assertTrue("Fourth file time should be:", testPlain.getLastModification().equals(result.get(3).getLastModification()));
 	}
 
 	
