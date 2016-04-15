@@ -4,9 +4,6 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-
 public class Dir extends Dir_Base {
 
     public Dir(){

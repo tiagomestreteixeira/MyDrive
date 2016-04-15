@@ -1,13 +1,9 @@
 package pt.tecnico.myDrive.domain;
 
 import org.jdom2.Element;
-import org.joda.time.DateTime;
-import org.omg.CORBA.StringHolder;
 import pt.tecnico.myDrive.exception.MethodNotValidException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
-
-import java.lang.reflect.Method;
 
 public class App extends App_Base {
 

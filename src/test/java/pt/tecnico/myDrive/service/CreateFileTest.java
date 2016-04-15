@@ -1,7 +1,6 @@
 package pt.tecnico.myDrive.service;
 
 
-import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
