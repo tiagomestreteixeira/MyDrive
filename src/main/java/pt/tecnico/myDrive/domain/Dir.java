@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class Dir extends Dir_Base {
 
@@ -44,9 +45,15 @@ public class Dir extends Dir_Base {
 		super.removeFile(fileToBeRemoved);
 	}
 
-	public void listFileSet(){
+	public ArrayList<String> listFileSet() throws DirectoryHasNoFilesException {
+		ArrayList<String> fileList = new ArrayList<String>();
+		
 		for(File file : getFileSet())
-			System.out.println(file.getFormatedName());
+			fileList.add((file.getFormatedName()));
+		
+		if(fileList.isEmpty()) throw new DirectoryHasNoFilesException();
+		
+		return fileList;
 	}
 
 	@Override
