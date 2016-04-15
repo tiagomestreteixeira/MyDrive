@@ -3,10 +3,7 @@ package pt.tecnico.myDrive.service;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.FileDoesNotExistException;
-import pt.tecnico.myDrive.exception.MethodNotValidException;
-import pt.tecnico.myDrive.exception.MyDriveException;
-import pt.tecnico.myDrive.exception.NoPermissionException;
+import pt.tecnico.myDrive.exception.*;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
@@ -110,7 +107,7 @@ public class WriteFileTest extends AbstractServiceTest {
         assertEquals("Content was not written to file", "I\nCan\nChange", pf.getContent());
     }
 
-    @Test
+    @Test(expected = InvalidLoginTokenException.class)
     public void writeWithInvalidLogin() throws Exception {
 
         Login session = md.getLoginFromId(login);
@@ -119,8 +116,6 @@ public class WriteFileTest extends AbstractServiceTest {
         PlainFile pf = new PlainFile("testFile", userObject, userObject.getHomeDir(), "rwxdrwxd","OriginalContent");
         WriteFileService service = new WriteFileService(login, "testFile", "ChangeContent");
         service.execute();
-
-        assertEquals("Invalid Login - file should not be written", "OriginalContent", pf.getContent());
     }
 
     @Test

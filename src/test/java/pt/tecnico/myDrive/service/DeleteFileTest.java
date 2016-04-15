@@ -7,6 +7,7 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileCanNotBeRemovedException;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertNotNull;
@@ -84,13 +85,12 @@ public class DeleteFileTest extends AbstractServiceTest {
 		service.execute();
 	}
 
-	@Test
+	@Test(expected = InvalidLoginTokenException.class)
 	public void deleteWithInvalidLogin() throws Exception {
 		Login l = MyDrive.getInstance().getLoginFromId(login);
 		l.setLoginDate(new DateTime(0));
 		DeleteFileService service = new DeleteFileService(login, "test");
 		service.execute();
-		assertNotNull("File should still exist.", u.lookup("/home/Ivan/test"));
 	}
 
 	@Test(expected = FileCanNotBeRemovedException.class)
