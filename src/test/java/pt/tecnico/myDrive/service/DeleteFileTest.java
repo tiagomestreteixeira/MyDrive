@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 public class DeleteFileTest extends AbstractServiceTest {
 	static Logger log = LogManager.getLogger();
 	long login;
+	Dir subDir;
 	User u;
 
 	@Override
@@ -28,7 +29,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 		new PlainFile("test", u, home, u.getUmask());
 		new Link("link", u, home, u.getUmask(), home.getPath() + "/" + "test");
 		Dir dir = new Dir("testDir", u, home, u.getUmask());
-		Dir subDir = new Dir("subDir", u, dir, u.getUmask());
+		subDir = new Dir("subDir", u, dir, u.getUmask());
 		new PlainFile("test", u, subDir, u.getUmask());
 
 		login = md.createLogin(u.getUsername(), u.getPassword());
@@ -82,6 +83,13 @@ public class DeleteFileTest extends AbstractServiceTest {
 		service.execute();
 		root.lookup("/home/Ivan/test1");
 		fail("Lookup should throw a FileDoesNotExistException.");
+	}
+
+	@Test (expected = NoPermissionException.class)
+	public void deleteSubdirWithoutPermission() throws Exception {
+		subDir.setPermissions("rwx-rwx-");
+		DeleteFileService service = new DeleteFileService(login, "testDir");
+		service.execute();
 	}
 
 	@Test(expected = FileDoesNotExistException.class)
