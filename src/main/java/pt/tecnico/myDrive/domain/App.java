@@ -11,10 +11,6 @@ import java.lang.reflect.Method;
 
 public class App extends App_Base {
 
-    protected App() {
-        super();
-    }
-
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
     }

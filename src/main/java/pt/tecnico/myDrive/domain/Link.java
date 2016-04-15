@@ -5,10 +5,6 @@ import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class Link extends Link_Base {
-    
-    protected Link() {
-    	super();
-    }
 
     public Link(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
         init(name, user, directory, permissions);
