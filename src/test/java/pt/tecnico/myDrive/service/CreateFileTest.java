@@ -171,22 +171,13 @@ public class CreateFileTest extends  AbstractServiceTest {
     }
 
 
-    @Test
+    @Test(expected = InvalidLoginTokenException.class)
     public void createWithInvalidLogin() throws Exception {
-        
         Login session = md.getLoginFromId(login);
         session.setLoginDate(new DateTime(1));
 
         CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
         service.execute();
-
-        try{
-            userObject.getHomeDir().getFileByName(userObject,"MyPlainFile");
-        } catch (FileDoesNotExistException e){
-            return;
-        }
-
-        fail("Create File Service with an expired login should not create files");
     }
 
 

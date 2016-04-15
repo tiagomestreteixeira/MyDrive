@@ -19,18 +19,16 @@ public class ChangeDirectoryService extends MyDriveService {
 	@Override
 	protected void dispatch() throws MyDriveException {
 		Login login = getMyDrive().getLoginFromId(token);
-		if (getMyDrive().isTokenValid(token)) {
-			login.refreshToken();
-			User user = login.getUser();
-			Dir currentDir = login.getCurrentDir();
+		login.refreshToken();
+		User user = login.getUser();
+		Dir currentDir = login.getCurrentDir();
 
-			if (!pathname.startsWith("/"))
-				pathname = currentDir.getPath() + "/" + pathname;
+		if (!pathname.startsWith("/"))
+			pathname = currentDir.getPath() + "/" + pathname;
 
-			Dir d = (Dir) user.lookup(pathname);
-			login.setCurrentDir(d);
-			result = d.getPath();
-		}
+		Dir d = (Dir) user.lookup(pathname);
+		login.setCurrentDir(d);
+		result = d.getPath();
 	}
 
 	public String result() {

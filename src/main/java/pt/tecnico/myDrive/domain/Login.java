@@ -2,14 +2,10 @@ package pt.tecnico.myDrive.domain;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.joda.time.DateTime;
 
 import java.math.BigInteger;
-
 import java.util.Random;
-
-import pt.tecnico.myDrive.domain.User;
 
 public class Login extends Login_Base {
 
@@ -30,14 +26,6 @@ public class Login extends Login_Base {
 		this.setLoginDate(new DateTime());
 	}
 
-    public boolean isDateValid(DateTime data){
-    	double hours = (data.getMillis() - this.getLoginDate().getMillis()) /1000/60/60;
-		if(hours>2){
-			return false;
-		}
-		return true;
-    }
-
     public void delete(){
     	this.setUser(null);
     	this.setCurrentDir(null);
@@ -49,6 +37,10 @@ public class Login extends Login_Base {
 
     	deleteDomainObject();
     }
+
+	public boolean isValid() {
+		return getLoginDate().plusHours(2).isAfterNow();
+	}
 }
 
 
