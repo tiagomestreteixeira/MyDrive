@@ -2,6 +2,8 @@ package pt.tecnico.myDrive.service;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -19,7 +21,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	private MyDrive md;
 	private String testFile = "testPlainFile";
 	private String testString;
-			
+	private ArrayList<String> fileList = new ArrayList<String>();
 	private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
 
 	
@@ -39,15 +41,18 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	@Test
 	public void success(){
 		final String pathname = "/home/Andre/";
-		ListDirectoryService service = new ListDirectoryService(login, pathname);
+		fileList.add(testString);
+		ListDirectoryService service = new ListDirectoryService(login);
 		service.execute();
-		String result = service.result();
-		assertEquals("Directory listing is not the same", result, testString);
+		ArrayList<String> result = service.result();
+		assertEquals("Directory listing is not the same", result, fileList);
 	}
 	
 	@Test(expected=FileDoesNotExistException.class)
 	public void listNonExistantDirectory(){
-		
+		final String pathname = "/home/Andre/NonExistant";
+		ListDirectoryService service = new ListDirectoryService(login);
+		service.execute();		
 	}
 	
 }

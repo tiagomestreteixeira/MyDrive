@@ -1,9 +1,11 @@
 package pt.tecnico.myDrive.service;
 
+import java.util.ArrayList;
+
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ListDirectoryService extends MyDriveService {
-	public ListDirectoryService(long token, String pathname) {
+	public ListDirectoryService(long token) {
 
 	}
 
@@ -12,7 +14,7 @@ public class ListDirectoryService extends MyDriveService {
 
 	}
 
-	public String result() {
+	public ArrayList<String> result() {
 		return null;
 	}
 }
