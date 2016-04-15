@@ -40,7 +40,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		ListDirectoryService service = new ListDirectoryService(loginId);
 		service.execute();
 		List<FileDto> result = service.result();
-		assertEquals("Dir type should be:", "Dir", result.get(2).getType());
+		
 		
 		assertEquals("First file name should be:", "testPlainFile", result.get(1).getFilename());
 		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPerimissions());
