@@ -6,12 +6,13 @@ import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.SuperUser;
 import pt.tecnico.myDrive.domain.User;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 
 
 public class LoginUserTest extends AbstractServiceTest{
@@ -70,5 +71,20 @@ public class LoginUserTest extends AbstractServiceTest{
 		LoginUserService service = new LoginUserService(UNKNOWNUSER, USERPW);
 		service.execute();
 	}
-	
+
+	@Test(expected = InvalidLoginTokenException.class)
+	public void testLoginDeletion() throws Exception {
+		long id = 0;
+		try {
+			LoginUserService service = new LoginUserService(USER, USER);
+			service.execute();
+			id = service.result();
+			Login login = MyDrive.getInstance().getLoginFromId(id);
+			login.setLoginDate(new DateTime(0));
+			service.execute();
+		} catch (Exception e) {
+			fail();
+		}
+		MyDrive.getInstance().getLoginFromId(id);
+	}
 }
