@@ -153,7 +153,7 @@ public class File extends File_Base {
 		throw new NoPermissionException("File.setOwner()");
 	}
 
-    public void remove() {
+    protected void remove() {
         User u = getUser();
         u.removeFile(this);
         getDir().removeFile(this);

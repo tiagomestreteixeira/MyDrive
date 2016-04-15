@@ -22,9 +22,12 @@ public class Dir extends Dir_Base {
 	public void delete(User user) throws MyDriveException {
 		if (getPath().equals("/") || getPath().equals("/home"))
 			throw new FileCanNotBeRemovedException(getPath());
-
-		if (user.checkPermission(this, 'd'))
+		if (user.checkPermission(this, 'd')){
+			for (File f : getFileSet()) {
+				f.delete(user);
+			}
 			this.remove();
+		}
 		else
 			throw new NoPermissionException("Dir.delete()");
 	}
@@ -88,10 +91,9 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
-	public void remove() throws MyDriveException {
+	protected void remove() throws MyDriveException {
 		getUser().removeFile(this);
 		getDir().removeFile(this);
-		getFileSet().forEach(File::remove);
 		if (getHomeOwner() != null){
 			//Do not allow?
 			setHomeOwner(null);
