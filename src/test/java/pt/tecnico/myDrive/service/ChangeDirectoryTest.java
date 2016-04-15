@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class ChangeDirectoryTest extends AbstractServiceTest {
@@ -164,7 +165,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		service.execute();
 	}
 
-	@Test
+	@Test(expected = InvalidLoginTokenException.class)
 	public void changeDirWithInvalidLogin() throws Exception {
 		final String pathname = "/home/Andre/level1/level2/level3";
 		Login session = md.getLoginFromId(login);
