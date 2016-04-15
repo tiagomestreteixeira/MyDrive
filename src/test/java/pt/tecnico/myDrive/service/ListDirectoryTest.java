@@ -35,22 +35,34 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	@Test
 	public void success(){
 		PlainFile testPlain = new PlainFile("testPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, "contentOf:\n\nPlainFile");
-		PlainFile testPlain2 = new PlainFile("testPlainFile2", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, "contentOf:\n\nPlainFile2");
+		Link testLink = new Link("testLink", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, testPlain.getPath());
+		Dir testDir = new Dir("testDir", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS);
+		App testApp = new App("testApp", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
+
 		
 		ListDirectoryService service = new ListDirectoryService(loginId);
 		service.execute();
 		List<FileDto> result = service.result();
-		
-		
-		assertEquals("First file name should be:", "testPlainFile", result.get(1).getFilename());
-		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPerimissions());
-		assertEquals("First file content should be:", "contentOf:\n\nPlainFile", result.get(1).getContent());
-		assertEquals("First file type should be:", "PlainFile", result.get(1).getType());
+		log.info(result.size());
 
-		assertEquals("Second file name should be:", "testPlainFile2", result.get(0).getFilename());
-		assertEquals("Second file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(0).getPerimissions());
-		assertEquals("Second file content should be:", "contentOf:\n\nPlainFile2", result.get(0).getContent());
-		assertEquals("Second file type should be:", "PlainFile", result.get(0).getType());
+		assertTrue("Size should be 4", result.size() == 4);
+		assertEquals("First file name should be:", "testApp", result.get(0).getFilename());
+		assertEquals("Second file name should be:", "testDir", result.get(1).getFilename());
+		assertEquals("Third file name should be:", "testLink", result.get(2).getFilename());
+		assertEquals("Fourth file name should be:", "testPlainFile", result.get(3).getFilename());
+
+		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(0).getPerimissions());
+		assertEquals("Second file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPerimissions());
+		assertEquals("Third file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(2).getPerimissions());
+		assertEquals("Fourth file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(3).getPerimissions());
+
+		assertEquals("First file type should be:", "App", result.get(0).getType());
+		assertEquals("Second file type should be:", "Dir", result.get(1).getType());
+		assertEquals("Third file type should be:", "Link", result.get(2).getType());
+		assertEquals("Fourth file type should be:", "PlainFile", result.get(3).getType());
+
+		assertEquals("Third file content should be:", testPlain.getPath(), result.get(2).getContent());
+		assertEquals("Fourth file content should be:", "contentOf:\n\nPlainFile", result.get(3).getContent());
 	}
 
 	
