@@ -31,26 +31,23 @@ public class CreateFileService extends MyDriveService {
 		Login login = md.getLoginFromId(token);
 		User user = login.getUser();
 		Dir currentDir = login.getCurrentDir();
-
-		if (md.isTokenValid(token)) {
-			switch (fileType) {
-				case "Dir":
-					if (!content.equals(""))
-						throw new DirCanNotHaveContentException();
-					new Dir(filename, user, currentDir, user.getUmask());
-					break;
-				case "Plain":
-					new PlainFile(filename, user, currentDir, user.getUmask(), content);
-					break;
-				case "Link":
-					new Link(filename, user, currentDir, user.getUmask(), content);
-					break;
-				case "App":
-					new App(filename, user, currentDir, user.getUmask(), content);
-					break;
-				default:
-					throw new InvalidFileTypeException(fileType, "CreateFileService");
-			}
+		switch (fileType) {
+			case "Dir":
+				if (!content.equals(""))
+					throw new DirCanNotHaveContentException();
+				new Dir(filename, user, currentDir, user.getUmask());
+				break;
+			case "Plain":
+				new PlainFile(filename, user, currentDir, user.getUmask(), content);
+				break;
+			case "Link":
+				new Link(filename, user, currentDir, user.getUmask(), content);
+				break;
+			case "App":
+				new App(filename, user, currentDir, user.getUmask(), content);
+				break;
+			default:
+				throw new InvalidFileTypeException(fileType, "CreateFileService");
 		}
 	}
 }
