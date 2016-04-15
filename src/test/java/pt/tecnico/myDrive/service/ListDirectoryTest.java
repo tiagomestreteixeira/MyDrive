@@ -64,5 +64,10 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		service.execute();
 	}
 	
-
+	@Test(expected=FileDoesNotExistException.class)
+	public void NonExistantDirectoryList(){
+		final String pathname = "/home/Andre/NA";
+		ListDirectoryService service = new ListDirectoryService(login, pathname);
+		service.execute();
+	}
 }
