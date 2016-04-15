@@ -80,19 +80,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
 		assertEquals("Returned path does not match", pathname, result);
 	}
-
-	@Test
-	public void changeDirToLink() {
-		String pathname = "/home/Andre/level1/level2/level3/link";
-		new Link("link", userObject, l3, userObject.getUmask(),"/home/Andre");
-		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
-		service.execute();
-		String result = service.result();
-		pathname = "/home/Andre";
-		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
-		assertEquals("Returned path does not match", pathname, result);
-	}
-
+	
 	@Test
 	public void changeDirThroughLink() {
 		String pathname = "/home/Andre/level1/level2/level3/link/level1";
