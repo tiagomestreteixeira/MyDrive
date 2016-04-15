@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.service;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,44 +11,49 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
+import pt.tecnico.myDrive.service.dto.FileDto;
 
 public class ListDirectoryTest extends AbstractServiceTest{
 
 	static Logger log = LogManager.getLogger();
 	private long loginId;
-	private String user;
 	private User userObject;
 	private MyDrive md;
 	private Login login;
-	private String testFile = "testPlainFile";
-	private String testString;
-	private ArrayList<String> testFileList = new ArrayList<String>();
+	private ArrayList<FileDto> testFileList = new ArrayList<FileDto>();
 	private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
 
 
 	@Override
 	protected void populate() {
-		user = "Andre";
 		md = MyDriveService.getMyDrive();
-		userObject = new User(md, user);
-		loginId = md.createLogin(user,user);
-		Login login = MyDriveService.getMyDrive().getLoginFromId(loginId);
-		
-		Dir dir = new Dir("teste", userObject, userObject.getHomeDir(), userObject.getUmask());
-		PlainFile test = new PlainFile(testFile, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, "contentOf:\n\nPlainFile");
-
-		testString = "Dir " + test.getPermissions() + " " + test.getFileOwner() + " " + test.getId() + " " + test.getName();
+		userObject = new User(md, "Andre");
+		loginId = md.createLogin("Andre", "Andre");
+		login = MyDriveService.getMyDrive().getLoginFromId(loginId);
 	}
 
 	@Test
 	public void success(){
-		testFileList.add(testString);
+		PlainFile testPlain = new PlainFile("testPlainFile", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, "contentOf:\n\nPlainFile");
+		PlainFile testPlain2 = new PlainFile("testPlainFile2", userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS, "contentOf:\n\nPlainFile2");
+		
 		ListDirectoryService service = new ListDirectoryService(loginId);
 		service.execute();
-		ArrayList<String> result = service.result();
-		assertEquals("Directory listing is not the same", result, testFileList);
+		List<FileDto> result = service.result();
+		assertEquals("Dir type should be:", "Dir", result.get(2).getType());
+		
+		assertEquals("First file name should be:", "testPlainFile", result.get(1).getFilename());
+		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPerimissions());
+		assertEquals("First file content should be:", "contentOf:\n\nPlainFile", result.get(1).getContent());
+		assertEquals("First file type should be:", "PlainFile", result.get(1).getType());
+
+		assertEquals("Second file name should be:", "testPlainFile2", result.get(0).getFilename());
+		assertEquals("Second file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(0).getPerimissions());
+		assertEquals("Second file content should be:", "contentOf:\n\nPlainFile2", result.get(0).getContent());
+		assertEquals("Second file type should be:", "PlainFile", result.get(0).getType());
 	}
 
+	
 	@Test(expected=DirectoryHasNoFilesException.class)
 	public void listEmptyDirectory(){
 		final String pathname = "/home/Andre/Empty";
