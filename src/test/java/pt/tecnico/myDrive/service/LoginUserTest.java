@@ -1,16 +1,17 @@
 package pt.tecnico.myDrive.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import static org.junit.Assert.assertEquals;
-
+import org.joda.time.DateTime;
 import org.junit.Test;
-
-import pt.ist.fenixframework.FenixFramework;
-import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.domain.Login;
+import pt.tecnico.myDrive.domain.MyDrive;
+import pt.tecnico.myDrive.domain.SuperUser;
+import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.UserDoesNotExistException;
 import pt.tecnico.myDrive.exception.UserPasswordDoesNotMatchException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 public class LoginUserTest extends AbstractServiceTest{
@@ -34,26 +35,27 @@ public class LoginUserTest extends AbstractServiceTest{
 	}
 
 	@Test
-	public void success(){
-		LoginUserService service = new LoginUserService(USER, USERPW);
+	public void success() {
+		LoginUserService service = new LoginUserService(USER, USER);
 		service.execute();
 		loginId1 = service.result();
 
-		assertEquals(user, md.getLoginFromId(loginId1).getUser());
+		assertEquals("Username form login and expected do not match.", user.getUsername(), md.getLoginFromId(loginId1).getUser().getUsername());
 	}
 
 	@Test
 	public void LoginTwice(){
-		LoginUserService service = new LoginUserService(USER, USERPW);
+		LoginUserService service = new LoginUserService(USER, USER);
 		service.execute();
 		loginId1 = service.result();
 
 		service.execute();
 		loginId2 = service.result();
 
-		assertEquals(user, md.getLoginFromId(loginId1).getUser());
-		assertEquals(user, md.getLoginFromId(loginId2).getUser());
-		assertEquals(md.getLoginFromId(loginId1).getUser(), md.getLoginFromId(loginId2).getUser());
+		assertEquals("Username form login and expected do not match.", user.getUsername(), md.getLoginFromId(loginId1).getUser().getUsername());
+		assertEquals("Username from second user doens't match the expected.", user.getUsername(), md.getLoginFromId(loginId2).getUser().getUsername());
+		assertEquals("Username from login1 doesn't match login2.", md.getLoginFromId(loginId2).getUser().getUsername(), md.getLoginFromId(loginId2).getUser().getUsername());
+		assertNotEquals("Login IDs should be different.", loginId1, loginId2);
 	}
 
 	@Test (expected = UserPasswordDoesNotMatchException.class)
@@ -68,4 +70,5 @@ public class LoginUserTest extends AbstractServiceTest{
 		LoginUserService service = new LoginUserService(UNKNOWNUSER, USERPW);
 		service.execute();
 	}
+	
 }
