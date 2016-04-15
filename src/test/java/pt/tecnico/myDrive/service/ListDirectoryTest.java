@@ -36,6 +36,18 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		testString = "Dir " + test.getPermissions() + " " + test.getFileOwner() + " " + test.getId() + " " + test.getName();
 	}
 
-
+	@Test
+	public void success(){
+		final String pathname = "/home/Andre/";
+		ListDirectoryService service = new ListDirectoryService(login, pathname);
+		service.execute();
+		String result = service.result();
+		assertEquals("Directory listing is not the same", result, testString);
+	}
+	
+	@Test(expected=FileDoesNotExistException.class)
+	public void listNonExistantDirectory(){
+		
+	}
 	
 }
