@@ -17,10 +17,10 @@ public class DeleteFileService extends MyDriveService {
 	@Override
 	protected void dispatch() throws MyDriveException {
 		MyDrive md = MyDrive.getInstance();
-			Login login = md.getLoginFromId(token);
-			login.refreshToken();
-			File currentDir = (File) login.getCurrentDir();
-			User user = login.getUser();
-			currentDir.getFileByName(user, filename).delete(user);
+		Login login = md.getLoginFromId(token);
+		login.refreshToken();
+		File currentDir = (File) login.getCurrentDir();
+		User user = login.getUser();
+		currentDir.getFileByName(user, filename).delete(user);
 	}
 }
