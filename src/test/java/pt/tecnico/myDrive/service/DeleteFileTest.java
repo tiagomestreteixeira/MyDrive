@@ -12,6 +12,7 @@ import pt.tecnico.myDrive.exception.NoPermissionException;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
+import static org.junit.Assert.fail;
 
 public class DeleteFileTest extends AbstractServiceTest {
 	static Logger log = LogManager.getLogger();
@@ -33,26 +34,29 @@ public class DeleteFileTest extends AbstractServiceTest {
 		login = md.createLogin(u.getUsername(), u.getPassword());
 	}
 
-	@Test
+	@Test (expected = FileDoesNotExistException.class)
 	public void success() throws Exception {
 		DeleteFileService service = new DeleteFileService(login, "test");
 		service.execute();
-		assertNull("File should not exist", u.lookup("/home/Ivan/test"));
+		u.lookup("/home/Ivan/test");
+		fail("Lookup should throw a FileDoesNotExistException.");
 	}
 
-	@Test
+	@Test (expected = FileDoesNotExistException.class)
 	public void deleteLinkFile() throws Exception {
 		DeleteFileService service = new DeleteFileService(login, "link");
 		service.execute();
-		assertNull("File 'link' should not exist", u.lookup("/home/Ivan/link"));
 		assertNotNull("File 'test' should exist", u.lookup("/home/Ivan/test"));
+		u.lookup("/home/Ivan/link");
+		fail("Lookup should throw a FileDoesNotExistException.");
 	}
 
-	@Test
+	@Test (expected = FileDoesNotExistException.class)
 	public void deleteDirAndSubDirs() throws Exception {
 		DeleteFileService service = new DeleteFileService(login, "testDir");
 		service.execute();
-		assertNull("testDir should not exist", u.lookup("/home/Ivan/testDir"));
+		u.lookup("/home/Ivan/testDir");
+		fail("Lookup should throw a FileDoesNotExistException.");
 	}
 
 	@Test(expected = NoPermissionException.class)
@@ -70,13 +74,14 @@ public class DeleteFileTest extends AbstractServiceTest {
 		service.execute();
 	}
 
-	@Test
+	@Test(expected = FileDoesNotExistException.class)
 	public void deleteFileNoOwnerWithPermission() throws Exception {
 		SuperUser root = MyDriveService.getMyDrive().getSuperUser();
 		new PlainFile("test1", root, u.getHomeDir(), "rwxdrwxd");
 		DeleteFileService service = new DeleteFileService(login, "test1");
 		service.execute();
-		assertNull("File 'test1' should not exist", root.lookup("/home/Ivan/test1"));
+		root.lookup("/home/Ivan/test1");
+		fail("Lookup should throw a FileDoesNotExistException.");
 	}
 
 	@Test(expected = FileDoesNotExistException.class)
