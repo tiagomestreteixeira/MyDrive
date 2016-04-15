@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ListDirectoryService extends MyDriveService {
-	public ListDirectoryService(long token) {
+	public ListDirectoryService(long token, String pathname) {
 
 	}
 

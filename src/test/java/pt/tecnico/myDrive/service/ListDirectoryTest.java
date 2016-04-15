@@ -42,17 +42,27 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	public void success(){
 		final String pathname = "/home/Andre/";
 		fileList.add(testString);
-		ListDirectoryService service = new ListDirectoryService(login);
+		ListDirectoryService service = new ListDirectoryService(login, pathname);
 		service.execute();
 		ArrayList<String> result = service.result();
 		assertEquals("Directory listing is not the same", result, fileList);
 	}
 	
 	@Test(expected=DirectoryHasNoFilesException.class)
-	public void listNonExistantDirectory(){
-		final String pathname = "/home/Andre/NonExistant";
-		ListDirectoryService service = new ListDirectoryService(login);
+	public void listEmptyDirectory(){
+		final String pathname = "/home/Andre/Empty";
+		new Dir("Empty", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS );
+		ListDirectoryService service = new ListDirectoryService(login, pathname);
 		service.execute();		
 	}
 	
+	@Test(expected=NoPermissionException.class)
+	public void noPermissionDirectoryList(){
+		final String pathname = "/home/Andre/NoPerm";
+		new Dir("NoPerm", userObject, userObject.getHomeDir(), "--------");
+		ListDirectoryService service = new ListDirectoryService(login, pathname);
+		service.execute();
+	}
+	
+
 }
