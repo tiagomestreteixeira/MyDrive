@@ -21,7 +21,6 @@ public class App extends App_Base {
     }
 
     public App(Element node){
-        super();
         xmlImport(node,"app","method");
     }
 
@@ -39,11 +38,6 @@ public class App extends App_Base {
     }
 
     @Override
-    public String getFormatedName() {
-        return "App " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
-    }
-
-    @Override
     public void execute(User user){
         if (user.checkPermission(this, 'x')) {
             // TODO Execute Apps.
@@ -51,7 +45,7 @@ public class App extends App_Base {
             throw new NoPermissionException("App.execute()");
         }
     }
-    
+
     public Element xmlExport(){
         Element appElement =  new Element("app");
         appElement = xmlExportHelper(appElement);

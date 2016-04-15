@@ -78,9 +78,6 @@ public class User extends User_Base {
 	      throw new InvalidUsernameException(username, " : username has fewer than "
 				  										 + Integer.toString(USERNAME_MIN_LENGTH));
 	    }
-	    /*if (username.equals("root")){
-	      throw new UserAlreadyExistsException(username);
-	    }*/
 		  if(isAlphanumeric(username)){
 	    	super.setUsername(username);
 	    } else {

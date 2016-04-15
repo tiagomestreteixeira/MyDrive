@@ -48,17 +48,6 @@ public class Dir extends Dir_Base {
 		super.removeFile(fileToBeRemoved);
 	}
 
-	public ArrayList<String> listFileSet() throws DirectoryHasNoFilesException {
-		ArrayList<String> fileList = new ArrayList<String>();
-		
-		for(File file : getFileSet())
-			fileList.add((file.getFormatedName()));
-		
-		if(fileList.isEmpty()) throw new DirectoryHasNoFilesException();
-		
-		return fileList;
-	}
-
 	@Override
 	public File getFileByName(User user, String name){
 		if (user.checkPermission(this, 'x')) {
@@ -99,11 +88,6 @@ public class Dir extends Dir_Base {
 			setHomeOwner(null);
 		}
 		deleteDomainObject();
-	}
-
-	@Override
-	public String getFormatedName() {
-		return "Dir " + getPermissions() + " " + getFileOwner().getName() +  " " + getId() + " " + getName();
 	}
 
 	public void xmlImport(Element dirElement) throws ImportDocumentException {

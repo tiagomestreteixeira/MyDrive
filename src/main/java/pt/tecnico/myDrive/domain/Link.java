@@ -13,28 +13,8 @@ public class Link extends Link_Base {
     }
 
     public Link(Element node){
-        super();
         xmlImport(node,"link","value");
     }
-
-    public String getContent(){
-    	return super.getContent();
-    }
-
-    /*@Override
-    public String getName(){
-        return super.getName() + "->" + getContent();
-    }*/
-
-    @Override
-    public String getFormatedName() {
-        return "Link " + getPermissions()
-                + " " + getFileOwner().getName()
-                + " " + getId()
-                + " " + super.getName()
-                + "->" + getContent();
-    }
-
 
     @Override
     public File getFileByName(User user, String file){

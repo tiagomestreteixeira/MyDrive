@@ -13,7 +13,6 @@ public class MyDrive extends MyDrive_Base {
     static final Logger log = LogManager.getRootLogger();
 
     private MyDrive() {
-		// TODO: Create basic structure
         setRoot(FenixFramework.getDomainRoot());
         super.setIdCounter(0);
         SuperUser root = SuperUser.getInstance();
@@ -129,7 +128,7 @@ public class MyDrive extends MyDrive_Base {
 			}
 		}
 
-		log.warn("This login is no longer valid.");
+		log.warn("This login is not valid: " + identifier);
 		throw new InvalidLoginTokenException(identifier);
 	}
 

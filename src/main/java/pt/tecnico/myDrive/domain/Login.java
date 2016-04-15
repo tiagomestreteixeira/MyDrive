@@ -9,8 +9,6 @@ import java.util.Random;
 
 public class Login extends Login_Base {
 
-	static final Logger log = LogManager.getRootLogger();
-
     public Login(User user) {
         super();
 
@@ -32,7 +30,6 @@ public class Login extends Login_Base {
 
     	for(EnvVariables env : super.getEnvVarSet()){
 	    	super.removeEnvVar(env);
-	    	//env.delete();
 	    }
 
     	deleteDomainObject();

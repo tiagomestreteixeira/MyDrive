@@ -54,29 +54,6 @@ public class File extends File_Base {
         }
     }
 
-    @Override
-    public Integer getId(){
-        return super.getId();
-    }
-
-    @Override
-    public String getPermissions(){
-        return super.getPermissions();
-    }
-
-    @Override
-    public String getName(){
-        return super.getName();
-    }
-
-    public String getFormatedName() throws  MyDriveException{
-	    throw new NoPermissionException("File->GetFormatedName()");
-    }
-
-    public DateTime getLastModification(){
-        return super.getLastModification();
-    }
-
     public File getFileByName(User u, String s) throws InvalidFileTypeException{
         throw new InvalidFileTypeException (this.getName(), "getFileByName");
     }
@@ -160,6 +137,13 @@ public class File extends File_Base {
         deleteDomainObject();
     }
 
+    public void checkPathLengthConstrain(Dir directory, String fileName) throws FilePathTooLongException {
+        String path = directory.getPath();
+
+        if((path.length() + fileName.length() + 1)> MAX_PATH_LENGTH)
+            throw new FilePathTooLongException(path,fileName);
+    }
+
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
 
 	    MyDrive md = getFileOwner().getMyDrive();
@@ -208,6 +192,7 @@ public class File extends File_Base {
         return null;
     }
 
+
     public Element xmlExportHelper(Element el) {
 
         el.setAttribute("id", Integer.toString(this.getId()));
@@ -239,13 +224,5 @@ public class File extends File_Base {
         el.addContent(lastModifiedDateElement);
 
         return el;
-    }
-
-
-    public void checkPathLengthConstrain(Dir directory, String fileName) throws FilePathTooLongException {
-        String path = directory.getPath();
-
-        if((path.length() + fileName.length() + 1)> MAX_PATH_LENGTH)
-            throw new FilePathTooLongException(path,fileName);
     }
 }
