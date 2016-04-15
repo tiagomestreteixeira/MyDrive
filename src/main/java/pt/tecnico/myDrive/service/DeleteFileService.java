@@ -20,12 +20,12 @@ public class DeleteFileService extends MyDriveService {
 	@Override
 	protected void dispatch() throws MyDriveException {
 		MyDrive md = MyDrive.getInstance();
-		if (md.isTokenValid(token)) {
-			Login login = md.getLoginFromId(token);
-			login.refreshToken();
-			Dir currentDir = login.getCurrentDir();
-			User user = login.getUser();
-			currentDir.getFileByName(user, filename).remove();
-		}
+
+		Login login = md.getLoginFromId(token);
+		login.refreshToken();
+		Dir currentDir = login.getCurrentDir();
+		User user = login.getUser();
+		currentDir.getFileByName(user, filename).remove();
+
 	}
 }
