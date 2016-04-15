@@ -29,6 +29,7 @@ public class CreateFileService extends MyDriveService {
 	protected void dispatch() throws MyDriveException {
 		MyDrive md = getMyDrive();
 		Login login = md.getLoginFromId(token);
+		login.refreshToken();
 		User user = login.getUser();
 		Dir currentDir = login.getCurrentDir();
 		switch (fileType) {

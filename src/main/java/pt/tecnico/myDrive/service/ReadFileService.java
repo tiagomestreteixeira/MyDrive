@@ -19,6 +19,7 @@ public class ReadFileService extends MyDriveService {
 	@Override
 	protected void dispatch() throws MyDriveException {
 		Login login = getMyDrive().getLoginFromId(token);
+		login.refreshToken();
 		User user = login.getUser();
 		Dir currentDir = login.getCurrentDir();
 
