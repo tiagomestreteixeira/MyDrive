@@ -34,7 +34,7 @@ public class WriteFileTest extends AbstractServiceTest {
         new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
 
         new Link("testLinkFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS,"contentOfLink");
-        myApp = new App("testAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
+        myApp = new App("MyAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
         myApp.setContent("pt.mydrive.myapp");
 
         login = md.createLogin(name,name);
