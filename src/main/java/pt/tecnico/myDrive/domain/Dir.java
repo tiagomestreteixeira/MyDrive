@@ -50,6 +50,9 @@ public class Dir extends Dir_Base {
 		
 		for(File file : getFileSet())
 			fileList.add((file.getFormatedName()));
+		
+		if(fileList.isEmpty()) throw new DirectoryHasNoFilesException();
+		
 		return fileList;
 	}
 
