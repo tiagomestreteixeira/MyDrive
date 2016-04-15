@@ -45,7 +45,7 @@ public class Dir extends Dir_Base {
 		super.removeFile(fileToBeRemoved);
 	}
 
-	public ArrayList<String> listFileSet(){
+	public ArrayList<String> listFileSet() throws DirectoryHasNoFilesException {
 		ArrayList<String> fileList = new ArrayList<String>();
 		
 		for(File file : getFileSet())

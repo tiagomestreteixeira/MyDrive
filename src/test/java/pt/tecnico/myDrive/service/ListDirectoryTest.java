@@ -48,7 +48,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		assertEquals("Directory listing is not the same", result, fileList);
 	}
 	
-	@Test(expected=FileDoesNotExistException.class)
+	@Test(expected=DirectoryHasNoFilesException.class)
 	public void listNonExistantDirectory(){
 		final String pathname = "/home/Andre/NonExistant";
 		ListDirectoryService service = new ListDirectoryService(login);
