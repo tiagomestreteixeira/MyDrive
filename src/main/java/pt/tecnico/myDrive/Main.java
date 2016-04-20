@@ -12,6 +12,8 @@ import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
+import pt.tecnico.myDrive.presentation.MdShell;
+import pt.tecnico.myDrive.presentation.Shell;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,13 @@ import java.io.PrintStream;
 
 public class Main {
     static final Logger log = LogManager.getRootLogger();
+
+    public static void main(String[] args) throws Exception{
+        // TODO: Import XML call
+        // TODO: Add XML files to resources
+        // @see first-sprint
+        MdShell.main(args);
+    }
 
     @Atomic
     public static void cleanup() {

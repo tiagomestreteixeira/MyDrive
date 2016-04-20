@@ -7,7 +7,8 @@ public class MdShell extends Shell {
         sh.execute();
     }
 
-    public MdShell() { // add commands here
+    public MdShell() {
         super("myDrive");
+        // TODO: Add each command here
     }
 }
