@@ -91,7 +91,7 @@ public class MyDrive extends MyDrive_Base {
 		User user = this.getUserByUsername(username);
 
 		if (user != null) {
-			if (password.equals(user.getPassword())) {
+			if (user.checkPassword(password)) {
 				Login login = new Login(user);
 				this.addLogins(login);
 				return login.getIdentifier();
