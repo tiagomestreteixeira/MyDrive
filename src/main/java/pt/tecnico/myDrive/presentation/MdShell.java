@@ -2,7 +2,7 @@ package pt.tecnico.myDrive.presentation;
 
 public class MdShell extends Shell {
 
-    public static void main(String[] args) throws Exception {
+    public static void main() throws Exception {
         MdShell sh = new MdShell();
         sh.execute();
     }
