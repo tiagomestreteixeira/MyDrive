@@ -22,12 +22,22 @@ import java.io.PrintStream;
 public class Main {
     static final Logger log = LogManager.getRootLogger();
 
+    // TODO: Add XML files to resources
     public static void main(String[] args) throws Exception{
-        // TODO: Import XML call
-        // TODO: Add XML files to resources
-        // @see first-sprint
-        MdShell.main(args);
+        try {
+            for (String s : args){
+                log.info("command line argument: " + s);
+                importXML(new File(s));
+            }
+            MdShell.main(args);
+            xmlPrint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FenixFramework.shutdown();
+        }
     }
+
 
     @Atomic
     public static void cleanup() {
