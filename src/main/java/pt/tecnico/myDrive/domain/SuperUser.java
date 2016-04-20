@@ -1,5 +1,8 @@
 package pt.tecnico.myDrive.domain;
 
+import pt.tecnico.myDrive.exception.MyDriveException;
+import pt.tecnico.myDrive.exception.NoPermissionException;
+
 public class SuperUser extends SuperUser_Base {
     public SuperUser(MyDrive md) {
         setUsername("root");
@@ -17,6 +20,11 @@ public class SuperUser extends SuperUser_Base {
     public boolean setPermissions(File file, String newPermissions) {
         file.setPermissions(newPermissions);
         return true;
+    }
+
+	@Override
+    public void remove() throws MyDriveException {
+        throw new NoPermissionException("SuperUser.remove()");
     }
 }
 
