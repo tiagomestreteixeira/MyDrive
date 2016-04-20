@@ -17,6 +17,10 @@ class SuperUser extends User
 {
 }
 
+class Guest extends User
+{
+}
+
 class File 
 {
   Integer id;
