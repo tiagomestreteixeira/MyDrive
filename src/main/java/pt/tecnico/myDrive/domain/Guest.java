@@ -34,6 +34,33 @@ public class Guest extends Guest_Base {
 	public void remove() throws MyDriveException {
 		throw new NoPermissionException("Guest.remove()");
 	}
+
+	@Override
+	public boolean checkPermission(File file, Character c){
+		if (file.isOwner(this)){
+			switch (c){
+				case 'r':
+					return file.getPermissions().matches("r.......");
+				case 'w':
+					return false;
+				case 'x':
+					return file.getPermissions().matches("..x.....");
+				case 'd':
+					return false;
+			}
+		}
+		switch (c){
+			case 'r':
+				return file.getPermissions().matches("....r...");
+			case 'w':
+				return false;
+			case 'x':
+				return file.getPermissions().matches("......x.");
+			case 'd':
+				return false;
+		}
+		return false;
+	}
 }
 
 
