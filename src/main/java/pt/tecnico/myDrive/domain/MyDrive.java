@@ -15,7 +15,7 @@ public class MyDrive extends MyDrive_Base {
     private MyDrive() {
         setRoot(FenixFramework.getDomainRoot());
         super.setIdCounter(0);
-        SuperUser root = SuperUser.getInstance();
+        SuperUser root = new SuperUser(this);
         Dir rootDir = new Dir();
 	    rootDir.setUser(root);
 	    rootDir.init("/",root,rootDir,root.getUmask());

@@ -1,22 +1,12 @@
 package pt.tecnico.myDrive.domain;
 
 public class SuperUser extends SuperUser_Base {
-    private SuperUser() {
+    public SuperUser(MyDrive md) {
         setUsername("root");
         setName("root");
         setPassword("***");
         setUmask("rwxdr-x-");
-        MyDrive.getInstance().addUser(this);
-    }
-
-    public static SuperUser getInstance() {
-        SuperUser root = (SuperUser) MyDrive.getInstance().getUserByUsername("root");
-
-        if (root == null) {
-            return new SuperUser();
-        }
-
-        return root;
+        md.addUser(this);
     }
 
     @Override
