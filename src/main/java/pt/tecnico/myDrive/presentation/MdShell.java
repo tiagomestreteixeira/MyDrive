@@ -10,5 +10,6 @@ public class MdShell extends Shell {
     public MdShell() {
         super("myDrive");
         // TODO: Add each command here
+        new LoginCommand(this);
     }
 }
