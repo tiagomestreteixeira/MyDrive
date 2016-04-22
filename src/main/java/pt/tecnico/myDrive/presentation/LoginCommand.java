@@ -12,6 +12,8 @@ public class LoginCommand extends MdCommand{
     public void execute(String[] args) {
         if (args.length != 2)
             throw new RuntimeException(USAGE_MSG);
-        new LoginUserService(args[0],args[1]).execute();
+        LoginUserService uS = new LoginUserService(args[0],args[1]);
+        Long token = uS.result();
+        System.out.println("Token generated: " + token.toString() + "\n");
     }
 }
