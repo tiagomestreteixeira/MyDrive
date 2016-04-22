@@ -49,7 +49,7 @@ class App extends PlainFile
 class Login
 {
     long identifier;
-    DateTime loginDate;
+    DateTime expirationDate;
 }
 
 class EnvVariables
