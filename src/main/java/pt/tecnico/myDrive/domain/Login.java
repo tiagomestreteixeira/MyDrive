@@ -13,13 +13,13 @@ public class Login extends Login_Base {
         Long tokenId = new BigInteger(64, new Random()).longValue();
 
         this.setUser(user);
-        this.setLoginDate(new DateTime());
+        this.setExpirationDate(user.getLoginExpiration());
      	this.setIdentifier(tokenId);
      	this.setCurrentDir(user.getHomeDir());
     }
 
 	public void refreshToken() {
-		this.setLoginDate(new DateTime());
+		this.setExpirationDate(this.getUser().getLoginExpiration());
 	}
 
     public void delete(){
@@ -34,7 +34,7 @@ public class Login extends Login_Base {
     }
 
 	public boolean isValid() {
-		return getLoginDate().plusHours(2).isAfterNow();
+		return getExpirationDate().isAfterNow();
 	}
 }
 
