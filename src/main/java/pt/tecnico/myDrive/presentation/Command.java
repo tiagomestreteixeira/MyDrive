@@ -20,7 +20,7 @@ public abstract class Command {
     public String help() { return help; }
     public Shell shell() { return shell; }
 
-    abstract void execute(String[] args);
+    abstract void execute(String[] args) throws Exception;
 
     public void print(String s) { shell.print(s); }
     public void println(String s) { shell.println(s); }
