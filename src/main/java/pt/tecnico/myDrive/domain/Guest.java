@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
@@ -23,6 +24,11 @@ public class Guest extends Guest_Base {
 	@Override
 	public boolean checkPassword(String attempt) {
 		return true;
+	}
+
+	@Override
+	public DateTime getLoginExpiration() {
+		return new DateTime(9999, 0, 0, 0, 0, 0, 0);
 	}
 
 	@Override
