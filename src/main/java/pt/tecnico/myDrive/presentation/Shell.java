@@ -76,6 +76,7 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
+            
             System.out.print(prompt);
         }
         System.out.println(name+" end");
