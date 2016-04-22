@@ -2,6 +2,8 @@ package pt.tecnico.myDrive.presentation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.SyslogAppender;
+
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
@@ -28,7 +30,7 @@ public abstract class Shell {
         new Command(this, "help", "this command help") {
             void execute(String[] args) {
                 if (args.length == 0) {
-                    for (String s: shell().list()) System.out.println(s);
+                    shell().list().forEach((commandName)->System.out.println(commandName));
                     System.out.println(name()+" name (for command details)");
                 } else {
                     for (String s: args)
@@ -74,6 +76,7 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
+            
             System.out.print(prompt);
         }
         System.out.println(name+" end");
