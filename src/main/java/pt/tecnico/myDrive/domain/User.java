@@ -152,6 +152,10 @@ public class User extends User_Base {
 		}
 	}
 
+	public boolean checkPassword (String attempt) {
+		return attempt.equals(getPassword());
+	}
+
 	private Stack<String> toStack (String pathname) {
 		String[] params = pathname.split("/");
 		Stack<String> st = new Stack<>();

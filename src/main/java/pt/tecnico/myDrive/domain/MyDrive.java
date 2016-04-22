@@ -20,13 +20,19 @@ public class MyDrive extends MyDrive_Base {
 	    rootDir.setUser(root);
 	    rootDir.init("/",root,rootDir,root.getUmask());
         root.setHomeDir(root.makeDir("/home/root"));
+
+	    Guest guest = new Guest(this);
+
     }
 
     public void cleanup() {
-        for(User u : getUserSet())
-            u.remove();
-        setRoot(null);
-        deleteDomainObject();
+        for(User u : getUserSet()){
+            try {
+	            u.remove();
+            } catch (Exception e) {
+				// Ignores warnings for SuperUser and Guest.
+            }
+        }
     }
 
     public static MyDrive getInstance() {
@@ -91,7 +97,7 @@ public class MyDrive extends MyDrive_Base {
 		User user = this.getUserByUsername(username);
 
 		if (user != null) {
-			if (password.equals(user.getPassword())) {
+			if (user.checkPassword(password)) {
 				Login login = new Login(user);
 				this.addLogins(login);
 				return login.getIdentifier();
