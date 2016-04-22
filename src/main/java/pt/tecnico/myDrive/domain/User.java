@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.domain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
 import java.util.Stack;
@@ -39,6 +40,10 @@ public class User extends User_Base {
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
 		getHomeDir().setPermissions(umask);
+	}
+
+	public DateTime getLoginExpiration() {
+		return new DateTime().plusHours(2);
 	}
 
 	  @Override

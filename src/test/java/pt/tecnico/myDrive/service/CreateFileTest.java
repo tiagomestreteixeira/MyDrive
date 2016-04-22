@@ -173,7 +173,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     @Test(expected = InvalidLoginTokenException.class)
     public void createWithInvalidLogin() throws Exception {
         Login session = md.getLoginFromId(login);
-        session.setLoginDate(new DateTime(1));
+        session.setExpirationDate(new DateTime(1));
 
         CreateFileService service = new CreateFileService(login,"MyPlainFile","Plain");
         service.execute();

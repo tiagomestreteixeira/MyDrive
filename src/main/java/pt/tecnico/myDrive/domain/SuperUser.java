@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.domain;
 
+import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
@@ -10,6 +11,11 @@ public class SuperUser extends SuperUser_Base {
         setPassword("***");
         setUmask("rwxdr-x-");
         md.addUser(this);
+    }
+
+    @Override
+    public DateTime getLoginExpiration() {
+        return new DateTime().plusMinutes(10);
     }
 
     @Override
