@@ -28,6 +28,6 @@ public class LoginCommand extends MdCommand{
         loginUserService = new LoginUserService(args[0],args[1]);
         loginUserService.execute();
         token = loginUserService.result();
-        System.out.println("Token generated: " + token.toString() + "\n");
+        this.println("Token generated: " + token.toString() + "\n");
     }
 }
