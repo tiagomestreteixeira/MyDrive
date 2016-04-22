@@ -111,7 +111,7 @@ public class WriteFileTest extends AbstractServiceTest {
     public void writeWithInvalidLogin() throws Exception {
 
         Login session = md.getLoginFromId(login);
-        session.setLoginDate(new DateTime(1));
+        session.setExpirationDate(new DateTime(1));
 
         PlainFile pf = new PlainFile("testFile", userObject, userObject.getHomeDir(), "rwxdrwxd","OriginalContent");
         WriteFileService service = new WriteFileService(login, "testFile", "ChangeContent");
