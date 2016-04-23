@@ -6,7 +6,6 @@ import org.apache.logging.log4j.core.appender.SyslogAppender;
 
 import java.io.*;
 import java.util.*;
-import java.lang.reflect.*;
 
 public abstract class Shell {
     protected static final Logger log = LogManager.getRootLogger();
@@ -59,10 +58,10 @@ public abstract class Shell {
     public void execute() throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String str, prompt = null;
+        MdCommand infoCurrentState = (MdCommand) coms.get("login");
 
         loginGuestUser();
-
-        if (prompt == null) prompt = "myDrive $ ";
+        if (prompt == null) prompt = "myDrive <"+infoCurrentState.username+"> $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -78,8 +77,7 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
-            
-            System.out.print(prompt);
+            System.out.print(prompt="myDrive <"+infoCurrentState.getUsername()+"> $ ");
         }
         System.out.println(name+" end");
     }

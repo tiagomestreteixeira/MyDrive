@@ -1,8 +1,5 @@
 package pt.tecnico.myDrive.presentation;
 
-import pt.tecnico.myDrive.presentation.Command;
-import pt.tecnico.myDrive.presentation.Shell;
-
 public abstract class MdCommand extends Command {
 
     protected String username;
