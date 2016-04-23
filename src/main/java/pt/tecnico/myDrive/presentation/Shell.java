@@ -60,6 +60,8 @@ public abstract class Shell {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String str, prompt = null;
 
+        loginGuestUser();
+
         if (prompt == null) prompt = "myDrive $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
@@ -81,6 +83,15 @@ public abstract class Shell {
         }
         System.out.println(name+" end");
     }
+
+
+    public void loginGuestUser(){
+        try {
+            coms.get("login").execute("nobody".split(" "));
+        }
+        catch (Exception e) { e.printStackTrace(); }
+    }
+
 
 
     /**
