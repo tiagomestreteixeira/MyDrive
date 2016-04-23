@@ -4,7 +4,6 @@ import pt.tecnico.myDrive.service.LoginUserService;
 public class LoginCommand extends MdCommand{
 
     private static final String USAGE_MSG = "USAGE: login username [password]\n";
-    private Long token;
 
     public LoginCommand(Shell sh) {
         super(sh, "login", "Log into the system providing the username and login token.\n" + USAGE_MSG);
