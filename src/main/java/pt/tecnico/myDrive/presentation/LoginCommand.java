@@ -13,17 +13,15 @@ public class LoginCommand extends MdCommand{
     private void executeLogin(String user, String pass){
         LoginUserService loginUserService = new LoginUserService(user, pass);
         loginUserService.execute();
-        token = loginUserService.result();
+        setToken(loginUserService.result());
+        setUsername(user);
         log.info("Token generated: ", token.toString());
     }
 
     public void execute(String[] args) throws Exception {
-        if (args.length != 2){
-            if(args.length == 1 && args[0].equals("Guest"))
-                executeLogin("nobody",null);
-            else
-                throw new RuntimeException(USAGE_MSG);
-        }
-        executeLogin(args[0],args[1]);
+        if(args.length>2 || args.length<1)
+            throw new RuntimeException(USAGE_MSG);
+        String pass = args.length == 1 ? args[0] : args[1];
+        executeLogin(args[0],pass);
     }
 }
