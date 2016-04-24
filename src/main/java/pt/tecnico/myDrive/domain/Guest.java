@@ -28,7 +28,7 @@ public class Guest extends Guest_Base {
 
 	@Override
 	public DateTime getLoginExpiration() {
-		return new DateTime(9999, 0, 0, 0, 0, 0, 0);
+		return new DateTime(9999, 1, 1, 1, 0, 0, 0);
 	}
 
 	@Override

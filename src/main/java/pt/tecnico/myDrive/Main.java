@@ -22,7 +22,6 @@ import java.io.PrintStream;
 public class Main {
     static final Logger log = LogManager.getRootLogger();
 
-    // TODO: Add XML files to resources
     // TODO: Check for additional needed initializations/cleanup's
     public static void main(String[] args) throws Exception{
         try {
