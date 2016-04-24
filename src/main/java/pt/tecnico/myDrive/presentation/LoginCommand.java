@@ -13,9 +13,9 @@ public class LoginCommand extends MdCommand{
     private void executeLogin(String user, String pass){
         LoginUserService loginUserService = new LoginUserService(user, pass);
         loginUserService.execute();
-        setToken(loginUserService.result());
-        setUsername(user);
-        log.info("Token generated: " + token.toString());
+        shell().setToken(loginUserService.result());
+        shell().setUsername(user);
+        log.info("Token generated: " + shell().getToken());
     }
 
     public void execute(String[] args) throws Exception {

@@ -13,6 +13,10 @@ public abstract class Shell {
     private PrintWriter out;
     private String name;
 
+    protected String username;
+    protected Long token;
+    protected String currentDir;
+
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
     public Shell(String n, Writer w, boolean flush) {
@@ -40,6 +44,30 @@ public abstract class Shell {
         };
     }
 
+    public String getCurrentDir() {
+        return currentDir;
+    }
+
+    public void setCurrentDir(String currentDir) {
+        this.currentDir = currentDir;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getToken() {
+        return token;
+    }
+
+    public void setToken(Long token) {
+        this.token = token;
+    }
+
     public void print(String s) { out.print(s); }
     public void println(String s) { out.println(s); }
     public void flush() { out.flush(); }
@@ -58,10 +86,9 @@ public abstract class Shell {
     public void execute() throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String str, prompt = null;
-        MdCommand infoCurrentState = (MdCommand) coms.get("login");
 
         loginGuestUser();
-        if (prompt == null) prompt = "myDrive <"+infoCurrentState.username+"> $ ";
+        if (prompt == null) prompt = "myDrive <"+getUsername()+"> $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -77,7 +104,7 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
-            System.out.print(prompt="myDrive <"+infoCurrentState.getUsername()+"> $ ");
+            System.out.print(prompt="myDrive <"+getUsername()+"> $ ");
         }
         System.out.println(name+" end");
     }
