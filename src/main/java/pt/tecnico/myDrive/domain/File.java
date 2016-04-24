@@ -145,8 +145,6 @@ public class File extends File_Base {
 
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
 
-	    MyDrive md = getFileOwner().getMyDrive();
-
         String path,
                 name,
                 ownerUsername,
@@ -174,6 +172,7 @@ public class File extends File_Base {
         if (ownerUsername == null)
             ownerUsername = "root";
 
+        MyDrive md = MyDrive.getInstance();
         User owner = md.getUserByUsername(ownerUsername);
 
         if (defaultPermissions == null) {
@@ -183,8 +182,8 @@ public class File extends File_Base {
         }
 
         defaultPermissions = owner.getUmask();
-
-        init(name, owner, md.getSuperUser().makeDir(path), defaultPermissions);
+        // TODO: check correctness of intermediate dirs creations by owner
+        init(name, owner, owner.makeDir(path), defaultPermissions);
     }
 
     public Element xmlExport(){
