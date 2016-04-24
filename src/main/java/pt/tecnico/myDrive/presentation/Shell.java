@@ -12,6 +12,7 @@ public abstract class Shell {
     private Map<String,Command> coms = new TreeMap<String,Command>();
     private PrintWriter out;
     private String name;
+    private boolean awaitingCommands;
 
     protected String username;
     protected Long token;
@@ -22,11 +23,12 @@ public abstract class Shell {
     public Shell(String n, Writer w, boolean flush) {
         name = n;
         out = new PrintWriter(w, flush);
+        awaitingCommands = true;
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
                 System.out.println(name+" quit");
-                System.exit(0);
+                awaitingCommands = false;
             }
         };
 
@@ -104,7 +106,9 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
-            System.out.print(prompt="myDrive <"+getUsername()+"> $ ");
+            if(awaitingCommands)
+                System.out.print(prompt="myDrive <"+getUsername()+"> $ ");
+            else break;
         }
         System.out.println(name+" end");
     }
