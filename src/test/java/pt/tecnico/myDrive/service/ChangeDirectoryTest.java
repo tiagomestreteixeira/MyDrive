@@ -157,7 +157,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 	public void changeDirWithInvalidLogin() throws Exception {
 		final String pathname = "/home/Andre/level1/level2/level3";
 		Login session = md.getLoginFromId(login);
-		session.setExpirationDate(new DateTime(1));
+		session.setLoginDate(new DateTime(1));
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
 		assertEquals("Login CurrentDir does not match", userObject.getHomeDir().getPath(), md.getLoginFromId(login).getCurrentDir().getPath());

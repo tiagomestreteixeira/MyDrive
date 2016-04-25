@@ -101,7 +101,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 	@Test(expected = InvalidLoginTokenException.class)
 	public void deleteWithInvalidLogin() throws Exception {
 		Login l = MyDrive.getInstance().getLoginFromId(login);
-		l.setExpirationDate(new DateTime(0));
+		l.setLoginDate(new DateTime(0));
 		DeleteFileService service = new DeleteFileService(login, "test");
 		service.execute();
 	}
