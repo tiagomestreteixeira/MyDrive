@@ -14,9 +14,9 @@ public abstract class Shell {
     private String name;
     private boolean awaitingCommands;
 
-    protected String username;
-    protected Long token;
-    protected String currentDir;
+    private Users u = new Users();
+    private String username;
+    private Long token;
 
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
@@ -24,6 +24,7 @@ public abstract class Shell {
         name = n;
         out = new PrintWriter(w, flush);
         awaitingCommands = true;
+        u = new Users();
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
@@ -45,15 +46,7 @@ public abstract class Shell {
             }
         };
     }
-
-    public String getCurrentDir() {
-        return currentDir;
-    }
-
-    public void setCurrentDir(String currentDir) {
-        this.currentDir = currentDir;
-    }
-
+    
     public String getUsername() {
         return username;
     }
@@ -107,7 +100,7 @@ public abstract class Shell {
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
             if(awaitingCommands)
-                System.out.print(prompt="myDrive <"+getUsername()+"> $ ");
+                System.out.print("myDrive <"+getUsername()+"> $ ");
             else break;
         }
         System.out.println(name+" end");
