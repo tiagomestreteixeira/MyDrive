@@ -42,10 +42,6 @@ public class User extends User_Base {
 		getHomeDir().setPermissions(umask);
 	}
 
-	public DateTime getLoginExpiration() {
-		return new DateTime().plusHours(2);
-	}
-
 	  @Override
 	  public void addFile(File fileToBeAdded) throws UserAlreadyExistsException{
 		  for(File f : getFileSet()) {

@@ -14,11 +14,6 @@ public class SuperUser extends SuperUser_Base {
     }
 
     @Override
-    public DateTime getLoginExpiration() {
-        return new DateTime().plusMinutes(10);
-    }
-
-    @Override
     public boolean checkPermission(File file, Character c) {
         return true;
     }

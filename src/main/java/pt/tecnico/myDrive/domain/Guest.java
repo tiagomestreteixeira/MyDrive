@@ -27,11 +27,6 @@ public class Guest extends Guest_Base {
 	}
 
 	@Override
-	public DateTime getLoginExpiration() {
-		return new DateTime(9999, 0, 0, 0, 0, 0, 0);
-	}
-
-	@Override
 	public void setPassword(String attempt) throws MyDriveException {
 		throw new NoPermissionException("Guest.setPassword()");
 	}
