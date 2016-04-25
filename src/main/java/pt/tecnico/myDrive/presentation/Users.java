@@ -23,19 +23,24 @@ public class Users {
 
     public void addUser(String username,Long token) throws Exception{
         if(users.containsKey(username))
-            throw new Exception(ADD_USER_MSG + username + HAS_LOGGED_SYSTEM_MSG  + ADD_USER_HELP_MSG + username + ",token[Long])\n");
+            throw new Exception(ADD_USER_MSG + username
+                    + HAS_LOGGED_SYSTEM_MSG  + ADD_USER_HELP_MSG + username + ",token[Long])\n");
         users.put(username,token);
     }
 
     public Long getToken(String username) throws Exception{
-        if(users.containsKey(username))
-            throw new Exception(GET_TOKEN_MSG + username + NOT_LOGGED_SYSTEM_MSG + GET_TOKEN_HELP_MSG + username + ",token[Long])\n");
+        if(!users.containsKey(username))
+            throw new Exception(GET_TOKEN_MSG + username
+                    + NOT_LOGGED_SYSTEM_MSG + GET_TOKEN_HELP_MSG + username + ",token[Long])\n");
+
         return users.get(username);
     }
 
     public void updateToken(String username,Long token) throws Exception{
-        if(users.containsKey(username))
-            throw new Exception(UPDATE_TOKEN_MSG + username + NOT_LOGGED_SYSTEM_MSG + UPDATE_TOKEN_HELP_MSG + username + ",token)\n");
+        if(!users.containsKey(username))
+            throw new Exception(UPDATE_TOKEN_MSG + username
+                    + NOT_LOGGED_SYSTEM_MSG + UPDATE_TOKEN_HELP_MSG + username + ",token)\n");
+
         users.put(username,token);
     }
 
