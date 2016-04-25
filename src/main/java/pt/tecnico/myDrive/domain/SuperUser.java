@@ -32,6 +32,11 @@ public class SuperUser extends SuperUser_Base {
     public void remove() throws MyDriveException {
         throw new NoPermissionException("SuperUser.remove()");
     }
+
+    @Override
+    public boolean isLoginValid(DateTime loginDate) {
+        return loginDate.plusMinutes(10).isAfterNow();
+    }
 }
 
 

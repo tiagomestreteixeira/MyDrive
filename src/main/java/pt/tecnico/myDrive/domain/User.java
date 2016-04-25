@@ -247,4 +247,7 @@ public class User extends User_Base {
 		return userNode;
 	}
 
+	public boolean isLoginValid(DateTime loginDate) {
+		return loginDate.plusHours(2).isAfterNow();
+	}
 }

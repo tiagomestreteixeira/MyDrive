@@ -67,6 +67,11 @@ public class Guest extends Guest_Base {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean isLoginValid(DateTime loginDate) {
+		return true;
+	}
 }
 
 
