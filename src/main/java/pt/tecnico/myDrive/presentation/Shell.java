@@ -2,7 +2,6 @@ package pt.tecnico.myDrive.presentation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.SyslogAppender;
 
 import java.io.*;
 import java.util.*;
@@ -46,12 +45,12 @@ public abstract class Shell {
             }
         };
     }
-    
-    public String getUsername() {
+
+    public String getCurrentUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setCurrentUsername(String username) {
         this.username = username;
     }
 
@@ -83,7 +82,7 @@ public abstract class Shell {
         String str, prompt = null;
 
         loginGuestUser();
-        if (prompt == null) prompt = "myDrive <"+getUsername()+"> $ ";
+        if (prompt == null) prompt = "myDrive <"+ getCurrentUsername()+"> $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -100,7 +99,7 @@ public abstract class Shell {
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
             if(awaitingCommands)
-                System.out.print("myDrive <"+getUsername()+"> $ ");
+                System.out.print("myDrive <"+ getCurrentUsername()+"> $ ");
             else break;
         }
         System.out.println(name+" end");

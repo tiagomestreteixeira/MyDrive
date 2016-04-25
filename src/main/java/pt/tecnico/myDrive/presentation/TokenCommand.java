@@ -10,7 +10,7 @@ public class TokenCommand extends MdCommand {
 
     public void execute(String[] args) throws Exception {
         if (args.length < 1){
-            shell().println(shell().getUsername());
+            shell().println(shell().getCurrentUsername());
             shell().println(shell().getToken().toString());
         }
         throw new RuntimeException(USAGE_MSG);

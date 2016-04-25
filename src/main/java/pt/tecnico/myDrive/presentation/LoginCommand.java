@@ -14,7 +14,7 @@ public class LoginCommand extends MdCommand{
         LoginUserService loginUserService = new LoginUserService(user, pass);
         loginUserService.execute();
         shell().setToken(loginUserService.result());
-        shell().setUsername(user);
+        shell().setCurrentUsername(user);
         log.info("Token generated: " + shell().getToken());
     }
 
