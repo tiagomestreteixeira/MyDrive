@@ -42,6 +42,8 @@ public class UsersManager {
     // Updates the token Implementation:
     public void addUser(String username,Long token) throws Exception{
         users.put(username,token);
+        currentUsername = username;
+        currentToken = token;
     }
 
 
