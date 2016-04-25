@@ -58,7 +58,18 @@ public class UsersManager {
 
         users.put(username,token);
     }
-    
+
+    public void setCurrentUsername(String username) throws Exception{
+        if(!users.containsKey(username))
+            throw new Exception(SET_CURRENT_USERNAME_MSG + username + NOT_LOGGED_SYSTEM_MSG + "\n");
+        currentUsername = username;
+        currentToken = users.get(username);
+    }
+
+    public void setCurrentToken(Long token) throws Exception {
+        throw new Exception(SET_CURRENT_TOKEN_MSG);
+    }
+
     public String getCurrentUsername(){
         return currentUsername;
     }
