@@ -14,11 +14,6 @@ public class SuperUser extends SuperUser_Base {
     }
 
     @Override
-    public DateTime getLoginExpiration() {
-        return new DateTime().plusMinutes(10);
-    }
-
-    @Override
     public boolean checkPermission(File file, Character c) {
         return true;
     }
@@ -31,6 +26,11 @@ public class SuperUser extends SuperUser_Base {
 	@Override
     public void remove() throws MyDriveException {
         throw new NoPermissionException("SuperUser.remove()");
+    }
+
+    @Override
+    public boolean isLoginValid(DateTime loginDate) {
+        return loginDate.plusMinutes(10).isAfterNow();
     }
 }
 
