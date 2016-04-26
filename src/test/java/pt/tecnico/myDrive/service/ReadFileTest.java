@@ -103,7 +103,7 @@ public class ReadFileTest extends AbstractServiceTest {
 	@Test(expected = InvalidLoginTokenException.class)
 	public void readWithInvalidLogin() throws Exception {
 		Login session = md.getLoginFromId(login);
-		session.setExpirationDate(new DateTime(1));
+		session.setLoginDate(new DateTime(1));
 		ReadFileService service = new ReadFileService(login, "testFile");
 		service.execute();
 	}

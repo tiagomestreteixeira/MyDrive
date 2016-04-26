@@ -80,7 +80,7 @@ public class LoginUserTest extends AbstractServiceTest{
 			service.execute();
 			id = service.result();
 			Login login = MyDrive.getInstance().getLoginFromId(id);
-			login.setExpirationDate(new DateTime(0));
+			login.setLoginDate(new DateTime(0));
 			service.execute();
 		} catch (Exception e) {
 			fail();
