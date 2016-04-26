@@ -12,6 +12,6 @@ public class UserPasswordDoesNotMatchException extends MyDriveException {
 	
 	@Override
 	public String getMessage(){
-		return "The username " + username + "and password do not match.";
+		return "The username " + username + " and password do not match.";
 	}
 }

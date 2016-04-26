@@ -11,5 +11,6 @@ public class MdShell extends Shell {
         super("myDrive");
         // TODO: Add each command here
         new LoginCommand(this);
+        new TokenCommand(this);
     }
 }
