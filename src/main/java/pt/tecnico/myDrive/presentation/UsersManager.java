@@ -13,7 +13,8 @@ public class UsersManager {
     private static final String GET_TOKEN_MSG = "Presentation : getTokenByUsername - ";
     private static final String UPDATE_TOKEN_MSG = "Presentation : updateToken - ";
     private static final String SET_CURRENT_USERNAME_MSG  = "Presentation : setCurrentUsername - ";
-    private static final String SET_CURRENT_TOKEN_MSG  = "Presentation : setCurrentToken - \"Illegal usage. Use updateToken(username,token) instead.\n";
+    private static final String SET_CURRENT_TOKEN_MSG  = "Presentation : setCurrentToken - \"Illegal usage. " +
+            "Use updateToken(username,token) instead.\n";
 
     private static final String NOT_LOGGED_SYSTEM_MSG = " - has not been previously logged into the system.\n\n";
 
@@ -29,18 +30,6 @@ public class UsersManager {
             throw new UserManagerPresentationException(exMsg);
     }
 
-
-    // TODO: sequence use case
-    // - login a pass
-    // - login a pass -> Updates the token or throws Exception?
-    // throws exception Implementation:
-    //public void addUser(String username,Long token) throws Exception{
-    //    if(users.containsKey(username))
-    //        throw new Exception(ADD_USER_MSG + username
-    //                + HAS_LOGGED_SYSTEM_MSG  + ADD_USER_HELP_MSG + username + ",token[Long])\n");
-    //    users.put(username,token);
-    //}
-    // Updates the token Implementation:
     public void addUser(String username,Long token) {
         users.put(username,token);
         currentUsername = username;
