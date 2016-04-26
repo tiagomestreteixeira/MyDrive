@@ -13,9 +13,7 @@ public abstract class Shell {
     private String name;
     private boolean awaitingCommands;
 
-    private Users u = new Users();
-    private String username;
-    private Long token;
+    private UsersManager userManager;
 
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
@@ -23,7 +21,7 @@ public abstract class Shell {
         name = n;
         out = new PrintWriter(w, flush);
         awaitingCommands = true;
-        u = new Users();
+        userManager = new UsersManager();
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
@@ -47,19 +45,23 @@ public abstract class Shell {
     }
 
     public String getCurrentUsername() {
-        return username;
+        return userManager.getCurrentUsername();
     }
 
     public void setCurrentUsername(String username) {
-        this.username = username;
+        userManager.setCurrentUsername(username);
     }
 
-    public Long getToken() {
-        return token;
+    public Long getCurrentToken() {
+        return userManager.getCurrentToken();
     }
 
-    public void setToken(Long token) {
-        this.token = token;
+    public void setCurrentToken(Long token) {
+        userManager.setCurrentToken(token);
+    }
+
+    public void addUser(String username,Long token){
+        userManager.addUser(username,token);
     }
 
     public void print(String s) { out.print(s); }
