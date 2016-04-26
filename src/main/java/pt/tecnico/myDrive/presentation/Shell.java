@@ -2,7 +2,6 @@ package pt.tecnico.myDrive.presentation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.SyslogAppender;
 
 import java.io.*;
 import java.util.*;
@@ -14,9 +13,7 @@ public abstract class Shell {
     private String name;
     private boolean awaitingCommands;
 
-    protected String username;
-    protected Long token;
-    protected String currentDir;
+    private UsersManager userManager;
 
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
@@ -24,6 +21,7 @@ public abstract class Shell {
         name = n;
         out = new PrintWriter(w, flush);
         awaitingCommands = true;
+        userManager = new UsersManager();
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
@@ -46,28 +44,24 @@ public abstract class Shell {
         };
     }
 
-    public String getCurrentDir() {
-        return currentDir;
+    public String getCurrentUsername() {
+        return userManager.getCurrentUsername();
     }
 
-    public void setCurrentDir(String currentDir) {
-        this.currentDir = currentDir;
+    public void setCurrentUsername(String username) {
+        userManager.setCurrentUsername(username);
     }
 
-    public String getUsername() {
-        return username;
+    public Long getCurrentToken() {
+        return userManager.getCurrentToken();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCurrentToken(Long token) {
+        userManager.setCurrentToken(token);
     }
 
-    public Long getToken() {
-        return token;
-    }
-
-    public void setToken(Long token) {
-        this.token = token;
+    public void addUser(String username,Long token){
+        userManager.addUser(username,token);
     }
 
     public void print(String s) { out.print(s); }
@@ -90,7 +84,7 @@ public abstract class Shell {
         String str, prompt = null;
 
         loginGuestUser();
-        if (prompt == null) prompt = "myDrive <"+getUsername()+"> $ ";
+        if (prompt == null) prompt = "myDrive <"+ getCurrentUsername()+"> $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -107,7 +101,7 @@ public abstract class Shell {
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
             if(awaitingCommands)
-                System.out.print(prompt="myDrive <"+getUsername()+"> $ ");
+                System.out.print("myDrive <"+ getCurrentUsername()+"> $ ");
             else break;
         }
         System.out.println(name+" end");

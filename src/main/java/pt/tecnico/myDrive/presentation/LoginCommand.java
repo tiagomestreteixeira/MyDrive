@@ -9,13 +9,11 @@ public class LoginCommand extends MdCommand{
         super(sh, "login", "Log into the system providing the username and login token.\n" + USAGE_MSG);
     }
 
-
     private void executeLogin(String user, String pass){
         LoginUserService loginUserService = new LoginUserService(user, pass);
         loginUserService.execute();
-        shell().setToken(loginUserService.result());
-        shell().setUsername(user);
-        log.info("Token generated: " + shell().getToken());
+        shell().addUser(user,loginUserService.result());
+        log.info("Token generated: " + shell().getCurrentToken());
     }
 
     public void execute(String[] args) throws Exception {
