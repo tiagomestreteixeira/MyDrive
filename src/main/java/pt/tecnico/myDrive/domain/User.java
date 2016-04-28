@@ -31,11 +31,25 @@ public class User extends User_Base {
 		xmlImport(md,username, xml);
 	}
 
+	@Override
+	public void setPassword(String pass) throws MyDriveException {
+		throw new NoPermissionException("User.setPassword()");
+	}
+
+	protected void setPasswordInternal(String pass) throws MyDriveException {
+		super.setPassword(pass);
+	}
+
+	@Override
+	public String getPassword() throws MyDriveException {
+		throw new NoPermissionException("User.getPassword()");
+	}
+
 	protected void init(MyDrive md, String username, String name, String umask, String password){
 		md.addUser(this);
 		setUsername(username);
 		setName(name);
-		setPassword(password);
+		setPasswordInternal(password);
 		setUmask(umask);
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
@@ -154,7 +168,7 @@ public class User extends User_Base {
 	}
 
 	public boolean checkPassword (String attempt) {
-		return attempt.equals(getPassword());
+		return attempt.equals(super.getPassword());
 	}
 
 	private Stack<String> toStack (String pathname) {
