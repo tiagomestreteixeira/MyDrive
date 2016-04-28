@@ -92,6 +92,15 @@ public class MyDrive extends MyDrive_Base {
     	throw new NoPermissionException("MyDrive.getLoginsSet()");
     }
 
+	private boolean loginIdExists(long identifier) {
+		for (Login l : super.getLoginsSet()) {
+			if (l.getIdentifier() == identifier) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public long createLogin(String username, String password) {
 		loginMaintenance();
 		User user = this.getUserByUsername(username);
@@ -99,6 +108,9 @@ public class MyDrive extends MyDrive_Base {
 		if (user != null) {
 			if (user.checkPassword(password)) {
 				Login login = new Login(user);
+				while (loginIdExists(login.getIdentifier())) {
+					login = new Login(user);
+				}
 				this.addLogins(login);
 				return login.getIdentifier();
 			}
