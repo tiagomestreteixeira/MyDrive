@@ -92,6 +92,16 @@ public class MyDrive extends MyDrive_Base {
     	throw new NoPermissionException("MyDrive.getLoginsSet()");
     }
 
+	@Override
+	public void addLogins(Login logins) {
+		throw new NoPermissionException("MyDrive.addLogins()");
+	}
+
+	@Override
+	public void removeLogins(Login logins) {
+		throw new NoPermissionException("MyDrive.removeLogins()");
+	}
+
 	private boolean loginIdExists(long identifier) {
 		for (Login l : super.getLoginsSet()) {
 			if (l.getIdentifier() == identifier) {
@@ -111,7 +121,7 @@ public class MyDrive extends MyDrive_Base {
 				while (loginIdExists(login.getIdentifier())) {
 					login = new Login(user);
 				}
-				this.addLogins(login);
+				super.addLogins(login);
 				return login.getIdentifier();
 			}
 			throw new UserPasswordDoesNotMatchException(username);
@@ -123,7 +133,7 @@ public class MyDrive extends MyDrive_Base {
 	private void removeLogin(long login) {
 		for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
-				this.removeLogins(session);
+				super.removeLogins(session);
 				session.delete();
 			}
 		}
