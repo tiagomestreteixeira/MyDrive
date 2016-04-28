@@ -13,6 +13,7 @@ public class User extends User_Base {
     static final Logger log = LogManager.getRootLogger();
 	private static final String USER_DEFAULT_UMASK = "rwxd----";
 	private static final int USERNAME_MIN_LENGTH = 3;
+	private static final int PASSWORD_MIN_LENGTH = 8;
 
     protected User() {
         super();
@@ -37,6 +38,10 @@ public class User extends User_Base {
 	}
 
 	protected void setPasswordInternal(String pass) throws MyDriveException {
+		if (pass == null || pass.length()<PASSWORD_MIN_LENGTH){
+			throw new InvalidPasswordException(pass, " : password has fewer than "
+					+ Integer.toString(PASSWORD_MIN_LENGTH));
+		}
 		super.setPassword(pass);
 	}
 
