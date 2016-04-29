@@ -13,6 +13,7 @@ public class WriteFileTest extends AbstractServiceTest {
 
     private long login;
     private String name = "joao";
+    private String pass = "joaojoao";
     private User userObject;
     private MyDrive md;
     private SuperUser root;
@@ -26,7 +27,7 @@ public class WriteFileTest extends AbstractServiceTest {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
 
-        userObject = new User(md, name);
+        userObject = new User(md, name, name, "rwxd----", pass);
 
         new PlainFile(testPlainFileName, userObject, userObject.getHomeDir(), USER_DEFAULT_PERMISSIONS,"contentOf:\n\nPlainFile");
 
@@ -34,7 +35,7 @@ public class WriteFileTest extends AbstractServiceTest {
         myApp = new App("MyAppFile", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
         myApp.setContent("pt.mydrive.myapp");
 
-        login = md.createLogin(name,name);
+        login = md.createLogin(name,pass);
 
     }
 

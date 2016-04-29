@@ -27,8 +27,8 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	@Override
 	protected void populate() {
 		md = MyDriveService.getMyDrive();
-		userObject = new User(md, "Andre");
-		loginId = md.createLogin("Andre", "Andre");
+		userObject = new User(md, "Andre", "Andre", "rwxd----", "andreandre");
+		loginId = md.createLogin("Andre", "andreandre");
 		login = MyDriveService.getMyDrive().getLoginFromId(loginId);
 	}
 

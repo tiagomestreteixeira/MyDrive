@@ -8,7 +8,7 @@ public class SuperUser extends SuperUser_Base {
     public SuperUser(MyDrive md) {
         setUsername("root");
         setName("root");
-        setPassword("***");
+        setPasswordInternal("********");
         setUmask("rwxdr-x-");
         md.addUser(this);
     }
