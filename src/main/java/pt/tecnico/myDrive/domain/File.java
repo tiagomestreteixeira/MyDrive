@@ -215,8 +215,8 @@ public class File extends File_Base {
 
         lastModifiedDateElement.addContent(lastModificationConvertedToString);
 
-        el.addContent(nameElement);
         el.addContent(pathElement);
+        el.addContent(nameElement);
         el.addContent(ownerElement);
         el.addContent(permElement);
         el.addContent(lastModifiedDateElement);
