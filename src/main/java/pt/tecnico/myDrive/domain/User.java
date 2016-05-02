@@ -247,17 +247,20 @@ public class User extends User_Base {
 		Element userNode = new Element("user");
 		userNode.setAttribute("username", getUsername());
 
+        Element passwordElement = new Element("password");
 		Element nameElement = new Element("name");
-		Element maskElement = new Element("mask");
-		Element passwordElement = new Element("password");
+        Element homeElement = new Element("home");
+        Element maskElement = new Element("mask");
 
+        passwordElement.addContent(super.getPassword());
 		nameElement.addContent(getName());
-		maskElement.addContent(getUmask());
-		passwordElement.addContent(getPassword());
+        homeElement.addContent(getHomeDir().getPath());
+        maskElement.addContent(getUmask());
 
-		userNode.addContent(nameElement);
-		userNode.addContent(maskElement);
-		userNode.addContent(passwordElement);
+        userNode.addContent(passwordElement);
+        userNode.addContent(nameElement);
+        userNode.addContent(homeElement);
+        userNode.addContent(maskElement);
 
 		return userNode;
 	}
