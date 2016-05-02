@@ -20,7 +20,7 @@ public class File extends File_Base {
 
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
-        if (user.checkPermission(directory, 'w')) {
+        if (user.checkPermission(directory, 'w'))  {
             setId(directory.getFileOwner().getMyDrive().getNewId());
             setName(name);
             setPermissions(permissions);
@@ -29,7 +29,7 @@ public class File extends File_Base {
             setLastModification(new DateTime());
             checkPathLengthConstrain(directory, name);
         } else {
-            throw new NoPermissionException("init");
+            throw new NoPermissionException("File.init()");
         }
     }
 

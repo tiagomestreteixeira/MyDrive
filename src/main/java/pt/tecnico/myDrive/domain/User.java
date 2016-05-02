@@ -217,10 +217,12 @@ public class User extends User_Base {
 			try {
 				file = file.getFileByName(this, temp);
 			} catch (FileDoesNotExistException e) {
-				file = new Dir(temp,this,d,this.getUmask());
+				file = new Dir(temp,this.getMyDrive().getSuperUser(),d,this.getMyDrive().getSuperUser().getUmask());
 			}
 
 		}
+		file.setOwner(this.getMyDrive().getSuperUser(),this);
+		file.setPermissions(this.getUmask());
 		return (Dir)file;
 	}
 
