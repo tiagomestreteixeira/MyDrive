@@ -253,7 +253,7 @@ public class User extends User_Base {
 
 		nameElement.addContent(getName());
 		maskElement.addContent(getUmask());
-		passwordElement.addContent(getPassword());
+		passwordElement.addContent(super.getPassword());
 
 		userNode.addContent(nameElement);
 		userNode.addContent(maskElement);
