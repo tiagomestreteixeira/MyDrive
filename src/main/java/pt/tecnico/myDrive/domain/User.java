@@ -71,9 +71,9 @@ public class User extends User_Base {
 		  super.addFile(fileToBeAdded);
 	  }
 
-	  public File getFileByName(String name){
+	  public File getFileByName(String pathname){
 		  for (File file: getFileSet())
-			  if (file.getName().equals(name))
+			  if (file.getPath().equals(pathname))
 				  return file;
 		  return null;
 	  }
