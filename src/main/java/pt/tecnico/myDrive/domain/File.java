@@ -21,7 +21,7 @@ public class File extends File_Base {
     protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
 
         if (user.checkPermission(directory, 'w')) {
-            setId(MyDrive.getInstance().getNewId());
+            setId(directory.getFileOwner().getMyDrive().getNewId());
             setName(name);
             setPermissions(permissions);
             setDir(directory);
