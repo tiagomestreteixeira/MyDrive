@@ -239,7 +239,6 @@ public class User extends User_Base {
                 defaultName = child.getText();
             if (child.getName().equals("password"))
                 defaultPassword = child.getText();
-            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
 		init(md,username,defaultName,defaultMask,defaultPassword);

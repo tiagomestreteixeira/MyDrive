@@ -144,16 +144,10 @@ public class File extends File_Base {
     }
 
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
-
-        String path,
-                name,
-                ownerUsername,
-                defaultPermissions;
-
+        String path, name, ownerUsername, defaultPermissions;
         path = name = ownerUsername = defaultPermissions = null;
 
         for (Element child : FileDomainElement.getChildren()) {
-
             if (child.getName().equals("path"))
                 path = child.getText();
             if (child.getName().equals("name"))
@@ -161,9 +155,7 @@ public class File extends File_Base {
             if (child.getName().equals("owner"))
                 ownerUsername = child.getText();
             if (child.getName().equals("perm"))
-                defaultPermissions = child.getText();
-            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
-        }
+                defaultPermissions = child.getText();}
 
         if (path == null)
             throw new ImportDocumentException(elementDomain, "<path> node cannot be read properly.");
@@ -176,20 +168,15 @@ public class File extends File_Base {
         User owner = md.getUserByUsername(ownerUsername);
 
         if (defaultPermissions == null) {
-            if (owner == null) {
-                owner = md.getUserByUsername("root");
-            }
+            if (owner == null) owner = md.getUserByUsername("root");
         }
-
         defaultPermissions = owner.getUmask();
-        // TODO: check correctness of intermediate dirs creations by owner
         init(name, owner, owner.makeDir(path), defaultPermissions);
     }
 
     public Element xmlExport(){
         return null;
     }
-
 
     public Element xmlExportHelper(Element el) {
 

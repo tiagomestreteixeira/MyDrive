@@ -164,7 +164,6 @@ public class MyDrive extends MyDrive_Base {
 
         for (Element node: element.getChildren("user")) {
             String username = node.getAttribute("username").getValue();
-
             if(username == null)
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
 
@@ -176,7 +175,7 @@ public class MyDrive extends MyDrive_Base {
         }
 
         for (Element node: element.getChildren("dir")) {
-            (new Dir()).xmlImport(node);
+            new Dir(node);
         }
 
         for (Element node: element.getChildren("plain")) {

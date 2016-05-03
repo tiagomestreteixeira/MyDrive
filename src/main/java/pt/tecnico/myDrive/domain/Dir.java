@@ -12,8 +12,11 @@ public class Dir extends Dir_Base {
 
 	public Dir(String name, User user, Dir directory, String permissions){
 		super();
-
 		init(name, user, directory, permissions);
+	}
+
+	public Dir(Element dirElement) throws ImportDocumentException {
+		xmlImport(dirElement,"Dir");
 	}
 
 	@Override
@@ -86,10 +89,6 @@ public class Dir extends Dir_Base {
 			setHomeOwner(null);
 		}
 		deleteDomainObject();
-	}
-
-	public void xmlImport(Element dirElement) throws ImportDocumentException {
-		xmlImport(dirElement,"Dir");
 	}
 
 }
