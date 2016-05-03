@@ -13,9 +13,9 @@ public class Guest extends Guest_Base {
 	@Override
 	protected void init(MyDrive md, String username, String name, String umask, String password) {
 		md.addUser(this);
-		setUsername(username);
-		setName(name);
-		setUmask(umask);
+		super.setUsername(username);
+		super.setName(name);
+		super.setUmask(umask);
 		setHomeDir(md.getSuperUser().makeDir("/home/" + username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
 		getHomeDir().setPermissions(umask);
@@ -29,6 +29,21 @@ public class Guest extends Guest_Base {
 	@Override
 	protected void setPasswordInternal(String pass) throws MyDriveException {
 		throw new NoPermissionException("Guest.setPasswordInternal()");
+	}
+
+	@Override
+	public void setUsername(String username) {
+		throw new NoPermissionException("Guest.setUsername()");
+	}
+
+	@Override
+	public void setName(String name) {
+		throw new NoPermissionException("Guest.setName()");
+	}
+
+	@Override
+	public void setUmask(String umask) {
+		throw new NoPermissionException("Guest.setUmask()");
 	}
 
 	@Override

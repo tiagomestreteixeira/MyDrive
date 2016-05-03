@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
@@ -51,10 +50,10 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		assertEquals("Third file name should be:", "testLink", result.get(2).getFilename());
 		assertEquals("Fourth file name should be:", "testPlainFile", result.get(3).getFilename());
 
-		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(0).getPerimissions());
-		assertEquals("Second file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPerimissions());
-		assertEquals("Third file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(2).getPerimissions());
-		assertEquals("Fourth file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(3).getPerimissions());
+		assertEquals("First file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(0).getPermissions());
+		assertEquals("Second file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(1).getPermissions());
+		assertEquals("Third file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(2).getPermissions());
+		assertEquals("Fourth file permissions should be:", USER_DEFAULT_PERMISSIONS, result.get(3).getPermissions());
 
 		assertEquals("First file type should be:", "App", result.get(0).getType());
 		assertEquals("Second file type should be:", "Dir", result.get(1).getType());

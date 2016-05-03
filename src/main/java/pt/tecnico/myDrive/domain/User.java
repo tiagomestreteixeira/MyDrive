@@ -71,9 +71,9 @@ public class User extends User_Base {
 		  super.addFile(fileToBeAdded);
 	  }
 
-	  public File getFileByName(String name){
+	  public File getFileByName(String pathname){
 		  for (File file: getFileSet())
-			  if (file.getName().equals(name))
+			  if (file.getPath().equals(pathname))
 				  return file;
 		  return null;
 	  }
@@ -217,10 +217,12 @@ public class User extends User_Base {
 			try {
 				file = file.getFileByName(this, temp);
 			} catch (FileDoesNotExistException e) {
-				file = new Dir(temp,this,d,this.getUmask());
+				file = new Dir(temp,this.getMyDrive().getSuperUser(),d,this.getMyDrive().getSuperUser().getUmask());
 			}
 
 		}
+		file.setOwner(this.getMyDrive().getSuperUser(),this);
+		file.setPermissions(this.getUmask());
 		return (Dir)file;
 	}
 
@@ -237,7 +239,6 @@ public class User extends User_Base {
                 defaultName = child.getText();
             if (child.getName().equals("password"))
                 defaultPassword = child.getText();
-            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
 		init(md,username,defaultName,defaultMask,defaultPassword);
@@ -247,17 +248,20 @@ public class User extends User_Base {
 		Element userNode = new Element("user");
 		userNode.setAttribute("username", getUsername());
 
+        Element passwordElement = new Element("password");
 		Element nameElement = new Element("name");
-		Element maskElement = new Element("mask");
-		Element passwordElement = new Element("password");
+        Element homeElement = new Element("home");
+        Element maskElement = new Element("mask");
 
+        passwordElement.addContent(super.getPassword());
 		nameElement.addContent(getName());
-		maskElement.addContent(getUmask());
-		passwordElement.addContent(getPassword());
+        homeElement.addContent(getHomeDir().getPath());
+        maskElement.addContent(getUmask());
 
-		userNode.addContent(nameElement);
-		userNode.addContent(maskElement);
-		userNode.addContent(passwordElement);
+        userNode.addContent(passwordElement);
+        userNode.addContent(nameElement);
+        userNode.addContent(homeElement);
+        userNode.addContent(maskElement);
 
 		return userNode;
 	}
