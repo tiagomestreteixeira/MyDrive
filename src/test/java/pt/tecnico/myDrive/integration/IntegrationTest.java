@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -19,6 +20,7 @@ import org.jdom2.input.SAXBuilder;
 
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.MyDrive;
+import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.SuperUser;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
@@ -30,14 +32,6 @@ public class IntegrationTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser su;
 
-    private int jtb_index;
-    private int mja_index;
-    private int blm_index;
-    private int sbp_index;
-    private int jcc_index;
-    private int aja_index;
-    private int mtg_index;
-
     private static final String IMPORT_XML_FILENAME = "users.xml";
 
     private class UserInfo{
@@ -48,11 +42,11 @@ public class IntegrationTest extends AbstractServiceTest {
     }
 
     private int indexOfByUsername(String username) {
-        int i = 0;
+        int idx = 0;
         for (UserInfo ui : users){
             if (ui.username.equals(username))
-                return i;
-            i++;
+                return idx;
+            idx++;
         }
         return -1;
     }
@@ -61,6 +55,7 @@ public class IntegrationTest extends AbstractServiceTest {
 
     private void usersXMLtoList() {
         SAXBuilder builder = new SAXBuilder();
+
         try {
             Document document = (Document) builder.build(Main.resourceFile(IMPORT_XML_FILENAME));
             for (Element node : document.getRootElement().getChildren("user")) {
@@ -71,12 +66,10 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.numberFilesHomeDir = 0;
                 users.add(ui);
             }
-
-        }catch(ImportDocumentException | JDOMException | IOException e){
+        } catch(ImportDocumentException | JDOMException | IOException e){
             e.printStackTrace();
         }
-        //log.debug("INDEX:" + indexOfByUsername("jtb"));
-        //log.info("TJB" + users.get(indexOfByUsername("jtb")).numberFilesHomeDir);
+
         users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
     }
 
@@ -92,7 +85,7 @@ public class IntegrationTest extends AbstractServiceTest {
     @Test
     public void success() throws Exception {
 
-        log.debug("USERS:");
+        log.debug("==|USERS|==");
         for(UserInfo ui : users){
             LoginUserService us = new LoginUserService(ui.username,ui.password);
             us.execute();
@@ -102,19 +95,71 @@ public class IntegrationTest extends AbstractServiceTest {
             log.debug("password: " + ui.password);
             log.debug("token: " + ui.token);
             log.debug("Number of Files in Home dir: " + ui.numberFilesHomeDir);
-
         }
 
         UserInfo infoJtb = users.get(indexOfByUsername("jtb"));
-        System.out.println("List current non-empty HomeDir Files of : User " + infoJtb.username);
+        log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + infoJtb.username
+                 + " - uses ListDirectoryService");
 
         ListDirectoryService lds = new ListDirectoryService(infoJtb.token);
         lds.execute();
 
         for (FileDto dto : lds.result())
-            System.out.println("\t" + dto.getType() + " -> " + dto.getFilename());
-        assertEquals(lds.result().size(), infoJtb.numberFilesHomeDir);
+            log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
+        assertEquals("[System Integration Test] ListDirectoryService. " +
+                "User jtb should have" + infoJtb.numberFilesHomeDir,lds.result().size(), infoJtb.numberFilesHomeDir);
 
+
+        log.debug("[System Integration Test] Each user create a plain file in its home dir - uses CreateFileService");
+        String plainFilename = "plainExample";
+        String fileType = "Plain";
+        String plainContent = "This\nIs\nA\nPlain File\nContent!";
+        try {
+           for (UserInfo ui : users) {
+               CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
+               cft.execute();
+               assertNotNull(
+                       "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+                       + plainFilename + ", owner " + ui.username + " and content " + plainContent
+                       + "should have been created", su.lookup("/home/" + ui.username + "/" + plainFilename));
+           }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+
+
+        log.debug("[System Integration Test] Each user reads the plain file created previously - uses ReadFileService");
+        try {
+            for (UserInfo ui : users) {
+                ReadFileService rft = new ReadFileService(ui.token, plainFilename);
+                rft.execute();
+                assertNotNull(
+                        "[System Integration Test] ReadFileService. The " + fileType + " file with name "
+                        + plainFilename + ", owner " + ui.username + " and content " + plainContent
+                        + "should have been read successful", rft.result());
+                assertEquals(plainContent,rft.result());
+            }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+
+        log.debug("[System Integration Test] Each user write the content of the plain file created previously" +
+                " with their username - uses WriteFileService");
+        try {
+            for (UserInfo ui : users) {
+                WriteFileService wft = new WriteFileService(ui.token, plainFilename, ui.username);
+                wft.execute();
+
+                String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType + " file with name "
+                        + plainFilename + ", owner " + ui.username + " and content " + plainContent +
+                        "should have been written successful with content " + ui.username;
+                PlainFile pf =  (PlainFile)su.lookup("/home/" + ui.username + "/" + plainFilename);
+                assertNotNull(assertWriteServiceMsg, pf);
+                assertEquals(ui.username,pf.getContent());
+            }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
 
     }
 
