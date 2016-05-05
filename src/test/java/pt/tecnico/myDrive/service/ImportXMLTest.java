@@ -96,10 +96,10 @@ public class ImportXMLTest extends AbstractServiceTest {
 		user = md.getUserByUsername("jms");
 
 		// check users have been created
-		assertEquals("created 3 users", 6, md.getUserSet().size());
-		assertTrue("created jtb", md.hasUser("jtb"));
-		assertTrue("created jms", md.hasUser("jms"));
-		assertTrue("created mja", md.hasUser("mja"));
+		assertEquals("create 3 users", 5, md.getUserSet().size());
+		assertTrue("create jtb", md.hasUser("jtb"));
+		assertTrue("create jms", md.hasUser("jms"));
+		assertTrue("create mja", md.hasUser("mja"));
 
 		//check user properties are correct
 		assertTrue("user Password ", user.checkPassword("marquesSilva"));
@@ -116,16 +116,17 @@ public class ImportXMLTest extends AbstractServiceTest {
 		ImportXMLService service = new ImportXMLService(doc);
 		service.execute();
 
+		assertTrue("created jtb", md.hasUser("jtb"));
 		user = md.getUserByUsername("jtb");
 
 		//check files have been created
-		assertTrue("created Plain    ", user.hasFile(3));
-		assertTrue("created Dir      ", user.hasFile(4));
-		assertTrue("created Link     ", user.hasFile(5));
-		assertTrue("created SubDir   ", user.hasFile(7));
-		assertTrue("created SubSubDir", user.hasFile(666));
-		assertTrue("created App      ", user.hasFile(9));
-		assertTrue("created Link     ", user.hasFile(51));
+		assertTrue("create Plain    ", user.hasFile(3));
+		assertTrue("create Dir      ", user.hasFile(4));
+		assertTrue("create Link     ", user.hasFile(5));
+		assertTrue("create SubDir   ", user.hasFile(7));
+		assertTrue("create SubSubDir", user.hasFile(666));
+		assertTrue("create App      ", user.hasFile(9));
+		assertTrue("create Link     ", user.hasFile(51));
 
 		//check file properties
 		assertTrue("file name       ", user.getFileById(3).getName().equals("profile"));
