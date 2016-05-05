@@ -86,88 +86,123 @@ public class IntegrationTest extends AbstractServiceTest {
     @Test
     public void success() throws Exception {
 
-        log.debug("==|USERS|==");
-        for(UserInfo ui : users){
-            LoginUserService us = new LoginUserService(ui.username,ui.password);
-            us.execute();
-            assertNotNull(us.result());
-            ui.token = us.result();
-            log.debug("username: " + ui.username);
-            log.debug("password: " + ui.password);
-            log.debug("token: " + ui.token);
-            log.debug("Number of Files in Home dir: " + ui.numberFilesHomeDir);
-        }
-
-        UserInfo infoJtb = users.get(indexOfByUsername("jtb"));
-        log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + infoJtb.username
-                 + " - uses ListDirectoryService");
-
-        ListDirectoryService lds = new ListDirectoryService(infoJtb.token);
-        lds.execute();
-
-        for (FileDto dto : lds.result())
-            log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
-        assertEquals("[System Integration Test] ListDirectoryService. " +
-                "User jtb should have" + infoJtb.numberFilesHomeDir,lds.result().size(), infoJtb.numberFilesHomeDir);
-
-
-        log.debug("[System Integration Test] Each user create a plain file in its home dir - uses CreateFileService");
-        String plainFilename = "plainExample";
-        String fileType = "Plain";
-        String plainContent = "This\nIs\nA\nPlain File\nContent!";
         try {
-           for (UserInfo ui : users) {
-               CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
-               cft.execute();
-               assertNotNull(
-                       "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+
+            log.debug("==|USERS|==");
+            for(UserInfo ui : users){
+                LoginUserService us = new LoginUserService(ui.username,ui.password);
+                us.execute();
+                assertNotNull(us.result());
+                ui.token = us.result();
+                log.debug("username: " + ui.username);
+                log.debug("password: " + ui.password);
+                log.debug("token: " + ui.token);
+                log.debug("Number of Files in Home dir: " + ui.numberFilesHomeDir);
+
+
+            if(ui.username.equals("jtb")) {
+                log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + ui.username
+                        + " - uses ListDirectoryService");
+
+                ListDirectoryService lds = new ListDirectoryService(ui.token);
+                lds.execute();
+
+                for (FileDto dto : lds.result())
+                    log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
+
+                assertEquals("[System Integration Test] ListDirectoryService. " +
+                        "User jtb should have" + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
+            }
+
+
+            log.debug("[System Integration Test] Each user create a plain file (with name plainExample in its home dir" +
+                    " - uses CreateFileService");
+            String plainFilename = "plainExample";
+            String fileType = "Plain";
+            String plainContent = "This\nIs\nA\nPlain File\nContent!";
+            CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
+            cft.execute();
+            assertNotNull("[System Integration Test] CreateFileService. The " + fileType + " file with name "
                        + plainFilename + ", owner " + ui.username + " and content " + plainContent
                        + "should have been created", su.lookup("/home/" + ui.username + "/" + plainFilename));
-           }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
 
 
-        log.debug("[System Integration Test] Each user reads the plain file created previously - uses ReadFileService");
-        try {
-            for (UserInfo ui : users) {
-                ReadFileService rft = new ReadFileService(ui.token, plainFilename);
-                rft.execute();
-                assertNotNull(
-                        "[System Integration Test] ReadFileService. The " + fileType + " file with name "
-                        + plainFilename + ", owner " + ui.username + " and content " + plainContent
-                        + "should have been read successful", rft.result());
-                assertEquals(plainContent,rft.result());
-            }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
+            log.debug("[System Integration Test] Each user write the content of the plain file created previously" +
+                        " with their username - uses WriteFileService");
 
-        log.debug("[System Integration Test] Each user write the content of the plain file created previously" +
-                " with their username - uses WriteFileService");
-        try {
-            for (UserInfo ui : users) {
-                WriteFileService wft = new WriteFileService(ui.token, plainFilename, ui.username);
-                wft.execute();
-
-                String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType +
+            WriteFileService wft = new WriteFileService(ui.token, plainFilename, ui.username);
+            wft.execute();
+            String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType +
                         " file with name " + plainFilename + ", owner " + ui.username + " and content " + plainContent
                         + "should have been written successful with content " + ui.username;
 
-                PlainFile pf =  (PlainFile)su.lookup("/home/" + ui.username + "/" + plainFilename);
-                assertNotNull(assertWriteServiceMsg, pf);
-                assertEquals(ui.username,pf.getContent());
-                ui.numberFilesHomeDir++;
+            PlainFile pf =  (PlainFile)su.lookup("/home/" + ui.username + "/" + plainFilename);
+            assertNotNull(assertWriteServiceMsg, pf);
+            assertEquals(ui.username,pf.getContent());
+            ui.numberFilesHomeDir++;
+
+
+            log.debug("[System Integration Test] Each user reads the plain file created previously " +
+                    "- uses ReadFileService");
+            ReadFileService rft = new ReadFileService(ui.token, plainFilename);
+            rft.execute();
+            assertNotNull("[System Integration Test] ReadFileService. The " + fileType + " file with name "
+                        + plainFilename + ", owner " + ui.username + " and content " + plainContent
+                        + "should have been read successful", rft.result());
+            assertEquals(ui.username,rft.result());
+
+
+            log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
+            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
+            ldsAfterCreated.execute();
+
+            for (FileDto dto : ldsAfterCreated.result()) {
+                log.debug("dasd","\t" + dto.getType() + " -> " + dto.getFilename());
+                assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
+                            + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
             }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
 
 
-        log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
-        try {
-            for (UserInfo ui : users) {
+            log.debug("[System Integration Test] Each user create a new directory, with name corresponding to " +
+                "dir[Username] in its home dir - uses CreateFileService");
+            fileType = "Dir";
+
+            String dirFilename = "dir"+ui.username;
+            String pathNewDir = "/home/" + ui.username + "/" + dirFilename;
+            log.info("New dir filename:" + dirFilename);
+            log.info("Path of the New dir filename:" + pathNewDir);
+            cft = new CreateFileService(ui.token, dirFilename, fileType);
+            cft.execute();
+            assertNotNull(
+                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+                                + dirFilename + ", owner " + ui.username + "should have been created",
+                        su.lookup("/home/" + ui.username + "/" + dirFilename));
+
+
+            log.debug("[System Integration Test] Each user changes current dir to the dir created previously " +
+                        "- uses ChangeDirectoryService");
+            ChangeDirectoryService cds = new ChangeDirectoryService(ui.token,pathNewDir);
+            cds.execute();
+            assertEquals("Changed to a wrong pathname",cds.result(),pathNewDir);
+
+
+            log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
+            int numberPlainsToCreate = 10;
+            fileType = "Plain";
+            for(int idFile = 0; idFile < numberPlainsToCreate; idFile++) {
+                plainFilename = "plaintestfile"+idFile;
+                plainContent = Integer.toString(idFile);
+                    cft = new CreateFileService(ui.token, plainFilename, fileType,plainContent);
+                    cft.execute();
+                    assertNotNull(
+                            "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+                                    + plainFilename + ", owner " + ui.username + "should have been created",
+                            su.lookup(pathNewDir+"/"+plainFilename));
+                }
+
+                /*
+                log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
+                        "- uses ChangeDirectoryService");
                 ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
                 ldsAfterCreated.execute();
 
@@ -176,35 +211,14 @@ public class IntegrationTest extends AbstractServiceTest {
                     assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
                             + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
                 }
-
+*/
             }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
 
-        // TODO: Change log msg
-        log.debug("[System Integration Test] Each user create a plain file in its home dir - uses CreateFileService");
-        fileType = "Dir";
-        try {
-            for (UserInfo ui : users) {
-                String dirFilename = "dir"+ui.username;
-                String pathNewDir = "/home/" + ui.username + "/" + dirFilename;
-                CreateFileService cft = new CreateFileService(ui.token, dirFilename, fileType);
-                cft.execute();
-                assertNotNull(
-                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
-                                + dirFilename + ", owner " + ui.username + "should have been created",
-                        su.lookup("/home/" + ui.username + "/" + dirFilename));
 
-                log.debug("[System Integration Test] Each user changes current dir to the dir created " +
-                        "- uses ChangeDirectoryService");
-                ChangeDirectoryService cds = new ChangeDirectoryService(ui.token,pathNewDir);
-                cds.execute();
-                assertEquals("Changed to a wrong pathname",cds.result(),pathNewDir);
-            }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }
+
+
+
+
 
         /*try {
             for (UserInfo ui : users) {
@@ -219,6 +233,9 @@ public class IntegrationTest extends AbstractServiceTest {
         }catch (Exception e){
             fail(e.getMessage());
         }*/
+    }catch (Exception e){
+        fail(e.getMessage());
+    }
 
     }
 }
