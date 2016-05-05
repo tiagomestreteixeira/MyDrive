@@ -1,7 +1,14 @@
 package pt.tecnico.myDrive.service;
 
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+
+import java.io.StringReader;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class ImportXMLTest extends AbstractServiceTest {
 
@@ -19,7 +26,7 @@ public class ImportXMLTest extends AbstractServiceTest {
 			+ "    <password>\"marquesSilva\"</password>"
 			+ "    <name>\"João Marques Silva\"</name>"
 			+ "    <home>\"/home/jms\"</home>"
-			+ "    <mask>\"rwxd----\"</mask>"
+			+ "    <mask>\"rwxdrwxd\"</mask>"
 			+ "  </user>"
 			+ "  <user username=\"mja\">"
 			+ "   <name>\"Manuel José de Arriaga\"</name>"
@@ -79,8 +86,23 @@ public class ImportXMLTest extends AbstractServiceTest {
 	}
 
 	@Test
-	public void success() throws Exception {
+	public void testUserImport() throws Exception {
+		Document doc = new SAXBuilder().build(new StringReader(xml));
+		ImportXMLService service = new ImportXMLService(doc);
+		service.execute();
 
+		// check users have been created
+		assertEquals("created 3 users", 6, md.getUserSet().size());
+		assertTrue("created jtb", md.hasUser("jtb"));
+		assertTrue("created jms", md.hasUser("jms"));
+		assertTrue("created mja", md.hasUser("mja"));
+
+		//check user properties are correct
+		assertTrue("jms Password ", md.getUserByUsername("jms").checkPassword("marquesSilva"));
+		assertTrue("jms Name     ", md.getUserByUsername("jms").getName().equals("João Marques Silva"));
+		assertTrue("jms Home Dir ", md.getUserByUsername("jms").getHomeDir().getPath().equals("/home/jms"));
+		assertTrue("jms Umask    ", md.getUserByUsername("jms").getUmask().equals("rwxdrwxd"));
+		assertTrue("jms Umask    ", md.getUserByUsername("jms").equals("rwxdrwxd"));
 	}
 
 }
