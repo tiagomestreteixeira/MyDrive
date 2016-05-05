@@ -10,9 +10,9 @@ public class SystemTest extends AbstractServiceTest {
 	private final static String NAME1 = "Ivan";
 	private final static String PASSWORD1 = "12345678";
 
-	private final static String USERNAME2 = "tiago";
+	private final static String USERNAME2 = "tiagoteixeira";
 	private final static String NAME2 = "Tiago";
-	private final static String PASSWORD2 = "12345678";
+	private final static String PASSWORD2 = USERNAME2;
 
 	private final static String PERMISSION = "rwxdr-x-";
 
@@ -20,6 +20,8 @@ public class SystemTest extends AbstractServiceTest {
 	private final static String PLAINFILECONTENT = "PlainFile";
 	private final static String APPNAME = "App";
 	private final static String APPMETHOD = "package.Main.method";
+	private final static String APPARGUMENT = "arg";
+
 	private final static String DIRECTORYNAME = "Dir";
 
 	private final static String ENVNAME = "envar";
@@ -47,6 +49,7 @@ public class SystemTest extends AbstractServiceTest {
 		new LoginCommand(sh).execute(new String[]{USERNAME1, PASSWORD1});
 		new DoCommand(sh).execute(new String[]{PLAINFILENAME});
 		new DoCommand(sh).execute(new String[]{APPNAME});
+		new DoCommand(sh).execute(new String[]{APPNAME, APPARGUMENT});
 
 		new UpdateCommand(sh).execute(new String[]{PLAINFILENAME, PLAINFILECONTENT});
 
@@ -59,12 +62,14 @@ public class SystemTest extends AbstractServiceTest {
 
 		new CWDCommand(sh).execute(new String[]{DIRECTORYNAME});
 		new CWDCommand(sh).execute(new String[]{".."});
+		new CWDCommand(sh).execute(new String[]{});
 
 		new LoginCommand(sh).execute(new String[]{USERNAME2, PASSWORD2});
 		new DoCommand(sh).execute(new String[]{PLAINFILENAME});
 		new CWDCommand(sh).execute(new String[]{DIRECTORYNAME});
 
 		new TokenCommand(sh).execute(new String[]{});
+		new TokenCommand(sh).execute(new String[]{USERNAME1});
 
 	}
 }
