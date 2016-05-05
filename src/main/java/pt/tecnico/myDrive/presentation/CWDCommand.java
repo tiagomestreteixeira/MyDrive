@@ -7,7 +7,7 @@ public class CWDCommand extends MdCommand {
 	}
 
 	@Override
-	void execute(String[] args) throws Exception {
+	public void execute(String[] args) throws Exception {
 
 	}
 }
