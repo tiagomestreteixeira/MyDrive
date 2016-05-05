@@ -78,9 +78,19 @@ public class User extends User_Base {
 		  return null;
 	  }
 
+	public File getFileById(int id){
+		for (File file: getFileSet())
+			if (file.getId().equals(id))
+				return file;
+		return null;
+	}
+
 	  public boolean hasFile(String fileName){
 		  return getFileByName(fileName)!= null;
 	  }
+	  public boolean hasFile(int id){
+		return getFileById(id)!= null;
+	}
 
 	  public boolean isAlphanumeric(String str) {
 		  for (int i=0; i<str.length(); i++) {
