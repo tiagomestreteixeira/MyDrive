@@ -182,7 +182,43 @@ public class IntegrationTest extends AbstractServiceTest {
             fail(e.getMessage());
         }
 
+        // TODO: Change log msg
+        log.debug("[System Integration Test] Each user create a plain file in its home dir - uses CreateFileService");
+        fileType = "Dir";
+        try {
+            for (UserInfo ui : users) {
+                String dirFilename = "dir"+ui.username;
+                String pathNewDir = "/home/" + ui.username + "/" + dirFilename;
+                CreateFileService cft = new CreateFileService(ui.token, dirFilename, fileType);
+                cft.execute();
+                assertNotNull(
+                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+                                + dirFilename + ", owner " + ui.username + "should have been created",
+                        su.lookup("/home/" + ui.username + "/" + dirFilename));
 
+                log.debug("[System Integration Test] Each user changes current dir to the dir created " +
+                        "- uses ChangeDirectoryService");
+                ChangeDirectoryService cds = new ChangeDirectoryService(ui.token,pathNewDir);
+                cds.execute();
+                assertEquals("Changed to a wrong pathname",cds.result(),pathNewDir);
+            }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+
+        /*try {
+            for (UserInfo ui : users) {
+                String dirFilename = "dir"+ui.username;
+                CreateFileService cft = new CreateFileService(ui.token, dirFilename, fileType);
+                cft.execute();
+                assertNotNull(
+                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
+                                + dirFilename + ", owner " + ui.username + "should have been created",
+                        su.lookup("/home/" + ui.username + "/" + dirFilename));
+            }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }*/
 
     }
 }
