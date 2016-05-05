@@ -17,6 +17,7 @@ public class SystemTest extends AbstractServiceTest {
 	private final static String PERMISSION = "rwxdr-x-";
 
 	private final static String PLAINFILENAME = "PlainFile";
+	private final static String PLAINFILECONTENT = "PlainFile";
 	private final static String APPNAME = "App";
 	private final static String APPMETHOD = "package.Main.method";
 	private final static String DIRECTORYNAME = "Dir";
@@ -46,10 +47,18 @@ public class SystemTest extends AbstractServiceTest {
 		new LoginCommand(sh).execute(new String[]{USERNAME1, PASSWORD1});
 		new DoCommand(sh).execute(new String[]{PLAINFILENAME});
 		new DoCommand(sh).execute(new String[]{APPNAME});
-		new CWDCommand(sh).execute(new String[]{DIRECTORYNAME});
+
+		new UpdateCommand(sh).execute(new String[]{PLAINFILENAME, PLAINFILECONTENT});
+
+		new LsCommand(sh).execute(new String[]{});
+		new LsCommand(sh).execute(new String[]{DIRECTORYNAME});
+
 		new EnvCommand(sh).execute(new String[]{});
 		new EnvCommand(sh).execute(new String[]{ENVNAME, ENVVALUE});
 		new EnvCommand(sh).execute(new String[]{ENVNAME});
+
+		new CWDCommand(sh).execute(new String[]{DIRECTORYNAME});
+		new CWDCommand(sh).execute(new String[]{".."});
 
 		new LoginCommand(sh).execute(new String[]{USERNAME2, PASSWORD2});
 		new DoCommand(sh).execute(new String[]{PLAINFILENAME});
