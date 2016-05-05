@@ -13,6 +13,7 @@ public class CreateFileTest extends  AbstractServiceTest {
 
     private long login;
     private String name = "joao";
+    private String pass = "joaojoao";
     private User userObject;
     private MyDrive md;
     private SuperUser root;
@@ -21,9 +22,8 @@ public class CreateFileTest extends  AbstractServiceTest {
     protected void populate() {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
-        userObject = new User(md, name);
-        login = md.createLogin(name,name);
-
+        userObject = new User(md, name, name, "rwxd----", pass);
+        login = md.createLogin(name,pass);
     }
 
     @Test(expected = FileAlreadyExistsException.class)

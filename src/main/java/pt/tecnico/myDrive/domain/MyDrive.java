@@ -92,6 +92,25 @@ public class MyDrive extends MyDrive_Base {
     	throw new NoPermissionException("MyDrive.getLoginsSet()");
     }
 
+	@Override
+	public void addLogins(Login logins) {
+		throw new NoPermissionException("MyDrive.addLogins()");
+	}
+
+	@Override
+	public void removeLogins(Login logins) {
+		throw new NoPermissionException("MyDrive.removeLogins()");
+	}
+
+	private boolean loginIdExists(long identifier) {
+		for (Login l : super.getLoginsSet()) {
+			if (l.getIdentifier() == identifier) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public long createLogin(String username, String password) {
 		loginMaintenance();
 		User user = this.getUserByUsername(username);
@@ -99,7 +118,10 @@ public class MyDrive extends MyDrive_Base {
 		if (user != null) {
 			if (user.checkPassword(password)) {
 				Login login = new Login(user);
-				this.addLogins(login);
+				while (loginIdExists(login.getIdentifier())) {
+					login = new Login(user);
+				}
+				super.addLogins(login);
 				return login.getIdentifier();
 			}
 			throw new UserPasswordDoesNotMatchException(username);
@@ -111,7 +133,7 @@ public class MyDrive extends MyDrive_Base {
 	private void removeLogin(long login) {
 		for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
-				this.removeLogins(session);
+				super.removeLogins(session);
 				session.delete();
 			}
 		}
@@ -142,7 +164,6 @@ public class MyDrive extends MyDrive_Base {
 
         for (Element node: element.getChildren("user")) {
             String username = node.getAttribute("username").getValue();
-
             if(username == null)
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
 
@@ -154,7 +175,7 @@ public class MyDrive extends MyDrive_Base {
         }
 
         for (Element node: element.getChildren("dir")) {
-            (new Dir()).xmlImport(node);
+            new Dir(node);
         }
 
         for (Element node: element.getChildren("plain")) {

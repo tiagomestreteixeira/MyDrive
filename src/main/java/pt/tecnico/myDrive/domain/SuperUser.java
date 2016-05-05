@@ -6,10 +6,10 @@ import pt.tecnico.myDrive.exception.NoPermissionException;
 
 public class SuperUser extends SuperUser_Base {
     public SuperUser(MyDrive md) {
-        setUsername("root");
-        setName("root");
-        setPassword("***");
-        setUmask("rwxdr-x-");
+        super.setUsername("root");
+        super.setName("root");
+        super.setUmask("rwxdr-x-");
+        super.setPasswordInternal("********");
         md.addUser(this);
     }
 
@@ -21,6 +21,21 @@ public class SuperUser extends SuperUser_Base {
     public boolean setPermissions(File file, String newPermissions) {
         file.setPermissions(newPermissions);
         return true;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        throw new NoPermissionException("SuperUser.setUsername()");
+    }
+
+    @Override
+    public void setName(String name) {
+        throw new NoPermissionException("SuperUser.setName()");
+    }
+
+    @Override
+    public void setUmask(String umask) {
+        throw new NoPermissionException("SuperUser.setUmask()");
     }
 
 	@Override

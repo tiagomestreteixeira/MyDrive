@@ -23,7 +23,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 	@Override
 	protected void populate() {
 		MyDrive md = MyDriveService.getMyDrive();
-		u = new User(md, "Ivan");
+		u = new User(md, "Ivan", "Ivan", "rwxd----", "ivanivan");
 		Dir home = u.getHomeDir();
 
 		new PlainFile("test", u, home, u.getUmask());
@@ -32,7 +32,7 @@ public class DeleteFileTest extends AbstractServiceTest {
 		subDir = new Dir("subDir", u, dir, u.getUmask());
 		new PlainFile("test", u, subDir, u.getUmask());
 
-		login = md.createLogin(u.getUsername(), u.getPassword());
+		login = md.createLogin(u.getUsername(), "ivanivan");
 	}
 
 	@Test (expected = FileDoesNotExistException.class)

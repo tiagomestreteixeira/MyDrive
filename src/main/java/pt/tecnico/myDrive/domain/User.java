@@ -13,6 +13,7 @@ public class User extends User_Base {
     static final Logger log = LogManager.getRootLogger();
 	private static final String USER_DEFAULT_UMASK = "rwxd----";
 	private static final int USERNAME_MIN_LENGTH = 3;
+	private static final int PASSWORD_MIN_LENGTH = 8;
 
     protected User() {
         super();
@@ -31,11 +32,29 @@ public class User extends User_Base {
 		xmlImport(md,username, xml);
 	}
 
+	@Override
+	public void setPassword(String pass) throws MyDriveException {
+		throw new NoPermissionException("User.setPassword()");
+	}
+
+	protected void setPasswordInternal(String pass) throws MyDriveException {
+		if (pass == null || pass.length()<PASSWORD_MIN_LENGTH){
+			throw new InvalidPasswordException(pass, " : password has fewer than "
+					+ Integer.toString(PASSWORD_MIN_LENGTH));
+		}
+		super.setPassword(pass);
+	}
+
+	@Override
+	public String getPassword() throws MyDriveException {
+		throw new NoPermissionException("User.getPassword()");
+	}
+
 	protected void init(MyDrive md, String username, String name, String umask, String password){
 		md.addUser(this);
 		setUsername(username);
 		setName(name);
-		setPassword(password);
+		setPasswordInternal(password);
 		setUmask(umask);
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
@@ -52,9 +71,9 @@ public class User extends User_Base {
 		  super.addFile(fileToBeAdded);
 	  }
 
-	  public File getFileByName(String name){
+	  public File getFileByName(String pathname){
 		  for (File file: getFileSet())
-			  if (file.getName().equals(name))
+			  if (file.getPath().equals(pathname))
 				  return file;
 		  return null;
 	  }
@@ -154,7 +173,7 @@ public class User extends User_Base {
 	}
 
 	public boolean checkPassword (String attempt) {
-		return attempt.equals(getPassword());
+		return attempt.equals(super.getPassword());
 	}
 
 	private Stack<String> toStack (String pathname) {
@@ -198,10 +217,12 @@ public class User extends User_Base {
 			try {
 				file = file.getFileByName(this, temp);
 			} catch (FileDoesNotExistException e) {
-				file = new Dir(temp,this,d,this.getUmask());
+				file = new Dir(temp,this.getMyDrive().getSuperUser(),d,this.getMyDrive().getSuperUser().getUmask());
 			}
 
 		}
+		file.setOwner(this.getMyDrive().getSuperUser(),this);
+		file.setPermissions(this.getUmask());
 		return (Dir)file;
 	}
 
@@ -218,7 +239,6 @@ public class User extends User_Base {
                 defaultName = child.getText();
             if (child.getName().equals("password"))
                 defaultPassword = child.getText();
-            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
         }
 
 		init(md,username,defaultName,defaultMask,defaultPassword);
@@ -228,17 +248,20 @@ public class User extends User_Base {
 		Element userNode = new Element("user");
 		userNode.setAttribute("username", getUsername());
 
+        Element passwordElement = new Element("password");
 		Element nameElement = new Element("name");
-		Element maskElement = new Element("mask");
-		Element passwordElement = new Element("password");
+        Element homeElement = new Element("home");
+        Element maskElement = new Element("mask");
 
+        passwordElement.addContent(super.getPassword());
 		nameElement.addContent(getName());
-		maskElement.addContent(getUmask());
-		passwordElement.addContent(getPassword());
+        homeElement.addContent(getHomeDir().getPath());
+        maskElement.addContent(getUmask());
 
-		userNode.addContent(nameElement);
-		userNode.addContent(maskElement);
-		userNode.addContent(passwordElement);
+        userNode.addContent(passwordElement);
+        userNode.addContent(nameElement);
+        userNode.addContent(homeElement);
+        userNode.addContent(maskElement);
 
 		return userNode;
 	}

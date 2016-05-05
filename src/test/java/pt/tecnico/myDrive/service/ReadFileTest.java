@@ -13,6 +13,7 @@ public class ReadFileTest extends AbstractServiceTest {
 
 	private long login;
 	private String user;
+	private String pass;
 	private User userObject;
 	private SuperUser root;
 	private MyDrive md;
@@ -20,9 +21,10 @@ public class ReadFileTest extends AbstractServiceTest {
 	protected void populate() {
 		md = MyDriveService.getMyDrive();
 		user = "Joao";
-		userObject = new User(md, user);
+		pass = "joaojoao";
+		userObject = new User(md, user, user, "rwxd----", pass);
 		root = MyDriveService.getMyDrive().getSuperUser();
-		login = md.createLogin(user, user);
+		login = md.createLogin(user, pass);
 		new PlainFile("testFile", userObject, userObject.getHomeDir(), userObject.getUmask(), "abc");
 	}
 

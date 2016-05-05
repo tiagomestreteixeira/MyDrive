@@ -6,24 +6,24 @@ public class FileDto {
 	private int id;
 	private String filename;
 	private DateTime lastModification;
-	private String perimissions;
+	private String permissions;
 	private String type;
 	private String content;
 
-	public FileDto(int id, String filename, DateTime lastModification, String perimissions, String type, String content) {
+	public FileDto(int id, String filename, DateTime lastModification, String permissions, String type, String content) {
 		this.id = id;
 		this.filename = filename;
 		this.lastModification = lastModification;
-		this.perimissions = perimissions;
+		this.permissions = permissions;
 		this.type = type;
 		this.content = content;
 	}
 
-	public FileDto(int id, String filename, DateTime lastModification, String perimissions, String type) {
+	public FileDto(int id, String filename, DateTime lastModification, String permissions, String type) {
 		this.id = id;
 		this.filename = filename;
 		this.lastModification = lastModification;
-		this.perimissions = perimissions;
+		this.permissions = permissions;
 		this.type = type;
 		this.content = "";
 	}
@@ -40,8 +40,8 @@ public class FileDto {
 		return lastModification;
 	}
 
-	public final String getPerimissions() {
-		return perimissions;
+	public final String getPermissions() {
+		return permissions;
 	}
 
 	public final String getContent() {

@@ -18,6 +18,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 	static Logger log = LogManager.getLogger();
 	private long login;
 	private String user;
+	private String pass;
 	private User userObject;
 	private SuperUser root;
 	private MyDrive md;
@@ -25,9 +26,10 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 
 	protected void populate() {
 		user = "Andre";
+		pass = "andreandre";
 		md = MyDriveService.getMyDrive();
-		userObject = new User(md, user);
-		login = md.createLogin(user,user);
+		userObject = new User(md, user, user, "rwxd----", pass);
+		login = md.createLogin(user,pass);
 		root = MyDriveService.getMyDrive().getSuperUser();
 		Dir l1 = new Dir("level1", userObject, userObject.getHomeDir(), userObject.getUmask());
 		Dir l2 = new Dir("level2", userObject, l1, userObject.getUmask());

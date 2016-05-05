@@ -60,9 +60,6 @@ public class PlainFile extends PlainFile_Base {
 
             if (child.getName().equals(elementDomainValue))
                 contents = child.getText();
-
-            log.info("<" + child.getName() + ">" + child.getText() + " </" + child.getName() + ">");
-
         }
 
         setContent(contents);

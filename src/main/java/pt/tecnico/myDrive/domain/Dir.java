@@ -15,6 +15,10 @@ public class Dir extends Dir_Base {
 		init(name, user, directory, permissions);
 	}
 
+	public Dir(Element dirElement) throws ImportDocumentException {
+		xmlImport(dirElement,"Dir");
+	}
+
 	@Override
 	public void delete(User user) throws MyDriveException {
 		if (getPath().equals("/") || getPath().equals("/home"))
@@ -85,10 +89,6 @@ public class Dir extends Dir_Base {
 			setHomeOwner(null);
 		}
 		deleteDomainObject();
-	}
-
-	public void xmlImport(Element dirElement) throws ImportDocumentException {
-		xmlImport(dirElement,"Dir");
 	}
 
 }
