@@ -12,5 +12,6 @@ public class MdShell extends Shell {
         // TODO: Add each command here
         new LoginCommand(this);
         new TokenCommand(this);
+        new ListCommand(this);
     }
 }
