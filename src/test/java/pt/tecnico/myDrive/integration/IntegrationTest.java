@@ -22,6 +22,7 @@ import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.SuperUser;
+import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
@@ -150,18 +151,39 @@ public class IntegrationTest extends AbstractServiceTest {
                 WriteFileService wft = new WriteFileService(ui.token, plainFilename, ui.username);
                 wft.execute();
 
-                String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType + " file with name "
-                        + plainFilename + ", owner " + ui.username + " and content " + plainContent +
-                        "should have been written successful with content " + ui.username;
+                String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType +
+                        " file with name " + plainFilename + ", owner " + ui.username + " and content " + plainContent
+                        + "should have been written successful with content " + ui.username;
+
                 PlainFile pf =  (PlainFile)su.lookup("/home/" + ui.username + "/" + plainFilename);
                 assertNotNull(assertWriteServiceMsg, pf);
                 assertEquals(ui.username,pf.getContent());
+                ui.numberFilesHomeDir++;
             }
         }catch (Exception e){
             fail(e.getMessage());
         }
 
-    }
 
+        log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
+        try {
+            for (UserInfo ui : users) {
+                ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
+                ldsAfterCreated.execute();
+
+                for (FileDto dto : ldsAfterCreated.result()) {
+                    log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
+                    assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
+                            + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
+                }
+
+            }
+        }catch (Exception e){
+            fail(e.getMessage());
+        }
+
+
+
+    }
 }
 
