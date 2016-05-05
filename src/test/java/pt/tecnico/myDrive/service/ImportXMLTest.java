@@ -14,6 +14,8 @@ public class ImportXMLTest extends AbstractServiceTest {
 
 
 	private MyDrive md;
+	private User user;
+	private File file;
 	private static final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<myDrive>"
 			+ "  <user username=\"jtb\">"
@@ -91,6 +93,8 @@ public class ImportXMLTest extends AbstractServiceTest {
 		ImportXMLService service = new ImportXMLService(doc);
 		service.execute();
 
+		user = md.getUserByUsername("jms");
+
 		// check users have been created
 		assertEquals("created 3 users", 6, md.getUserSet().size());
 		assertTrue("created jtb", md.hasUser("jtb"));
@@ -98,11 +102,37 @@ public class ImportXMLTest extends AbstractServiceTest {
 		assertTrue("created mja", md.hasUser("mja"));
 
 		//check user properties are correct
-		assertTrue("jms Password ", md.getUserByUsername("jms").checkPassword("marquesSilva"));
-		assertTrue("jms Name     ", md.getUserByUsername("jms").getName().equals("João Marques Silva"));
-		assertTrue("jms Home Dir ", md.getUserByUsername("jms").getHomeDir().getPath().equals("/home/jms"));
-		assertTrue("jms Umask    ", md.getUserByUsername("jms").getUmask().equals("rwxdrwxd"));
-		assertTrue("jms Umask    ", md.getUserByUsername("jms").equals("rwxdrwxd"));
+		assertTrue("user Password ", user.checkPassword("marquesSilva"));
+		assertTrue("user Name     ", user.getName().equals("João Marques Silva"));
+		assertTrue("user Home Dir ", user.getHomeDir().getPath().equals("/home/jms"));
+		assertTrue("user Umask    ", user.getUmask().equals("rwxdrwxd"));
+		assertTrue("user Umask    ", user.equals("rwxdrwxd"));
+	}
+
+
+	@Test
+	public void testFilesImport() throws Exception {
+		Document doc = new SAXBuilder().build(new StringReader(xml));
+		ImportXMLService service = new ImportXMLService(doc);
+		service.execute();
+
+		user = md.getUserByUsername("jtb");
+
+		//check files have been created
+		assertTrue("created Plain    ", user.hasFile(3));
+		assertTrue("created Dir      ", user.hasFile(4));
+		assertTrue("created Link     ", user.hasFile(5));
+		assertTrue("created SubDir   ", user.hasFile(7));
+		assertTrue("created SubSubDir", user.hasFile(666));
+		assertTrue("created App      ", user.hasFile(9));
+		assertTrue("created Link     ", user.hasFile(51));
+
+		//check file properties
+		assertTrue("file name       ", user.getFileById(3).getName().equals("profile"));
+		assertTrue("file permissions", user.getFileById(3).getPermissions().equals("profile"));
+		assertTrue("file content    ", ((PlainFile) user.getFileById(3)).getContent().equals("Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República."));
+		assertTrue("App  content    ", ((App) user.getFileById(9)).getContent().equals("pt.tecnico.myDrive.app.Hello"));
+		assertTrue("Link content    ", ((Link) user.getFileById(51)).getContent().equals("/home/jtb/documents"));
 	}
 
 }
