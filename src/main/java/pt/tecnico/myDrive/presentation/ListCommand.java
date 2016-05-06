@@ -9,22 +9,29 @@ public class ListCommand extends MdCommand {
 	private static final String USAGE_MSG = "USAGE: ls [path]\n";
 
     public ListCommand(Shell sh) {
-        super(sh, "list", "List given path directory contents or current directory if no argument is given. " + USAGE_MSG);
+        super(sh, "list", "List given path directory contents or current directory if no argument is given, with the following order:\n" +
+		        "Permissions \t Size \t File Id \t Last Modification \t Owner \t File Type \t File Name \n" + USAGE_MSG);
     }
 
-    private void executeList(Long token){
-    	ListDirectoryService listDirectoryService = new ListDirectoryService(token);
-    	listDirectoryService.execute();
-    	for(FileDto f : listDirectoryService.result()){
-    		shell().println(f.getType()+ " " + f.getPermissions() + " " + f.getOwner() + " " + f.getId() + " " + f.getLastModification() + " "+ f.getFilename());
-    	}
-    }
-    
+	private void executeList(Long token) {
+		ListDirectoryService listDirectoryService = new ListDirectoryService(token);
+		listDirectoryService.execute();
+		for (FileDto f : listDirectoryService.result()) {
+			shell().println(f.getPermissions()
+					+ "\t" + f.getSize()
+					+ "\t" + f.getId()
+					+ "\t" + f.getLastModification()
+					+ "\t" + f.getOwner()
+					+ "\t" + f.getType()
+					+ "\t" + f.getFilename());
+		}
+	}
+
 	@Override
 	void execute(String[] args) throws Exception {
 		if(args.length > 1)
 			throw new RuntimeException(USAGE_MSG);
-		
+
 		if (args.length == 0) {
 			Long token = shell().getCurrentToken();
 	        executeList(token);
@@ -33,7 +40,6 @@ public class ListCommand extends MdCommand {
 			Long token = shell().getCurrentToken();
 			ChangeDirectoryService cds = new ChangeDirectoryService(token, path);
 			cds.execute();
-			shell().println("Files for: " + path);
 			executeList(token);
 		}
 

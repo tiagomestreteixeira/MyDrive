@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.domain.MyDrive;
-import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.*;
 
 public abstract class MyDriveService {

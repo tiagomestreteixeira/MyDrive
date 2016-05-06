@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 
 public class FileDto {
 	private int id;
+	private int size;
 	private String filename;
 	private DateTime lastModification;
 	private String permissions;
@@ -11,8 +12,10 @@ public class FileDto {
 	private String content;
 	private String owner;
 
-	public FileDto(int id, String filename, DateTime lastModification, String permissions, String type, String content, String owner) {
+
+	public FileDto(int id, int size, String filename, DateTime lastModification, String permissions, String type, String content, String owner) {
 		this.id = id;
+		this.size = size;
 		this.filename = filename;
 		this.lastModification = lastModification;
 		this.permissions = permissions;
@@ -21,8 +24,9 @@ public class FileDto {
 		this.owner = owner;
 	}
 
-	public FileDto(int id, String filename, DateTime lastModification, String permissions, String type, String owner) {
+	public FileDto(int id, int size, String filename, DateTime lastModification, String permissions, String type, String owner) {
 		this.id = id;
+		this.size = size;
 		this.filename = filename;
 		this.lastModification = lastModification;
 		this.permissions = permissions;
@@ -33,6 +37,10 @@ public class FileDto {
 
 	public final int getId() {
 		return id;
+	}
+
+	public final int getSize() {
+		return size;
 	}
 
 	public final String getFilename() {
@@ -54,8 +62,10 @@ public class FileDto {
 	public final String getType() {
 		return type;
 	}
-	
-	public final String getOwner(){
+
+	public final String getOwner() {
 		return owner;
 	}
+
+
 }

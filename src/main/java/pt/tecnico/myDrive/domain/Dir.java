@@ -20,6 +20,11 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
+	public int getSize() {
+		return getFileSet().size();
+	}
+
+	@Override
 	public void delete(User user) throws MyDriveException {
 		if (getPath().equals("/") || getPath().equals("/home"))
 			throw new FileCanNotBeRemovedException(getPath());
