@@ -50,6 +50,11 @@ public class Login extends Login_Base {
 	public void setMydrive(MyDrive mydrive) {
 		throw new NoPermissionException("Login.setMyDrive()");
 	}
+	
+	@Override
+	public void addEnvVar(EnvVariables variable){
+		
+	}
 
 	public void refreshToken() {
 		this.setLoginDate(new DateTime());
