@@ -31,21 +31,21 @@ public class ListDirectoryService extends MyDriveService {
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
 
-		for(File f : currentDir.getFileSet()){
-			if(f instanceof Dir){
-				fileList.add((new FileDto(f.getId(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getName())));
+		for (File f : currentDir.getFileSet()) {
+			if (f instanceof Dir) {
+				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getUsername())));
 				continue;
 			}
-			if(f instanceof Link){
-				fileList.add((new FileDto(f.getId(), f.getName(), f.getLastModification(), f.getPermissions(), "Link", ((Link) f).getContent(), f.getFileOwner().getName())));
+			if (f instanceof Link) {
+				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Link", ((Link) f).getContent(), f.getFileOwner().getUsername())));
 				continue;
 			}
-			if(f instanceof App){
-				fileList.add((new FileDto(f.getId(), f.getName(), f.getLastModification(), f.getPermissions(), "App", ((App) f).getContent(), f.getFileOwner().getName())));
+			if (f instanceof App) {
+				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "App", ((App) f).getContent(), f.getFileOwner().getUsername())));
 				continue;
 			}
-			if(f instanceof PlainFile){
-				fileList.add((new FileDto(f.getId(), f.getName(), f.getLastModification(), f.getPermissions(), "PlainFile", ((PlainFile) f).getContent(), f.getFileOwner().getName())));
+			if (f instanceof PlainFile) {
+				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "PlainFile", ((PlainFile) f).getContent(), f.getFileOwner().getUsername())));
 				continue;
 			}
 		}
