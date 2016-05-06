@@ -66,14 +66,14 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		assertTrue("Fourth file time should be:", testPlain.getLastModification().equals(result.get(3).getLastModification()));
 	}
 
-	
-	@Test(expected=DirectoryHasNoFilesException.class)
+	@Test
 	public void listEmptyDirectory(){
 		final String pathname = "/home/Andre/Empty";
 		new Dir("Empty", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS );
 		changeDir(loginId, pathname);
 		ListDirectoryService service = new ListDirectoryService(loginId);
-		service.execute();		
+		service.execute();
+		assertTrue("Size should be 0: ", service.result().size() == 0);
 	}
 
 	@Test(expected=NoPermissionException.class)
