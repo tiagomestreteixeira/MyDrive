@@ -32,8 +32,6 @@ public class ListDirectoryService extends MyDriveService {
 
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
-
-		if(currentDir.getFileSet().isEmpty()) throw new DirectoryHasNoFilesException();
 		
 		for(File f : currentDir.getFileSet()){
 			if(f instanceof Dir){
