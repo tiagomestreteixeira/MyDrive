@@ -16,7 +16,7 @@ public class ListCommand extends MdCommand {
     	ListDirectoryService listDirectoryService = new ListDirectoryService(token);
     	listDirectoryService.execute();
     	for(FileDto f : listDirectoryService.result()){
-    		System.out.println(f.getType()+ " " + f.getPermissions() + " " + f.getOwner() + " " + f.getId() + " " + f.getLastModification() + " "+ f.getFilename());
+    		System.out.println(f.getType()+ " " + f.getPermissions() + " " + f.getLastModification() + " " + f.getId() + " " + f.getOwner() + " "+ f.getFilename());
     	}
     }
     
