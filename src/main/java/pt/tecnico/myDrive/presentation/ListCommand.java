@@ -13,18 +13,19 @@ public class ListCommand extends MdCommand {
 		        "Permissions \t Size \t File Id \t Last Modification \t Owner \t File Type \t File Name \n" + USAGE_MSG);
     }
 
-    private void executeList(Long token){
-    	ListDirectoryService listDirectoryService = new ListDirectoryService(token);
-    	listDirectoryService.execute();
-    	for(FileDto f : listDirectoryService.result()){ shell().println(f.getPermissions()
-			    + "\t" + f.getSize()
-			    + "\t" + f.getId()
-			    + "\t" + f.getLastModification()
-			    + "\t" + f.getOwner()
-			    + "\t" + f.getType()
-			    + "\t" + f.getFilename());
-    	}
-    }
+	private void executeList(Long token) {
+		ListDirectoryService listDirectoryService = new ListDirectoryService(token);
+		listDirectoryService.execute();
+		for (FileDto f : listDirectoryService.result()) {
+			shell().println(f.getPermissions()
+					+ "\t" + f.getSize()
+					+ "\t" + f.getId()
+					+ "\t" + f.getLastModification()
+					+ "\t" + f.getOwner()
+					+ "\t" + f.getType()
+					+ "\t" + f.getFilename());
+		}
+	}
 
 	@Override
 	void execute(String[] args) throws Exception {
