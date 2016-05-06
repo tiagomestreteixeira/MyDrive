@@ -20,6 +20,13 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
+	protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
+		super.init(name, user, directory, permissions);
+		new Link(".", user, this, permissions, this.getPath());
+		new Link("..", user, this, permissions, this.getDir().getPath());
+	}
+
+	@Override
 	public int getSize() {
 		return getFileSet().size();
 	}
