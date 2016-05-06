@@ -11,7 +11,7 @@ public class ExecuteFileService extends MyDriveService {
 	private String fileType;
 	private String content;
 
-	public ExecuteFileService() {
+	public ExecuteFileService(long token, String path, String[] args) {
 		this.token = token;
 		this.filename = filename;
 		this.fileType = fileType;
