@@ -64,14 +64,14 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.username = node.getAttribute("username").getValue();;
                 ui.password = node.getChild("password").getValue();
                 ui.token = null;
-                ui.numberFilesHomeDir = 0;
+                ui.numberFilesHomeDir = 2;
                 users.add(ui);
             }
         } catch(ImportDocumentException | JDOMException | IOException e){
             e.printStackTrace();
         }
 
-        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
+        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 6;
     }
 
     protected void populate() {
@@ -111,7 +111,7 @@ public class IntegrationTest extends AbstractServiceTest {
                     log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
 
                 assertEquals("[System Integration Test] ListDirectoryService. " +
-                        "User jtb should have" + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
+                        "User jtb should have " + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
             }
 
 

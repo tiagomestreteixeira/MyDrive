@@ -44,7 +44,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		List<FileDto> result = service.result();
 		log.info(result.size());
 
-		assertTrue("Size should be 4", result.size() == 4);
+		assertTrue("Size should be 6", result.size() == 6);
 		assertEquals("First file name should be:", "testApp", result.get(0).getFilename());
 		assertEquals("Second file name should be:", "testDir", result.get(1).getFilename());
 		assertEquals("Third file name should be:", "testLink", result.get(2).getFilename());
@@ -73,7 +73,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		changeDir(loginId, pathname);
 		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
-		assertTrue("Size should be 0: ", service.result().size() == 0);
+		assertTrue("Size should be 2: ", service.result().size() == 2);
 	}
 
 	@Test(expected=NoPermissionException.class)
