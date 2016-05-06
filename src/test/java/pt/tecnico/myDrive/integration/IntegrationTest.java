@@ -33,6 +33,7 @@ public class IntegrationTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser su;
 
+    private Document doc;
     private static final String IMPORT_XML_FILENAME = "users.xml";
 
     private class UserInfo{
@@ -54,39 +55,41 @@ public class IntegrationTest extends AbstractServiceTest {
 
     private static final List<UserInfo> users = new ArrayList<UserInfo>();
 
-    private void usersXMLtoList() {
+    private Document usersXMLtoList() {
         SAXBuilder builder = new SAXBuilder();
 
         try {
             Document document = (Document) builder.build(Main.resourceFile(IMPORT_XML_FILENAME));
             for (Element node : document.getRootElement().getChildren("user")) {
                 UserInfo ui = new UserInfo();
-                ui.username = node.getAttribute("username").getValue();;
+                ui.username = node.getAttribute("username").getValue();
                 ui.password = node.getChild("password").getValue();
                 ui.token = null;
                 ui.numberFilesHomeDir = 0;
                 users.add(ui);
             }
-        } catch(ImportDocumentException | JDOMException | IOException e){
+            users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
+            return document;
+        } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
-
-        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
+        return null;
     }
 
     protected void populate() {
 
         md = MyDrive.getInstance();
         su = md.getSuperUser();
-        usersXMLtoList();
 
-        Main.importXML(Main.resourceFile(IMPORT_XML_FILENAME));
+        doc = usersXMLtoList();
     }
 
     @Test
     public void success() throws Exception {
 
         try {
+
+            new ImportXMLService(doc).execute();
 
             log.debug("==|USERS|==");
             for(UserInfo ui : users){
@@ -111,7 +114,8 @@ public class IntegrationTest extends AbstractServiceTest {
                     log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
 
                 assertEquals("[System Integration Test] ListDirectoryService. " +
-                        "User jtb should have" + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
+                        "User jtb should have the correct number of files in home dir : ",
+                        ui.numberFilesHomeDir, lds.result().size());
             }
 
 
@@ -122,9 +126,7 @@ public class IntegrationTest extends AbstractServiceTest {
             String plainContent = "This\nIs\nA\nPlain File\nContent!";
             CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
             cft.execute();
-            assertNotNull("[System Integration Test] CreateFileService. The " + fileType + " file with name "
-                       + plainFilename + ", owner " + ui.username + " and content " + plainContent
-                       + "should have been created", su.lookup("/home/" + ui.username + "/" + plainFilename));
+            assertNotNull(su.lookup("/home/" + ui.username + "/" + plainFilename));
 
 
             log.debug("[System Integration Test] Each user write the content of the plain file created previously" +
@@ -187,19 +189,16 @@ public class IntegrationTest extends AbstractServiceTest {
 
 
             log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
-            int numberPlainsToCreate = 100;
+            int numberPlainsToCreate = 10;
             fileType = "Plain";
             for(int idFile = 0; idFile < numberPlainsToCreate; idFile++) {
                 plainFilename = "plaintestfile"+idFile;
                 plainContent = Integer.toString(idFile);
                     cft = new CreateFileService(ui.token, plainFilename, fileType,plainContent);
                     cft.execute();
-                    assertNotNull(
-                            "[System Integration Test] CreateFileService. The " + fileType + " file with name "
-                                    + plainFilename + ", owner " + ui.username + "should have been created",
-                            su.lookup(pathNewDir+"/"+plainFilename));
+                    assertNotNull(su.lookup(pathNewDir+"/"+plainFilename));
             }
-        }
+
 
 
             log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
@@ -216,16 +215,13 @@ public class IntegrationTest extends AbstractServiceTest {
                 
             // chamar execução de App
             //for()
+            }
         }
-    }catch (Exception e){
-        fail(e.getMessage());
-    }
+        catch (Exception e){
+            fail(e.getMessage());
+        }
 
     }
-
-
-
-
 
 }
 
