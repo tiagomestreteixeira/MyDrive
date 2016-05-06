@@ -33,7 +33,7 @@ public class ListCommand extends MdCommand {
 			Long token = shell().getCurrentToken();
 			ChangeDirectoryService cds = new ChangeDirectoryService(token, path);
 			cds.execute();
-			System.out.println("Files for: " + path);
+			shell().println("Files for: " + path);
 			executeList(token);
 		}
 
