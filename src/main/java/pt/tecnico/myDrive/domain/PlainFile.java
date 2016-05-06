@@ -23,6 +23,11 @@ public class PlainFile extends PlainFile_Base {
         setContent("");
     }
 
+    @Override
+    public int getSize() {
+        return getContent().length();
+    }
+
     public PlainFile(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
         init(name, user, directory, permissions);
         this.setContent(content);

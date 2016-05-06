@@ -75,6 +75,10 @@ public class File extends File_Base {
         }
     }
 
+    public int getSize(){
+        throw new NoPermissionException("File.getSize()");
+    }
+
     public boolean isOwner(User user) {
         User u = getUser();
         if (u.equals(user)) {
