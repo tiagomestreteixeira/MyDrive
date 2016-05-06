@@ -9,8 +9,6 @@ import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.domain.Link;
 import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.PlainFile;
-import pt.tecnico.myDrive.exception.DirectoryHasNoFilesException;
-import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
 public class ListDirectoryService extends MyDriveService {
@@ -25,14 +23,14 @@ public class ListDirectoryService extends MyDriveService {
 	}
 
 	@Override
-	protected void dispatch() throws DirectoryHasNoFilesException{
+	protected void dispatch() {
 		fileList = new ArrayList<FileDto>();
 
 		Login login = getMyDrive().getLoginFromId(loginId);
 
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
-		
+
 		for(File f : currentDir.getFileSet()){
 			if(f instanceof Dir){
 				fileList.add((new FileDto(f.getId(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getName())));
