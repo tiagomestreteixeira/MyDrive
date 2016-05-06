@@ -19,66 +19,66 @@ public class ImportXMLTest extends AbstractServiceTest {
 	private static final String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<myDrive>"
 			+ "  <user username=\"jtb\">"
-			+ "    <password>\"Fernandes\"</password>"
-			+ "    <name>\"Joaquim Teófilo Braga\"</name>"
-			+ "    <home>\"/home/jtb\"</home>"
-			+ "    <mask>\"rwxd----\"</mask>"
+			+ "    <password>Fernandes</password>"
+			+ "    <name>Joaquim Teófilo Braga</name>"
+			+ "    <home>/home/jtb</home>"
+			+ "    <mask>rwxd----</mask>"
 			+ "  </user>"
 			+ "  <user username=\"jms\">"
-			+ "    <password>\"marquesSilva\"</password>"
-			+ "    <name>\"João Marques Silva\"</name>"
-			+ "    <home>\"/home/jms\"</home>"
-			+ "    <mask>\"rwxdrwxd\"</mask>"
+			+ "    <password>marquesSilva</password>"
+			+ "    <name>João Marques Silva</name>"
+			+ "    <home>/home/jms</home>"
+			+ "    <mask>rwxdrwxd</mask>"
 			+ "  </user>"
 			+ "  <user username=\"mja\">"
-			+ "   <name>\"Manuel José de Arriaga\"</name>"
-			+ "   <password>\"Peyrelongue\"</password>"
+			+ "   <name>Manuel José de Arriaga</name>"
+			+ "   <password>Peyrelongue</password>"
 			+ "  </user>"
 			+ "  <plain id=\"3\">"
-			+ "    <path>\"/home/jtb/ui/iu/uiy\"</path>"
-			+ "    <name>\"profile\"</name>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <perm>\"rw-dr---\"</perm>"
-			+ "    <contents>\"Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República.\"</contents>"
+			+ "    <path>/home/jtb/ui/iu/uiy</path>"
+			+ "    <name>profile</name>"
+			+ "    <owner>jtb</owner>"
+			+ "    <perm>rw-dr---</perm>"
+			+ "    <contents>Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República.</contents>"
 			+ "  </plain>"
 			+ "  <dir id=\"4\">"
-			+ "    <path>\"/home/jtb\"</path>"
-			+ "    <name>\"documents\"</name>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <perm>\"rwxdr-x-\"</perm>"
+			+ "    <path>/home/jtb</path>"
+			+ "    <name>documents</name>"
+			+ "    <owner>jtb</owner>"
+			+ "    <perm>rwxdr-x-</perm>"
 			+ "  </dir>"
 			+ "  <link id=\"5\">"
-			+ "    <path>\"/home/jtb\"</path>"
-			+ "    <name>\"doc\"</name>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <perm>\"r-xdr-x-\"</perm>"
-			+ "    <value>\"/home/jtb/documents\"</value>"
+			+ "    <path>/home/jtb</path>"
+			+ "    <name>doc</name>"
+			+ "    <owner>jtb</owner>"
+			+ "    <perm>r-xdr-x-</perm>"
+			+ "    <value>/home/jtb/documents</value>"
 			+ "  </link>"
 			+ "  <dir id=\"7\">"
-			+ "    <path>\"/home/jtb\"</path>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <name>\"bin\"</name>"
-			+ "    <perm>\"rwxd--x-\"</perm>"
+			+ "    <path>/home/jtb</path>"
+			+ "    <owner>jtb</owner>"
+			+ "    <name>bin</name>"
+			+ "    <perm>rwxd--x-</perm>"
 			+ "  </dir>"
 			+ "  <dir id=\"666\">"
-			+ "    <path>\"/home/1/2/3/4/5/6\"</path>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <name>\"uuid\"</name>"
-			+ "    <perm>\"rwxd--x-\"</perm>"
+			+ "    <path>/home/1/2/3/4/5/6</path>"
+			+ "    <owner>jtb</owner>"
+			+ "    <name>uuid</name>"
+			+ "    <perm>rwxd--x-</perm>"
 			+ "  </dir>"
 			+ "  <app id=\"9\">"
-			+ "    <path>\"/home/jtb/bin\"</path>"
-			+ "    <name>\"hello\"</name>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <perm>\"rwxd--x-\"</perm>"
-			+ "    <method>\"pt.tecnico.myDrive.app.Hello\"</method>"
+			+ "    <path>/home/jtb/bin</path>"
+			+ "    <name>hello</name>"
+			+ "    <owner>jtb</owner>"
+			+ "    <perm>rwxd--x-</perm>"
+			+ "    <method>pt.tecnico.myDrive.app.Hello</method>"
 			+ "  </app>"
 			+ "  <link id=\"51\">"
-			+ "    <path>\"/a/b/c/d/e/f/g/h/i\"</path>"
-			+ "    <name>\"docweq\"</name>"
-			+ "    <owner>\"jtb\"</owner>"
-			+ "    <perm>\"r-xdr-x-\"</perm>"
-			+ "    <value>\"/home/jtb/documents\"</value>"
+			+ "    <path>/a/b/c/d/e/f/g/h/i</path>"
+			+ "    <name>docweq</name>"
+			+ "    <owner>jtb</owner>"
+			+ "    <perm>r-xdr-x-</perm>"
+			+ "    <value>/home/jtb/documents</value>"
 			+ "  </link>"
 			+ "</myDrive>";
 
@@ -106,7 +106,6 @@ public class ImportXMLTest extends AbstractServiceTest {
 		assertTrue("user Name     ", user.getName().equals("João Marques Silva"));
 		assertTrue("user Home Dir ", user.getHomeDir().getPath().equals("/home/jms"));
 		assertTrue("user Umask    ", user.getUmask().equals("rwxdrwxd"));
-		assertTrue("user Umask    ", user.equals("rwxdrwxd"));
 	}
 
 
@@ -120,20 +119,20 @@ public class ImportXMLTest extends AbstractServiceTest {
 		user = md.getUserByUsername("jtb");
 
 		//check files have been created
-		assertTrue("create Plain    ", user.hasFile(3));
-		assertTrue("create Dir      ", user.hasFile(4));
-		assertTrue("create Link     ", user.hasFile(5));
-		assertTrue("create SubDir   ", user.hasFile(7));
-		assertTrue("create SubSubDir", user.hasFile(666));
-		assertTrue("create App      ", user.hasFile(9));
-		assertTrue("create Link     ", user.hasFile(51));
+		assertTrue("create Plain    ", user.hasFile("/home/jtb/ui/iu/uiy/profile"));
+		assertTrue("create Dir      ", user.hasFile("/home/jtb/documents"));
+		assertTrue("create Link     ", user.hasFile("/home/jtb/doc"));
+		assertTrue("create SubDir   ", user.hasFile("/home/jtb/bin"));
+		assertTrue("create SubSubDir", user.hasFile("/home/1/2/3/4/5/6/uuid"));
+		assertTrue("create App      ", user.hasFile("/home/jtb/bin/hello"));
+		assertTrue("create Link     ", user.hasFile("/a/b/c/d/e/f/g/h/i/docweq"));
 
 		//check file properties
-		assertTrue("file name       ", user.getFileById(3).getName().equals("profile"));
-		assertTrue("file permissions", user.getFileById(3).getPermissions().equals("profile"));
-		assertTrue("file content    ", ((PlainFile) user.getFileById(3)).getContent().equals("Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República."));
-		assertTrue("App  content    ", ((App) user.getFileById(9)).getContent().equals("pt.tecnico.myDrive.app.Hello"));
-		assertTrue("Link content    ", ((Link) user.getFileById(51)).getContent().equals("/home/jtb/documents"));
+		assertTrue("file name       ", user.getFileByName("/home/jtb/ui/iu/uiy/profile").getName().equals("profile"));
+		assertTrue("file permissions", user.getFileByName("/home/jtb/ui/iu/uiy/profile").getPermissions().equals("rw-dr---"));
+		assertTrue("file content    ", ((PlainFile) user.getFileByName("/home/jtb/ui/iu/uiy/profile")).getContent().equals("Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República."));
+		assertTrue("App  content    ", ((App) user.getFileByName("home/jtb/bin/hello")).getContent().equals("pt.tecnico.myDrive.app.Hello"));
+		assertTrue("Link content    ", ((Link) user.getFileByName("/a/b/c/d/e/f/g/h/i/docweq")).getContent().equals("/home/jtb/documents"));
 	}
 
 }
