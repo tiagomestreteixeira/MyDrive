@@ -157,7 +157,7 @@ public class IntegrationTest extends AbstractServiceTest {
             ldsAfterCreated.execute();
 
             for (FileDto dto : ldsAfterCreated.result()) {
-                log.debug("dasd","\t" + dto.getType() + " -> " + dto.getFilename());
+                log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
                 assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
                             + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
             }
@@ -187,7 +187,7 @@ public class IntegrationTest extends AbstractServiceTest {
 
 
             log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
-            int numberPlainsToCreate = 10;
+            int numberPlainsToCreate = 100;
             fileType = "Plain";
             for(int idFile = 0; idFile < numberPlainsToCreate; idFile++) {
                 plainFilename = "plaintestfile"+idFile;
@@ -201,10 +201,31 @@ public class IntegrationTest extends AbstractServiceTest {
             }
         }
 
+
+            log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
+                      "- uses ChangeDirectoryService");
+            ldsAfterCreated = new ListDirectoryService(ui.token);
+            ldsAfterCreated.execute();
+
+            for (FileDto dto : ldsAfterCreated.result()) {
+                log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
+                assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
+                            + numberPlainsToCreate + " files.", numberPlainsToCreate,ldsAfterCreated.result().size());
+            }
+
+                
+            // chamar execução de App
+            //for()
+        }
     }catch (Exception e){
         fail(e.getMessage());
     }
 
     }
+
+
+
+
+
 }
 
