@@ -198,41 +198,9 @@ public class IntegrationTest extends AbstractServiceTest {
                             "[System Integration Test] CreateFileService. The " + fileType + " file with name "
                                     + plainFilename + ", owner " + ui.username + "should have been created",
                             su.lookup(pathNewDir+"/"+plainFilename));
-                }
-
-                /*
-                log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
-                        "- uses ChangeDirectoryService");
-                ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
-                ldsAfterCreated.execute();
-
-                for (FileDto dto : ldsAfterCreated.result()) {
-                    log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
-                    assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
-                            + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
-                }
-*/
             }
+        }
 
-
-
-
-
-
-
-        /*try {
-            for (UserInfo ui : users) {
-                String dirFilename = "dir"+ui.username;
-                CreateFileService cft = new CreateFileService(ui.token, dirFilename, fileType);
-                cft.execute();
-                assertNotNull(
-                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
-                                + dirFilename + ", owner " + ui.username + "should have been created",
-                        su.lookup("/home/" + ui.username + "/" + dirFilename));
-            }
-        }catch (Exception e){
-            fail(e.getMessage());
-        }*/
     }catch (Exception e){
         fail(e.getMessage());
     }
