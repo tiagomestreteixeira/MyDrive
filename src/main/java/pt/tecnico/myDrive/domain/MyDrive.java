@@ -70,6 +70,10 @@ public class MyDrive extends MyDrive_Base {
         throw new UserAlreadyExistsException(user.getName());
     }
 
+	public boolean hasUser(String user){
+		return (getUserByUsername(user) != null);
+	}
+
     @Override
     public Integer getIdCounter() {
         throw new NoPermissionException("MyDrive.getIdCounter()");
