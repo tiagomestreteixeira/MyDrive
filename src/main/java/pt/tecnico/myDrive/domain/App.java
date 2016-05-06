@@ -9,6 +9,7 @@ public class App extends App_Base {
 
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
         init(name, user, directory, permissions);
+	    super.setContent("");
     }
 
     public App(String name, User user, Dir directory, String permissions, String content) throws MyDriveException {
@@ -21,17 +22,20 @@ public class App extends App_Base {
     }
 
     @Override
-    public void setContent(String method) {
+    public void setContent(String method) throws MyDriveException {
+	    super.setContent("");
         if (method == null || method.equals("")) {
             super.setContent("");
             return;
         }
 
-        if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*"))
+        if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*")) {
             super.setContent(method);
-        else
-            throw new MethodNotValidException(method);
+            return;
+        }
+	    throw new MethodNotValidException(method);
     }
+
 
     @Override
     public void execute(User user){
