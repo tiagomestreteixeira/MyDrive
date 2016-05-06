@@ -20,5 +20,15 @@ public class CWDCommand extends MdCommand {
 
 	@Override
 	public void execute(String[] args) throws Exception {
+		Long token =shell().getCurrentToken();
+
+		if (args.length > 1)
+			throw new RuntimeException(USAGE_MSG);
+		if (args.length == 0) {
+			executeCWD(token, ".");
+		} else {
+			String path = args[0];
+			executeCWD(token, path);
+		}
 	}
 }
