@@ -1,8 +1,6 @@
 package pt.tecnico.myDrive.service;
 
 import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.Document;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ImportXMLService extends MyDriveService {
@@ -15,6 +13,6 @@ public class ImportXMLService extends MyDriveService {
 
 	@Override
 	protected void dispatch() throws MyDriveException {
-
+		getMyDrive().xmlImport(doc.getRootElement());
 	}
 }
