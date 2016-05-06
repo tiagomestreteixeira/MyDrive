@@ -39,7 +39,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		App testApp = new App("testApp", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
 
 		
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 		List<FileDto> result = service.result();
 		log.info(result.size());
@@ -71,7 +71,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		final String pathname = "/home/Andre/Empty";
 		new Dir("Empty", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS );
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 		assertTrue("Size should be 0: ", service.result().size() == 0);
 	}
@@ -81,7 +81,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		final String pathname = "/home/Andre/NoPerm";
 		new Dir("NoPerm", userObject, userObject.getHomeDir(), "--------");
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 	}
 
@@ -89,7 +89,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	public void NonExistantDirectoryList(){
 		final String pathname = "/home/Andre/NA";
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 	}
 

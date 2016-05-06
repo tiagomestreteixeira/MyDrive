@@ -104,7 +104,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + ui.username
                         + " - uses ListDirectoryService");
 
-                ListDirectoryService lds = new ListDirectoryService(ui.token);
+                ListDirectoryService lds = new ListDirectoryService(ui.token, ".");
                 lds.execute();
 
                 for (FileDto dto : lds.result())
@@ -153,7 +153,7 @@ public class IntegrationTest extends AbstractServiceTest {
 
 
             log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
-            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
+            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token, ".");
             ldsAfterCreated.execute();
 
             for (FileDto dto : ldsAfterCreated.result()) {
