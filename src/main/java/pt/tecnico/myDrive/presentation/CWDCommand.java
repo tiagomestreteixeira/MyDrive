@@ -14,7 +14,7 @@ public class CWDCommand extends MdCommand {
 	private void executeCWD(long token, String path) {
 		ChangeDirectoryService service = new ChangeDirectoryService(token, path);
 		service.execute();
-		System.out.println("[Current Directory]: " + service.result());
+		shell().print("[Current Directory]: " + service.result());
 	}
 
 
