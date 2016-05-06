@@ -131,7 +131,7 @@ public class ImportXMLTest extends AbstractServiceTest {
 		assertTrue("file name       ", user.getFileByName("/home/jtb/ui/iu/uiy/profile").getName().equals("profile"));
 		assertTrue("file permissions", user.getFileByName("/home/jtb/ui/iu/uiy/profile").getPermissions().equals("rw-dr---"));
 		assertTrue("file content    ", ((PlainFile) user.getFileByName("/home/jtb/ui/iu/uiy/profile")).getContent().equals("Primeiro chefe de Estado do regime republicano (acumulando com a chefia do governo), numa capacidade provisória até à eleição do primeiro presidente da República."));
-		assertTrue("App  content    ", ((App) user.getFileByName("home/jtb/bin/hello")).getContent().equals("pt.tecnico.myDrive.app.Hello"));
+		assertTrue("App  content    ", ((App) user.getFileByName("/home/jtb/bin/hello")).getContent().equals("pt.tecnico.myDrive.app.Hello"));
 		assertTrue("Link content    ", ((Link) user.getFileByName("/a/b/c/d/e/f/g/h/i/docweq")).getContent().equals("/home/jtb/documents"));
 	}
 
