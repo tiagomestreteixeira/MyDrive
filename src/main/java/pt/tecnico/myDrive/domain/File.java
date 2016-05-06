@@ -155,7 +155,8 @@ public class File extends File_Base {
             if (child.getName().equals("owner"))
                 ownerUsername = child.getText();
             if (child.getName().equals("perm"))
-                defaultPermissions = child.getText();}
+                defaultPermissions = child.getText();
+        }
 
         if (path == null)
             throw new ImportDocumentException(elementDomain, "<path> node cannot be read properly.");
@@ -169,8 +170,8 @@ public class File extends File_Base {
 
         if (defaultPermissions == null) {
             if (owner == null) owner = md.getUserByUsername("root");
+            defaultPermissions = owner.getUmask();
         }
-        defaultPermissions = owner.getUmask();
         init(name, owner, owner.makeDir(path), defaultPermissions);
     }
 

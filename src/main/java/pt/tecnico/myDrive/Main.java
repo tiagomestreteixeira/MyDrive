@@ -14,6 +14,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.presentation.MdShell;
 import pt.tecnico.myDrive.presentation.Shell;
+import pt.tecnico.myDrive.service.ImportXMLService;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,14 +45,11 @@ public class Main {
     	MyDrive.getInstance().cleanup();
     }
 
-    @Atomic
     public static void importXML(File file) {
-        MyDrive md = MyDrive.getInstance();
         SAXBuilder builder = new SAXBuilder();
         try {
-            Document document = (Document) builder.build(file);
-            md.xmlImport(document.getRootElement());
-
+            Document document = builder.build(file);
+            new ImportXMLService(document).execute();
         } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
