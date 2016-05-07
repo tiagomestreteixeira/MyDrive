@@ -19,6 +19,7 @@ import org.jdom2.input.SAXBuilder;
 
 
 import pt.tecnico.myDrive.Main;
+import pt.tecnico.myDrive.domain.File;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.SuperUser;
@@ -94,11 +95,14 @@ public class IntegrationTest extends AbstractServiceTest {
         doc = usersXMLtoList();
     }
 
-    public void loginUser(UserInfoTest uit){
-        log.debug("[System Integration Test] Login Service of user "+ uit.username + " - uses LoginUserService");
+    private void loginUser(UserInfoTest uit){
+        log.debug("[System Integration Test] Login Service of user " + uit.username + " - uses LoginUserService");
+
         LoginUserService us = new LoginUserService(uit.username,uit.password);
         us.execute();
+
         assertNotNull(us.result());
+
         uit.token = us.result();
         log.debug("username: " + uit.username);
         log.debug("password: " + uit.password);
@@ -106,9 +110,9 @@ public class IntegrationTest extends AbstractServiceTest {
         log.debug("Number of Files in Home dir: " + uit.numberFilesHomeDir);
     }
 
-    public void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles){
+    private void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles){
         log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
-                + ", Current Dir : "+ uif.currentDir+" - uses ListDirectoryService");
+                + ", Current Dir : " + uif.currentDir + " - uses ListDirectoryService");
 
         ListDirectoryService lds = new ListDirectoryService(uif.token);
         lds.execute();
@@ -116,25 +120,57 @@ public class IntegrationTest extends AbstractServiceTest {
         for (FileDto dto : lds.result())
             log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
 
-        assertEquals("[System Integration Test] ListDirectoryService. " +
-                        "User jtb should have the correct number of files in home dir : ",
-                expectedNumberFiles, lds.result().size());
+        assertEquals("[System Integration Test] ListDirectoryService. User " + uif.username + " should have the correct "
+                + "number of files in " + uif.currentDir + " : ", expectedNumberFiles, lds.result().size());
     }
 
+    private void changeDirUser(UserInfoTest uif, String pathNewDir){
+        log.debug("[System Integration Test] ChangeDirectoryService . User " + uif.username + "changes current dir from "
+                + uif.currentDir + " to " + pathNewDir + " - uses ChangeDirectoryService");
+
+        ChangeDirectoryService cds = new ChangeDirectoryService(uif.token,pathNewDir);
+        cds.execute();
+
+        assertEquals("Changed to a wrong pathname",pathNewDir,cds.result());
+    }
+
+    private void writeFileServiceUser(UserInfoTest uit, String fileName, String content){
+        log.debug("[System Integration Test] WriteFileService. User: " + uit.username + ", write the content:" + content
+                + " to the file : " + fileName + " - uses WriteFileService");
+
+        WriteFileService wft = new WriteFileService(uit.token, fileName, content);
+        wft.execute();
+
+        String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The  file "
+            + uit.currentDir + "/" + fileName + " of user " + uit.username + " should exist";
+        PlainFile pf =  (PlainFile)su.lookup(uit.currentDir + "/" + fileName);
+
+        assertNotNull(assertWriteServiceMsg, pf);
+        assertEquals("Content Written not match.", uit.username,pf.getContent());
+    }
+
+    private void readFileServiceUser(UserInfoTest uit, String fileName){
+        log.debug("[System Integration Test] ReadFileService. User: " + uit.username + ", reads the content of file: " +
+                fileName + " -  uses ReadFileService");
+
+        ReadFileService rft = new ReadFileService(uit.token, fileName);
+        rft.execute();
+
+        assertNotNull("[System Integration Test] ReadFileService. The file " + fileName + " should exists", rft.result());
+        assertEquals("Content Read from file is wrong.",uit.username,rft.result());
+    }
 
     @Test
     public void success() throws Exception {
-
         try {
-            log.debug("[System Integration Test] Login Service");
-            new ImportXMLService(doc).execute();
 
+            log.debug("[System Integration Test] - ImportXMLService");
+            new ImportXMLService(doc).execute();
 
 
             for(UserInfoTest ui : users){
                 loginUser(ui);
                 listDirectoryUser(ui,ui.numberFilesHomeDir);
-
 
 
             log.debug("[System Integration Test] Each user create a plain file (with name plainExample in its home dir"+
@@ -145,43 +181,11 @@ public class IntegrationTest extends AbstractServiceTest {
             CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
             cft.execute();
             assertNotNull(su.lookup("/home/" + ui.username + "/" + plainFilename));
-
-
-            log.debug("[System Integration Test] Each user write the content of the plain file created previously" +
-                        " with their username - uses WriteFileService");
-
-            WriteFileService wft = new WriteFileService(ui.token, plainFilename, ui.username);
-            wft.execute();
-            String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The " + fileType +
-                        " file with name " + plainFilename + ", owner " + ui.username + " and content " + plainContent
-                        + "should have been written successful with content " + ui.username;
-
-            PlainFile pf =  (PlainFile)su.lookup("/home/" + ui.username + "/" + plainFilename);
-            assertNotNull(assertWriteServiceMsg, pf);
-            assertEquals(ui.username,pf.getContent());
             ui.numberFilesHomeDir++;
 
-
-            log.debug("[System Integration Test] Each user reads the plain file created previously " +
-                    "- uses ReadFileService");
-            ReadFileService rft = new ReadFileService(ui.token, plainFilename);
-            rft.execute();
-            assertNotNull("[System Integration Test] ReadFileService. The " + fileType + " file with name "
-                        + plainFilename + ", owner " + ui.username + " and content " + plainContent
-                        + "should have been read successful", rft.result());
-            assertEquals(ui.username,rft.result());
-
-
-            log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
-            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
-            ldsAfterCreated.execute();
-
-            for (FileDto dto : ldsAfterCreated.result()) {
-                log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
-                assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
-                            + ui.numberFilesHomeDir + " files.", ui.numberFilesHomeDir,ldsAfterCreated.result().size());
-            }
-
+            writeFileServiceUser(ui,plainFilename,ui.username);
+            readFileServiceUser(ui,plainFilename);
+            listDirectoryUser(ui,ui.numberFilesHomeDir);
 
             log.debug("[System Integration Test] Each user create a new directory, with name corresponding to " +
                 "dir[Username] in its home dir - uses CreateFileService");
@@ -199,14 +203,10 @@ public class IntegrationTest extends AbstractServiceTest {
                         su.lookup("/home/" + ui.username + "/" + dirFilename));
 
 
-            log.debug("[System Integration Test] Each user changes current dir to the dir created previously " +
-                        "- uses ChangeDirectoryService");
-            ChangeDirectoryService cds = new ChangeDirectoryService(ui.token,pathNewDir);
-            cds.execute();
-            assertEquals("Changed to a wrong pathname",cds.result(),pathNewDir);
+            changeDirUser(ui,pathNewDir);
 
 
-            log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
+            /*log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
             int numberPlainsToCreate = 10;
             fileType = "Plain";
             for(int idFile = 0; idFile < numberPlainsToCreate; idFile++) {
@@ -215,11 +215,11 @@ public class IntegrationTest extends AbstractServiceTest {
                     cft = new CreateFileService(ui.token, plainFilename, fileType,plainContent);
                     cft.execute();
                     assertNotNull(su.lookup(pathNewDir+"/"+plainFilename));
-            }
+            }*/
 
 
 
-            log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
+            /*log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
                       "- uses ChangeDirectoryService");
             ldsAfterCreated = new ListDirectoryService(ui.token);
             ldsAfterCreated.execute();
@@ -230,7 +230,7 @@ public class IntegrationTest extends AbstractServiceTest {
                             + numberPlainsToCreate + " files.", numberPlainsToCreate,ldsAfterCreated.result().size());
             }
 
-                
+              */
             // chamar execução de App
             //for()
             }
