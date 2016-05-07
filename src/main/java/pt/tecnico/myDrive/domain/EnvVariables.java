@@ -1,30 +1,47 @@
 package pt.tecnico.myDrive.domain;
 
+import pt.tecnico.myDrive.exception.NoPermissionException;
+
 public class EnvVariables extends EnvVariables_Base {
     
-    public EnvVariables() {
+    public EnvVariables(Login login, String name, String value) {
         super();
+        super.setLogin(login);
+        super.setName(name);
+        super.setValue(value);
     }
+    
     
     @Override
     public void setName(String name){
-    	
+    	throw new NoPermissionException("EnvVariables.setName()");
     }
     
     @Override
     public void setValue(String value){
-    	
+    	//throw new NoPermissionException("EnvVariables.setValue()");
+    	super.setValue(value);
+    }
+    
+    @Override
+    public void setLogin(Login login){
+    	//throw new NoPermissionException("EnvVariables.setLogin()");
+    	login.addEnvVar(this);
     }
     
     @Override
     public String getName(){
-		return null;
-    	
+		return super.getName();    	
     }
     
     @Override
     public String getValue(){
-    	return null;
+    	return super.getValue();
+    }
+    
+    @Override
+    public Login getLogin(){
+    	return super.getLogin();
     }
     
 }
