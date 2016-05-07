@@ -55,4 +55,9 @@ public class App extends App_Base {
         appElement.addContent(valueElement);
         return appElement;
     }
+
+    @Override
+    public String getType(){
+        return "App";
+    }
 }
