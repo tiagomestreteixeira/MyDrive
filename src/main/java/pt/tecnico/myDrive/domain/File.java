@@ -215,4 +215,9 @@ public class File extends File_Base {
 
         return el;
     }
+
+    public String getType(){
+        return null;
+    }
+
 }

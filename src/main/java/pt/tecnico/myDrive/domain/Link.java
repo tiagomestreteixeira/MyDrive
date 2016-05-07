@@ -62,4 +62,9 @@ public class Link extends Link_Base {
         linkElement.addContent(valueElement);
         return linkElement;
     }
+
+    @Override
+    public String getType(){
+        return "Link";
+    }
 }
