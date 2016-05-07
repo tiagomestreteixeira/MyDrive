@@ -70,7 +70,6 @@ public class PlainFile extends PlainFile_Base {
         setContent(contents);
     }
 
-
     @Override
     public Element xmlExport(){
         Element plainElement =  new Element("plain");
@@ -80,6 +79,11 @@ public class PlainFile extends PlainFile_Base {
         contentsElement.addContent(getContent());
         plainElement.addContent(contentsElement);
         return plainElement;
+    }
+
+    @Override
+    public String getType(){
+        return "PlainFile";
     }
 
 }
