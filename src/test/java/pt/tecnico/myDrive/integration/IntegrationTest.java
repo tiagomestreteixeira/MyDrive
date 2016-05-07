@@ -22,7 +22,6 @@ import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.domain.PlainFile;
 import pt.tecnico.myDrive.domain.SuperUser;
-import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
@@ -35,17 +34,28 @@ public class IntegrationTest extends AbstractServiceTest {
 
     private Document doc;
     private static final String IMPORT_XML_FILENAME = "users.xml";
+    private static final int INITIAL_NUMBER_FILES = 0;
 
-    private class UserInfo{
+    private static final List<UserInfoTest> users = new ArrayList<UserInfoTest>();
+
+    private class UserInfoTest {
         public String username, password;
         public Long token;
+
+        public String currentDir;
         public int numberFilesHomeDir;
-        UserInfo(){};
+
+        public int numberDirsToCreate;
+        public int numberPlainsToCreate;
+        public int numberLinksToCreate;
+        public int numberAppsToCreate;
+
+        UserInfoTest(){}
     }
 
     private int indexOfByUsername(String username) {
         int idx = 0;
-        for (UserInfo ui : users){
+        for (UserInfoTest ui : users){
             if (ui.username.equals(username))
                 return idx;
             idx++;
@@ -53,73 +63,81 @@ public class IntegrationTest extends AbstractServiceTest {
         return -1;
     }
 
-    private static final List<UserInfo> users = new ArrayList<UserInfo>();
+    void specificUserInitialization(){
+        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
+    }
 
     private Document usersXMLtoList() {
         SAXBuilder builder = new SAXBuilder();
-
+        Document doc = null;
         try {
-            Document document = (Document) builder.build(Main.resourceFile(IMPORT_XML_FILENAME));
-            for (Element node : document.getRootElement().getChildren("user")) {
-                UserInfo ui = new UserInfo();
+            doc = builder.build(Main.resourceFile(IMPORT_XML_FILENAME));
+            for (Element node : doc.getRootElement().getChildren("user")) {
+                UserInfoTest ui = new UserInfoTest();
                 ui.username = node.getAttribute("username").getValue();
                 ui.password = node.getChild("password").getValue();
+                ui.currentDir = node.getChild("home").getValue();
                 ui.token = null;
-                ui.numberFilesHomeDir = 0;
+                ui.numberFilesHomeDir = INITIAL_NUMBER_FILES;
                 users.add(ui);
+                specificUserInitialization();
             }
-            users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
-            return document;
         } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return doc;
     }
 
     protected void populate() {
-
         md = MyDrive.getInstance();
         su = md.getSuperUser();
-
         doc = usersXMLtoList();
     }
+
+    public void loginUser(UserInfoTest uit){
+        log.debug("[System Integration Test] Login Service of user "+ uit.username + " - uses LoginUserService");
+        LoginUserService us = new LoginUserService(uit.username,uit.password);
+        us.execute();
+        assertNotNull(us.result());
+        uit.token = us.result();
+        log.debug("username: " + uit.username);
+        log.debug("password: " + uit.password);
+        log.debug("token: " + uit.token);
+        log.debug("Number of Files in Home dir: " + uit.numberFilesHomeDir);
+    }
+
+    public void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles){
+        log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
+                + ", Current Dir : "+ uif.currentDir+" - uses ListDirectoryService");
+
+        ListDirectoryService lds = new ListDirectoryService(uif.token);
+        lds.execute();
+
+        for (FileDto dto : lds.result())
+            log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
+
+        assertEquals("[System Integration Test] ListDirectoryService. " +
+                        "User jtb should have the correct number of files in home dir : ",
+                expectedNumberFiles, lds.result().size());
+    }
+
 
     @Test
     public void success() throws Exception {
 
         try {
-
+            log.debug("[System Integration Test] Login Service");
             new ImportXMLService(doc).execute();
 
-            log.debug("==|USERS|==");
-            for(UserInfo ui : users){
-                LoginUserService us = new LoginUserService(ui.username,ui.password);
-                us.execute();
-                assertNotNull(us.result());
-                ui.token = us.result();
-                log.debug("username: " + ui.username);
-                log.debug("password: " + ui.password);
-                log.debug("token: " + ui.token);
-                log.debug("Number of Files in Home dir: " + ui.numberFilesHomeDir);
 
 
-            if(ui.username.equals("jtb")) {
-                log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + ui.username
-                        + " - uses ListDirectoryService");
-
-                ListDirectoryService lds = new ListDirectoryService(ui.token);
-                lds.execute();
-
-                for (FileDto dto : lds.result())
-                    log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
-
-                assertEquals("[System Integration Test] ListDirectoryService. " +
-                        "User jtb should have the correct number of files in home dir : ",
-                        ui.numberFilesHomeDir, lds.result().size());
-            }
+            for(UserInfoTest ui : users){
+                loginUser(ui);
+                listDirectoryUser(ui,ui.numberFilesHomeDir);
 
 
-            log.debug("[System Integration Test] Each user create a plain file (with name plainExample in its home dir" +
+
+            log.debug("[System Integration Test] Each user create a plain file (with name plainExample in its home dir"+
                     " - uses CreateFileService");
             String plainFilename = "plainExample";
             String fileType = "Plain";
