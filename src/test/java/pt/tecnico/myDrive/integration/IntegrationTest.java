@@ -62,7 +62,9 @@ public class IntegrationTest extends AbstractServiceTest {
     }
 
     void specificUserInitialization(){
-        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
+        UserInfoTest jtb = users.get(indexOfByUsername("jtb"));
+        jtb.numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
+        jtb.numberPlainsToCreate = 500;
     }
 
     private Document usersXMLtoList() {
@@ -199,40 +201,24 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 fileType = "Dir";
                 filename = "dir"+ui.username;
-
                 createFileServiceUser(ui,filename,fileType,plainContent);
-                
+
                 String pathNewDir = "/home/" + ui.username + "/" + filename;
                 changeDirUser(ui,pathNewDir);
+                ui.currentDir = pathNewDir;
 
 
-            /*log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
-            int numberPlainsToCreate = 10;
-            fileType = "Plain";
-            for(int idFile = 0; idFile < numberPlainsToCreate; idFile++) {
-                plainFilename = "plaintestfile"+idFile;
-                plainContent = Integer.toString(idFile);
-                    cft = new CreateFileService(ui.token, plainFilename, fileType,plainContent);
-                    cft.execute();
-                    assertNotNull(su.lookup(pathNewDir+"/"+plainFilename));
-            }*/
+                log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
+                fileType = "Plain";
+                for(int idFile = 0; idFile < ui.numberPlainsToCreate; idFile++) {
+                    filename = "plaintestfile"+idFile;
+                    plainContent = Integer.toString(idFile);
+                    createFileServiceUser(ui,filename,fileType,plainContent);
+                }
 
+                listDirectoryUser(ui,ui.numberPlainsToCreate);
 
-
-            /*log.debug("[System Integration Test] Listing of the "+ pathNewDir + " dir created previously " +
-                      "- uses ChangeDirectoryService");
-            ldsAfterCreated = new ListDirectoryService(ui.token);
-            ldsAfterCreated.execute();
-
-            for (FileDto dto : ldsAfterCreated.result()) {
-                log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
-                assertEquals("[System Integration Test] ListDirectoryService. User " + ui.username + " should have "
-                            + numberPlainsToCreate + " files.", numberPlainsToCreate,ldsAfterCreated.result().size());
-            }
-
-              */
-            // chamar execução de App
-            //for()
+                Main.xmlPrint();
             }
         }
         catch (Exception e){
