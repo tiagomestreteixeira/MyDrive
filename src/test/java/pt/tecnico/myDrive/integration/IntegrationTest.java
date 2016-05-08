@@ -1,9 +1,5 @@
 package pt.tecnico.myDrive.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.junit.Test;
@@ -17,12 +13,13 @@ import java.util.ArrayList;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 
-
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
+
+import static org.junit.Assert.*;
 
 @RunWith(JMockit.class)
 public class IntegrationTest extends AbstractServiceTest {
@@ -64,7 +61,12 @@ public class IntegrationTest extends AbstractServiceTest {
     void specificUserInitialization(){
         UserInfoTest jtb = users.get(indexOfByUsername("jtb"));
         jtb.numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
-        jtb.numberPlainsToCreate = 500;
+        for(UserInfoTest ui: users){
+            ui.numberPlainsToCreate = 10;
+            ui.numberLinksToCreate = 10;
+            ui.numberAppsToCreate = 10;
+            ui.numberDirsToCreate = 10;
+        }
     }
 
     private Document usersXMLtoList() {
@@ -145,7 +147,7 @@ public class IntegrationTest extends AbstractServiceTest {
         PlainFile pf =  (PlainFile)su.lookup(uit.currentDir + "/" + fileName);
 
         assertNotNull(assertWriteServiceMsg, pf);
-        assertEquals("Content Written not match.", uit.username,pf.getContent());
+        assertEquals("Content Written don't match.", uit.username,pf.getContent());
     }
 
     private void readFileServiceUser(UserInfoTest uit, String fileName){
@@ -156,7 +158,13 @@ public class IntegrationTest extends AbstractServiceTest {
         rft.execute();
 
         assertNotNull("[System Integration Test] ReadFileService. The file " + fileName + " should exists", rft.result());
-        assertEquals("Content Read from file is wrong.",uit.username,rft.result());
+        assertEquals("Content Read from don't match.",uit.username,rft.result());
+    }
+
+    private void createFileServiceBatchUser(UserInfoTest uit, String filename,String fileType, String content, int maxNumber){
+        for(int idFile = 0; idFile < maxNumber; idFile++) {
+            createFileServiceUser(uit,filename + idFile,fileType,content);
+        }
     }
 
     private void createFileServiceUser(UserInfoTest uit, String filename, String fileType, String content) {
@@ -175,6 +183,15 @@ public class IntegrationTest extends AbstractServiceTest {
         assertNotNull(assertWriteServiceMsg, su.lookup(uit.currentDir + "/" + filename));
     }
 
+    private void deleteFileServiceUser(UserInfoTest uit, String fileName){
+        log.debug("[System Integration Test] DeleteFileService. User: " + uit.username + ", delete the file "
+                + fileName + " - uses DeleteFileService");
+
+        DeleteFileService dft = new DeleteFileService(uit.token, fileName);
+        dft.execute();
+
+        assertNull("DeleteFileService. The file " + fileName + " should not exists. ", su.lookup(uit.currentDir + "/" + fileName));
+    }
 
     @Test
     public void success() throws Exception {
@@ -191,7 +208,6 @@ public class IntegrationTest extends AbstractServiceTest {
                 String filename = "plainExample";
                 String fileType = "Plain";
                 String plainContent = "This\nIs\nA\nPlain File\nContent!";
-
                 createFileServiceUser(ui,filename,fileType,plainContent);
                 ui.numberFilesHomeDir++;
 
@@ -200,25 +216,39 @@ public class IntegrationTest extends AbstractServiceTest {
                 listDirectoryUser(ui,ui.numberFilesHomeDir);
 
                 fileType = "Dir";
-                filename = "dir"+ui.username;
-                createFileServiceUser(ui,filename,fileType,plainContent);
+                filename = "dir" + ui.username;
+                createFileServiceUser(ui,filename,fileType,"");
+                ui.numberFilesHomeDir++;
 
                 String pathNewDir = "/home/" + ui.username + "/" + filename;
                 changeDirUser(ui,pathNewDir);
                 ui.currentDir = pathNewDir;
 
+                createFileServiceBatchUser(ui,fileType,fileType,"",ui.numberDirsToCreate);
+                listDirectoryUser(ui,ui.numberDirsToCreate);
 
-                log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
                 fileType = "Plain";
-                for(int idFile = 0; idFile < ui.numberPlainsToCreate; idFile++) {
-                    filename = "plaintestfile"+idFile;
-                    plainContent = Integer.toString(idFile);
-                    createFileServiceUser(ui,filename,fileType,plainContent);
-                }
+                createFileServiceBatchUser(ui,fileType,fileType,plainContent,ui.numberPlainsToCreate);
+                listDirectoryUser(ui,ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                listDirectoryUser(ui,ui.numberPlainsToCreate);
+                fileType = "Link";
+                String linkContent = "/home/"+ui.username;
+                createFileServiceBatchUser(ui,fileType,fileType,linkContent,ui.numberLinksToCreate);
+                listDirectoryUser(ui,ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                Main.xmlPrint();
+                fileType = "App";
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
+                createFileServiceBatchUser(ui,fileType,fileType,appContent,ui.numberAppsToCreate);
+
+                int expectedNumberfiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
+                                          + ui.numberAppsToCreate;
+                listDirectoryUser(ui,expectedNumberfiles);
+
+                deleteFileServiceUser(ui,"Dir0");
+
+                listDirectoryUser(ui,--expectedNumberfiles);
+
+                //Main.xmlPrint();
             }
         }
         catch (Exception e){
