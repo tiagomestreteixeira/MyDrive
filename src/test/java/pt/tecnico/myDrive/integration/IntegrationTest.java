@@ -19,10 +19,7 @@ import org.jdom2.input.SAXBuilder;
 
 
 import pt.tecnico.myDrive.Main;
-import pt.tecnico.myDrive.domain.File;
-import pt.tecnico.myDrive.domain.MyDrive;
-import pt.tecnico.myDrive.domain.PlainFile;
-import pt.tecnico.myDrive.domain.SuperUser;
+import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
@@ -160,6 +157,23 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals("Content Read from file is wrong.",uit.username,rft.result());
     }
 
+    private void createFileServiceUser(UserInfoTest uit, String filename, String fileType, String content) {
+        log.debug("[System Integration Test] CreateFileService. User: " + uit.username + ", will create the file "
+                + filename + ", of type : " + fileType + ", in the directory: " + uit.currentDir + " - uses CreateFileService");
+
+        if(fileType.equals("Dir")) {
+           new CreateFileService(uit.token, filename, fileType).execute();
+        }else{
+            new CreateFileService(uit.token, filename, fileType, content).execute();
+        }
+
+        String assertWriteServiceMsg = "[System Integration Test] CreateFileService. The  file "
+                + uit.currentDir + "/" + filename + " of user " + uit.username + " should have been created";
+
+        assertNotNull(assertWriteServiceMsg, su.lookup(uit.currentDir + "/" + filename));
+    }
+
+
     @Test
     public void success() throws Exception {
         try {
@@ -172,38 +186,24 @@ public class IntegrationTest extends AbstractServiceTest {
                 loginUser(ui);
                 listDirectoryUser(ui,ui.numberFilesHomeDir);
 
+                String filename = "plainExample";
+                String fileType = "Plain";
+                String plainContent = "This\nIs\nA\nPlain File\nContent!";
 
-            log.debug("[System Integration Test] Each user create a plain file (with name plainExample in its home dir"+
-                    " - uses CreateFileService");
-            String plainFilename = "plainExample";
-            String fileType = "Plain";
-            String plainContent = "This\nIs\nA\nPlain File\nContent!";
-            CreateFileService cft = new CreateFileService(ui.token, plainFilename, fileType, plainContent);
-            cft.execute();
-            assertNotNull(su.lookup("/home/" + ui.username + "/" + plainFilename));
-            ui.numberFilesHomeDir++;
+                createFileServiceUser(ui,filename,fileType,plainContent);
+                ui.numberFilesHomeDir++;
 
-            writeFileServiceUser(ui,plainFilename,ui.username);
-            readFileServiceUser(ui,plainFilename);
-            listDirectoryUser(ui,ui.numberFilesHomeDir);
+                writeFileServiceUser(ui,filename,ui.username);
+                readFileServiceUser(ui,filename);
+                listDirectoryUser(ui,ui.numberFilesHomeDir);
 
-            log.debug("[System Integration Test] Each user create a new directory, with name corresponding to " +
-                "dir[Username] in its home dir - uses CreateFileService");
-            fileType = "Dir";
+                fileType = "Dir";
+                filename = "dir"+ui.username;
 
-            String dirFilename = "dir"+ui.username;
-            String pathNewDir = "/home/" + ui.username + "/" + dirFilename;
-            log.info("New dir filename:" + dirFilename);
-            log.info("Path of the New dir filename:" + pathNewDir);
-            cft = new CreateFileService(ui.token, dirFilename, fileType);
-            cft.execute();
-            assertNotNull(
-                        "[System Integration Test] CreateFileService. The " + fileType + " file with name "
-                                + dirFilename + ", owner " + ui.username + "should have been created",
-                        su.lookup("/home/" + ui.username + "/" + dirFilename));
-
-
-            changeDirUser(ui,pathNewDir);
+                createFileServiceUser(ui,filename,fileType,plainContent);
+                
+                String pathNewDir = "/home/" + ui.username + "/" + filename;
+                changeDirUser(ui,pathNewDir);
 
 
             /*log.debug("[System Integration Test] Each user creates 10 plainfiles - uses ChangeDirectoryService");
