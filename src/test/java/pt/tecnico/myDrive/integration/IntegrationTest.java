@@ -45,12 +45,13 @@ public class IntegrationTest extends AbstractServiceTest {
         public int numberLinksToCreate;
         public int numberAppsToCreate;
 
-        UserInfoTest(){}
+        UserInfoTest() {
+        }
     }
 
     private int indexOfByUsername(String username) {
         int idx = 0;
-        for (UserInfoTest ui : users){
+        for (UserInfoTest ui : users) {
             if (ui.username.equals(username))
                 return idx;
             idx++;
@@ -58,10 +59,10 @@ public class IntegrationTest extends AbstractServiceTest {
         return -1;
     }
 
-    void specificUserInitialization(){
+    void specificUserInitialization() {
         UserInfoTest jtb = users.get(indexOfByUsername("jtb"));
         jtb.numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
-        for(UserInfoTest ui: users){
+        for (UserInfoTest ui : users) {
             ui.numberPlainsToCreate = 10;
             ui.numberLinksToCreate = 10;
             ui.numberAppsToCreate = 10;
@@ -96,10 +97,10 @@ public class IntegrationTest extends AbstractServiceTest {
         doc = usersXMLtoList();
     }
 
-    private void loginUser(UserInfoTest uit){
+    private void loginUser(UserInfoTest uit) {
         log.debug("[System Integration Test] Login Service of user " + uit.username + " - uses LoginUserService");
 
-        LoginUserService us = new LoginUserService(uit.username,uit.password);
+        LoginUserService us = new LoginUserService(uit.username, uit.password);
         us.execute();
 
         assertNotNull(us.result());
@@ -111,7 +112,7 @@ public class IntegrationTest extends AbstractServiceTest {
         log.debug("Number of Files in Home dir: " + uit.numberFilesHomeDir);
     }
 
-    private void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles){
+    private void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles) {
         log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
                 + ", Current Dir : " + uif.currentDir + " - uses ListDirectoryService");
 
@@ -125,17 +126,17 @@ public class IntegrationTest extends AbstractServiceTest {
                 + "number of files in " + uif.currentDir + " : ", expectedNumberFiles, lds.result().size());
     }
 
-    private void changeDirUser(UserInfoTest uif, String pathNewDir){
+    private void changeDirUser(UserInfoTest uif, String pathNewDir) {
         log.debug("[System Integration Test] ChangeDirectoryService . User " + uif.username + "changes current dir from "
                 + uif.currentDir + " to " + pathNewDir + " - uses ChangeDirectoryService");
 
-        ChangeDirectoryService cds = new ChangeDirectoryService(uif.token,pathNewDir);
+        ChangeDirectoryService cds = new ChangeDirectoryService(uif.token, pathNewDir);
         cds.execute();
 
-        assertEquals("Changed to a wrong pathname",pathNewDir,cds.result());
+        assertEquals("Changed to a wrong pathname", pathNewDir, cds.result());
     }
 
-    private void writeFileServiceUser(UserInfoTest uit, String fileName, String content){
+    private void writeFileServiceUser(UserInfoTest uit, String fileName, String content) {
         log.debug("[System Integration Test] WriteFileService. User: " + uit.username + ", write the content:" + content
                 + " to the file : " + fileName + " - uses WriteFileService");
 
@@ -143,14 +144,14 @@ public class IntegrationTest extends AbstractServiceTest {
         wft.execute();
 
         String assertWriteServiceMsg = "[System Integration Test] WriteFileService. The  file "
-            + uit.currentDir + "/" + fileName + " of user " + uit.username + " should exist";
-        PlainFile pf =  (PlainFile)su.lookup(uit.currentDir + "/" + fileName);
+                + uit.currentDir + "/" + fileName + " of user " + uit.username + " should exist";
+        PlainFile pf = (PlainFile) su.lookup(uit.currentDir + "/" + fileName);
 
         assertNotNull(assertWriteServiceMsg, pf);
-        assertEquals("Content Written don't match.", uit.username,pf.getContent());
+        assertEquals("Content Written don't match.", uit.username, pf.getContent());
     }
 
-    private void readFileServiceUser(UserInfoTest uit, String fileName){
+    private void readFileServiceUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] ReadFileService. User: " + uit.username + ", reads the content of file: " +
                 fileName + " -  uses ReadFileService");
 
@@ -158,12 +159,12 @@ public class IntegrationTest extends AbstractServiceTest {
         rft.execute();
 
         assertNotNull("[System Integration Test] ReadFileService. The file " + fileName + " should exists", rft.result());
-        assertEquals("Content Read from don't match.",uit.username,rft.result());
+        assertEquals("Content Read from don't match.", uit.username, rft.result());
     }
 
-    private void createFileServiceBatchUser(UserInfoTest uit, String filename,String fileType, String content, int maxNumber){
-        for(int idFile = 0; idFile < maxNumber; idFile++) {
-            createFileServiceUser(uit,filename + idFile,fileType,content);
+    private void createFileServiceBatchUser(UserInfoTest uit, String filename, String fileType, String content, int maxNumber) {
+        for (int idFile = 0; idFile < maxNumber; idFile++) {
+            createFileServiceUser(uit, filename + idFile, fileType, content);
         }
     }
 
@@ -171,9 +172,9 @@ public class IntegrationTest extends AbstractServiceTest {
         log.debug("[System Integration Test] CreateFileService. User: " + uit.username + ", will create the file "
                 + filename + ", of type : " + fileType + ", in the directory: " + uit.currentDir + " - uses CreateFileService");
 
-        if(fileType.equals("Dir")) {
-           new CreateFileService(uit.token, filename, fileType).execute();
-        }else{
+        if (fileType.equals("Dir")) {
+            new CreateFileService(uit.token, filename, fileType).execute();
+        } else {
             new CreateFileService(uit.token, filename, fileType, content).execute();
         }
 
@@ -183,7 +184,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertNotNull(assertWriteServiceMsg, su.lookup(uit.currentDir + "/" + filename));
     }
 
-    private void deleteFileServiceUser(UserInfoTest uit, String fileName){
+    private void deleteFileServiceUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] DeleteFileService. User: " + uit.username + ", delete the file "
                 + fileName + " - uses DeleteFileService");
 
@@ -201,57 +202,59 @@ public class IntegrationTest extends AbstractServiceTest {
             new ImportXMLService(doc).execute();
 
 
-            for(UserInfoTest ui : users){
+            for (UserInfoTest ui : users) {
                 loginUser(ui);
-                listDirectoryUser(ui,ui.numberFilesHomeDir);
+                listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 String filename = "plainExample";
                 String fileType = "Plain";
                 String plainContent = "This\nIs\nA\nPlain File\nContent!";
-                createFileServiceUser(ui,filename,fileType,plainContent);
+                createFileServiceUser(ui, filename, fileType, plainContent);
                 ui.numberFilesHomeDir++;
 
-                writeFileServiceUser(ui,filename,ui.username);
-                readFileServiceUser(ui,filename);
-                listDirectoryUser(ui,ui.numberFilesHomeDir);
+                writeFileServiceUser(ui, filename, ui.username);
+                readFileServiceUser(ui, filename);
+                listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 fileType = "Dir";
                 filename = "dir" + ui.username;
-                createFileServiceUser(ui,filename,fileType,"");
+                createFileServiceUser(ui, filename, fileType, "");
                 ui.numberFilesHomeDir++;
 
                 String pathNewDir = "/home/" + ui.username + "/" + filename;
-                changeDirUser(ui,pathNewDir);
+                changeDirUser(ui, pathNewDir);
                 ui.currentDir = pathNewDir;
 
-                createFileServiceBatchUser(ui,fileType,fileType,"",ui.numberDirsToCreate);
-                listDirectoryUser(ui,ui.numberDirsToCreate);
+                createFileServiceBatchUser(ui, fileType, fileType, "", ui.numberDirsToCreate);
+                listDirectoryUser(ui, ui.numberDirsToCreate);
 
                 fileType = "Plain";
-                createFileServiceBatchUser(ui,fileType,fileType,plainContent,ui.numberPlainsToCreate);
-                listDirectoryUser(ui,ui.numberPlainsToCreate + ui.numberDirsToCreate);
+                createFileServiceBatchUser(ui, fileType, fileType, plainContent, ui.numberPlainsToCreate);
+                listDirectoryUser(ui, ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "Link";
-                String linkContent = "/home/"+ui.username;
-                createFileServiceBatchUser(ui,fileType,fileType,linkContent,ui.numberLinksToCreate);
-                listDirectoryUser(ui,ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
+                String linkContent = "/home/" + ui.username;
+                createFileServiceBatchUser(ui, fileType, fileType, linkContent, ui.numberLinksToCreate);
+                listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "App";
                 String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
-                createFileServiceBatchUser(ui,fileType,fileType,appContent,ui.numberAppsToCreate);
+                createFileServiceBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberfiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
-                                          + ui.numberAppsToCreate;
-                listDirectoryUser(ui,expectedNumberfiles);
+                        + ui.numberAppsToCreate;
+                listDirectoryUser(ui, expectedNumberfiles);
 
-                deleteFileServiceUser(ui,"Dir0");
+                pathNewDir = "/home/" + ui.username;
+                changeDirUser(ui, pathNewDir);
+                ui.currentDir = pathNewDir;
 
-                listDirectoryUser(ui,--expectedNumberfiles);
+                listDirectoryUser(ui, ui.numberFilesHomeDir);
+                // TODO: Check the correctness
+                //deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
 
-                //Main.xmlPrint();
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             fail(e.getMessage());
         }
 
