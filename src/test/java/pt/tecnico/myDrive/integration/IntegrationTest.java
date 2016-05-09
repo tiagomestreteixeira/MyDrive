@@ -1,5 +1,7 @@
 package pt.tecnico.myDrive.integration;
 
+import mockit.Mock;
+import mockit.MockUp;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.junit.Test;
@@ -238,12 +240,32 @@ public class IntegrationTest extends AbstractServiceTest {
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "App";
-                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
                 createFileServiceBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberfiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
                         + ui.numberAppsToCreate;
                 listDirectoryUser(ui, expectedNumberfiles);
+
+                filename = "Plain.pdf";
+                createFileServiceUser(ui, filename, "Plain", "");
+
+                final String  filenameToExecute = filename;
+                new MockUp<ExecuteFileAssociationService>(){
+                    @Mock
+                    public final String result() {
+                        return appContent;
+                    }
+                    @Mock
+                    public final void dispatch(){
+                        su.lookup("/home/" + ui.username + "/" + filenameToExecute +"/"+"App0").execute(md.getUserByUsername(ui.username));
+                    }
+                };
+
+                ExecuteFileAssociationService efas = new ExecuteFileAssociationService(ui.token, filename);
+                efas.execute();
+                assertEquals(appContent,efas.result());
+
 
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);
@@ -252,6 +274,9 @@ public class IntegrationTest extends AbstractServiceTest {
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
                 // TODO: Check the correctness
                 //deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
+
+
+
 
             }
         } catch (Exception e) {
