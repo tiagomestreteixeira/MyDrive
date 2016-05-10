@@ -106,7 +106,7 @@ public class MyDrive extends MyDrive_Base {
 		throw new NoPermissionException("MyDrive.removeLogins()");
 	}
 
-	private boolean loginIdExists(long identifier) {
+	public boolean loginIdExists(long identifier) {
 		for (Login l : super.getLoginsSet()) {
 			if (l.getIdentifier() == identifier) {
 				return true;
@@ -123,7 +123,7 @@ public class MyDrive extends MyDrive_Base {
 			if (user.checkPassword(password)) {
 				Login login = new Login(user);
 				while (loginIdExists(login.getIdentifier())) {
-					login = new Login(user);
+                    login = new Login(user);
 				}
 				super.addLogins(login);
 				return login.getIdentifier();
@@ -134,14 +134,21 @@ public class MyDrive extends MyDrive_Base {
 		}
 	}
 
-	private void removeLogin(long login) {
-		for (Login session : super.getLoginsSet()) {
+	public void removeLogin(long login) {
+        if(!this.loginIdExists(login)){
+            throw new InvalidLoginTokenException(login);
+        }
+        for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
 				super.removeLogins(session);
 				session.delete();
 			}
 		}
 	}
+
+
+
+
 
 	private void loginMaintenance() {
 		for (Login session : super.getLoginsSet()) {

@@ -83,7 +83,8 @@ public class LoginUserTest extends AbstractServiceTest{
 			login.setLoginDate(new DateTime(0));
 			service.execute();
 		} catch (Exception e) {
-			fail();
+			e.printStackTrace();
+			fail("should not fail");
 		}
 		MyDrive.getInstance().getLoginFromId(id);
 	}
