@@ -75,7 +75,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     @Test
     public void createFileCreateLinkWithContentProvided() {
 
-        String expectedContent = "contentlink";
+        String expectedContent = userObject.getHomeDir().getPath();
         CreateFileService service = new CreateFileService(login,"MyLinkFile","Link",expectedContent);
         service.execute();
 
