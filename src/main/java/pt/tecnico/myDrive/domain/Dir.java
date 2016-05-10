@@ -44,7 +44,7 @@ public class Dir extends Dir_Base {
 		log.debug("Split 0: " + split[0]);
 		if (split.length == 1) {
 			log.debug("I'msafhadskuofhahoadshfgliusdhipudhvi ipuahavhd pupo");
-			return getFileByName(user, split[0]);
+			return getFileByName(user, split[0]).lookup(user, "");
 		}
 		return f.lookup(user, split[1]);
 	}
