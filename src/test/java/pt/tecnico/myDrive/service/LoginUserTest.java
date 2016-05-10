@@ -79,11 +79,13 @@ public class LoginUserTest extends AbstractServiceTest{
 			LoginUserService service = new LoginUserService(USER, USER);
 			service.execute();
 			id = service.result();
+			System.out.println("IDDDDDD" + Long.toString(id));
 			Login login = MyDrive.getInstance().getLoginFromId(id);
 			login.setLoginDate(new DateTime(0));
 			service.execute();
 		} catch (Exception e) {
-			fail();
+			e.printStackTrace();
+			fail("should not fail");
 		}
 		MyDrive.getInstance().getLoginFromId(id);
 	}
