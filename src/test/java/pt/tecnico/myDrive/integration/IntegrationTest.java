@@ -17,6 +17,7 @@ import org.jdom2.input.SAXBuilder;
 
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
@@ -191,9 +192,17 @@ public class IntegrationTest extends AbstractServiceTest {
                 + fileName + " - uses DeleteFileService");
 
         DeleteFileService dft = new DeleteFileService(uit.token, fileName);
-        dft.execute();
 
-        assertNull("DeleteFileService. The file " + fileName + " should not exists. ", su.lookup(uit.currentDir + "/" + fileName));
+        try{
+            dft.execute();
+            su.lookup(uit.currentDir + "/" + fileName);
+        }catch (FileDoesNotExistException e){
+            return;
+        }
+
+        fail("The File " + fileName + ", of user " + uit.username + ", in dir " + uit.currentDir + " was found, but was " +
+                "expected to be delected");
+
     }
 
     @Test
@@ -213,6 +222,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 String plainContent = "This\nIs\nA\nPlain File\nContent!";
                 createFileServiceUser(ui, filename, fileType, plainContent);
                 ui.numberFilesHomeDir++;
+                listDirectoryUser(ui,ui.numberFilesHomeDir);
 
                 writeFileServiceUser(ui, filename, ui.username);
                 readFileServiceUser(ui, filename);
@@ -250,7 +260,9 @@ public class IntegrationTest extends AbstractServiceTest {
                 filename = "Plain.pdf";
                 createFileServiceUser(ui, filename, "Plain", "");
 
-                final String  filenameToExecute = filename;
+                deleteFileServiceUser(ui,"Plain0");
+                listDirectoryUser(ui,expectedNumberfiles);
+
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
                     public final String result() {
@@ -258,7 +270,7 @@ public class IntegrationTest extends AbstractServiceTest {
                     }
                     @Mock
                     public final void dispatch(){
-                        su.lookup("/home/" + ui.username + "/" + filenameToExecute +"/"+"App0").execute(md.getUserByUsername(ui.username));
+                        su.lookup(ui.currentDir+"/"+"App0").execute(md.getUserByUsername(ui.username));
                     }
                 };
 
@@ -266,20 +278,20 @@ public class IntegrationTest extends AbstractServiceTest {
                 efas.execute();
                 assertEquals(appContent,efas.result());
 
-
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);
                 ui.currentDir = pathNewDir;
 
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
                 // TODO: Check the correctness
-                //deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
+                deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
 
 
 
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
 
