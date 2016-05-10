@@ -25,7 +25,7 @@ public class File extends File_Base {
             setName(name);
             setPermissions(permissions);
             setDir(directory);
-            setOwner(user, user);
+            setUser(user);
             setLastModification(new DateTime());
             checkPathLengthConstrain(directory, name);
         } else {
@@ -121,20 +121,15 @@ public class File extends File_Base {
             throw new InvalidPermissionsFormatException(permissions);
     }
 
-	public void setOwner(User requester, User newOwner) throws MyDriveException {
+    public void setOwner(User requester, User newOwner) throws MyDriveException {
 
         SuperUser superUser = getDir().getFileOwner().getMyDrive().getSuperUser();
 		User fileOwner = getFileOwner();
 
-		if (requester.equals(fileOwner) || requester.equals(superUser) || fileOwner == null) {
-			if (newOwner == null) {
-				superUser.addFile(this);
-                this.setUser(superUser);
-				return;
-			}
+		if (requester.equals(fileOwner) || requester.equals(superUser)) {
             if(!newOwner.hasFile(this.getPath())){
                 newOwner.addFile(this);
-                this.setUser(newOwner);
+                super.setUser(newOwner);
             }
 			return;
 		}

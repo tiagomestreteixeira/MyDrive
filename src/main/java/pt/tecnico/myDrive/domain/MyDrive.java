@@ -20,8 +20,7 @@ public class MyDrive extends MyDrive_Base {
 	    rootDir.setUser(root);
 	    rootDir.init("/",root,rootDir,root.getUmask());
         root.setHomeDir(root.makeDir("/home/root"));
-
-	    Guest guest = new Guest(this);
+	    new Guest(this);
 
     }
 

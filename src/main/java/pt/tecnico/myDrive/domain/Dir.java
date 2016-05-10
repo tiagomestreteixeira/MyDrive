@@ -120,10 +120,6 @@ public class Dir extends Dir_Base {
 	protected void remove() throws MyDriveException {
 		getUser().removeFile(this);
 		getDir().removeFile(this);
-		if (getHomeOwner() != null){
-			//Do not allow?
-			setHomeOwner(null);
-		}
 		deleteDomainObject();
 	}
 
