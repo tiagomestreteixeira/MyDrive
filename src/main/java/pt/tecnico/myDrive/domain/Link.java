@@ -54,10 +54,6 @@ public class Link extends Link_Base {
 
     @Override
     public File lookup(User user, String path) throws MyDriveException {
-        log.error("Link Lookup");
-        log.error("Path: " + path);
-        log.error("Content: " + getContent());
-
         File target = user.lookup(getContent());
         return target.lookup(user, path);
     }

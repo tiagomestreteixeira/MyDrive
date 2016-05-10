@@ -56,10 +56,8 @@ public class File extends File_Base {
     public File lookup(User user, String path) throws MyDriveException {
         log.debug("Lookup File");
         if (path.equals("")) {
-            log.debug("Success: " + getPath());
             return this;
         }
-        log.debug("Lookup Fail");
         throw new FileDoesNotExistException(path);
     }
 

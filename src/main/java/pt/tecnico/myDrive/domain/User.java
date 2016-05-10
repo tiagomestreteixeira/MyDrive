@@ -201,9 +201,6 @@ public class User extends User_Base {
 		if (pathname.isEmpty())
 			throw new FileDoesNotExistException("empty");
 
-		log.debug("User Lookup Called");
-		log.debug("Pathname: " + pathname.substring(1));
-
 		return rootDir.lookup(this, pathname.substring(1));
 	}
 
