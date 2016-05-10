@@ -15,5 +15,6 @@ public class MdShell extends Shell {
 		new LsCommand(this);
 		new UpdateCommand(this);
 		new CWDCommand(this);
+		new DoCommand(this);
 	}
 }
