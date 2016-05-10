@@ -23,6 +23,7 @@ public class ListDirectoryService extends MyDriveService {
 		fileList = new ArrayList<FileDto>();
 
 		Login login = getMyDrive().getLoginFromId(loginId);
+		User user = login.getUser();
 
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
