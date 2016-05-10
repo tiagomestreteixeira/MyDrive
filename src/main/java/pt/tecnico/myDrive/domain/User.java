@@ -201,6 +201,7 @@ public class User extends User_Base {
 			throw new FileDoesNotExistException(pathname);
 
 		File file = this.getMyDrive().getRootDir();
+		if (pathname.equals("/")) return file;
 		Stack<String> st = toStack(pathname);
 
 		while (!st.empty()) {

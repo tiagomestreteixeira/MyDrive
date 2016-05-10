@@ -29,8 +29,14 @@ public class ListDirectoryService extends MyDriveService {
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
 
-		if (!pathname.startsWith("/"))
-			pathname = currentDir.getPath() + "/" + pathname;
+		if (!pathname.startsWith("/")) {
+			if (currentDir.getPath().equals("/")) {
+				pathname = currentDir.getPath() + pathname;
+
+			} else {
+				pathname = currentDir.getPath() + "/" + pathname;
+			}
+		}
 
 		Dir d = (Dir) user.lookup(pathname);
 
