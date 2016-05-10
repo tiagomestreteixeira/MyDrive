@@ -1,8 +1,9 @@
 package pt.tecnico.myDrive.service;
 
-import pt.tecnico.myDrive.domain.*;
-import pt.tecnico.myDrive.exception.DirCanNotHaveContentException;
-import pt.tecnico.myDrive.exception.InvalidFileTypeException;
+import pt.tecnico.myDrive.domain.Dir;
+import pt.tecnico.myDrive.domain.Login;
+import pt.tecnico.myDrive.domain.MyDrive;
+import pt.tecnico.myDrive.domain.User;
 import pt.tecnico.myDrive.exception.MyDriveException;
 
 public class ExecuteFileService extends MyDriveService {
@@ -26,5 +27,5 @@ public class ExecuteFileService extends MyDriveService {
 		login.refreshToken();
 		User user = login.getUser();
 		Dir currentDir = login.getCurrentDir();
-		}
 	}
+}
