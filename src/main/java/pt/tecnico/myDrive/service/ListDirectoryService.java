@@ -41,10 +41,23 @@ public class ListDirectoryService extends MyDriveService {
 
 		for (File f : d.getFileSet(user)) {
 			if (f instanceof Dir) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getUsername())));
+				fileList.add((new FileDto(f.getId(),
+						f.getSize(),
+						f.getName(),
+						f.getLastModification(),
+						f.getPermissions(),
+						"Dir",
+						f.getFileOwner().getUsername())));
 			}
 			else{
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), f.getClass().getSimpleName(), ((PlainFile) f).getContent(), f.getFileOwner().getUsername())));
+				fileList.add((new FileDto(f.getId(),
+						f.getSize(),
+						f.getName(),
+						f.getLastModification(),
+						f.getPermissions(),
+						f.getClass().getSimpleName(),
+						((PlainFile) f).getContent(),
+						f.getFileOwner().getUsername())));
 			}
 		}
 

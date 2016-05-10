@@ -32,24 +32,17 @@ public class IntegrationTest extends AbstractServiceTest {
 
     private Document doc;
     private static final String IMPORT_XML_FILENAME = "users.xml";
-    private static final int INITIAL_NUMBER_FILES = 0;
+    private static final int INITIAL_NUMBER_FILES = 2;
 
     private static final List<UserInfoTest> users = new ArrayList<UserInfoTest>();
 
     private class UserInfoTest {
         public String username, password;
         public Long token;
-
         public String currentDir;
+
         public int numberFilesHomeDir;
-
-        public int numberDirsToCreate;
-        public int numberPlainsToCreate;
-        public int numberLinksToCreate;
-        public int numberAppsToCreate;
-
-        UserInfoTest() {
-        }
+        public int numberDirsToCreate, numberPlainsToCreate, numberLinksToCreate, numberAppsToCreate;
     }
 
     private int indexOfByUsername(String username) {
@@ -64,7 +57,7 @@ public class IntegrationTest extends AbstractServiceTest {
 
     void specificUserInitialization() {
         UserInfoTest jtb = users.get(indexOfByUsername("jtb"));
-        jtb.numberFilesHomeDir = INITIAL_NUMBER_FILES + 4;
+        jtb.numberFilesHomeDir += 4;
         for (UserInfoTest ui : users) {
             ui.numberPlainsToCreate = 10;
             ui.numberLinksToCreate = 10;
@@ -83,11 +76,11 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.username = node.getAttribute("username").getValue();
                 ui.password = node.getChild("password").getValue();
                 ui.currentDir = node.getChild("home").getValue();
-                ui.token = null;
-                ui.numberFilesHomeDir = INITIAL_NUMBER_FILES;
+                ui.numberFilesHomeDir = 0;
                 users.add(ui);
-                specificUserInitialization();
             }
+            specificUserInitialization();
+
         } catch (ImportDocumentException | JDOMException | IOException e) {
             e.printStackTrace();
         }
@@ -119,14 +112,14 @@ public class IntegrationTest extends AbstractServiceTest {
         log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
                 + ", Current Dir : " + uif.currentDir + " - uses ListDirectoryService");
 
-        ListDirectoryService lds = new ListDirectoryService(uif.token);
+        ListDirectoryService lds = new ListDirectoryService(uif.token,uif.currentDir);
         lds.execute();
 
         for (FileDto dto : lds.result())
             log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
 
         assertEquals("[System Integration Test] ListDirectoryService. User " + uif.username + " should have the correct "
-                + "number of files in " + uif.currentDir + " : ", expectedNumberFiles, lds.result().size());
+                + "number of files in " + uif.currentDir + " : ", expectedNumberFiles + INITIAL_NUMBER_FILES, lds.result().size());
     }
 
     private void changeDirUser(UserInfoTest uif, String pathNewDir) {
@@ -192,7 +185,6 @@ public class IntegrationTest extends AbstractServiceTest {
                 + fileName + " - uses DeleteFileService");
 
         DeleteFileService dft = new DeleteFileService(uit.token, fileName);
-
         try{
             dft.execute();
             su.lookup(uit.currentDir + "/" + fileName);
@@ -202,7 +194,6 @@ public class IntegrationTest extends AbstractServiceTest {
 
         fail("The File " + fileName + ", of user " + uit.username + ", in dir " + uit.currentDir + " was found, but was " +
                 "expected to be delected");
-
     }
 
     @Test
@@ -253,15 +244,15 @@ public class IntegrationTest extends AbstractServiceTest {
                 String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
                 createFileServiceBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
 
-                int expectedNumberfiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
+                int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
                         + ui.numberAppsToCreate;
-                listDirectoryUser(ui, expectedNumberfiles);
+                listDirectoryUser(ui, expectedNumberFiles);
 
                 filename = "Plain.pdf";
                 createFileServiceUser(ui, filename, "Plain", "");
 
                 deleteFileServiceUser(ui,"Plain0");
-                listDirectoryUser(ui,expectedNumberfiles);
+                listDirectoryUser(ui,expectedNumberFiles);
 
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
