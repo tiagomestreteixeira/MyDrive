@@ -14,6 +14,8 @@ public class LoginCommand extends MdCommand{
         loginUserService.execute();
         shell().addUser(user,loginUserService.result());
         log.info("Token generated: " + shell().getCurrentToken());
+        if(shell().getCurrentUsername().equals("nobody"))
+            shell().logoutGuestUser();
     }
 
     public void execute(String[] args) throws Exception {
