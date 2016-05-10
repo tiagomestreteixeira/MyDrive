@@ -9,7 +9,7 @@ public class SuperUser extends SuperUser_Base {
         super.setUsername("root");
         super.setName("root");
         super.setUmask("rwxdr-x-");
-        super.setPasswordInternal("********");
+        super.setPasswordInternal("***");
         md.addUser(this);
     }
 
