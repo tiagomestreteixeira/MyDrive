@@ -27,6 +27,24 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
+	public File lookup(User user, String path) {
+		log.debug("Lookup Dir");
+		log.debug("Path OLD: " + path);
+
+		if (path.equals("")) {
+			log.debug("path empty");
+			return this;
+		}
+
+		String[] split = path.split("/", 2);
+		if (path.contains("/")) {
+			return getFileByName(user, split[0]).lookup(user, split[1]);
+		}
+
+		return getFileByName(user, split[0]);
+	}
+
+	@Override
 	public int getSize() {
 		return getFileSet().size();
 	}

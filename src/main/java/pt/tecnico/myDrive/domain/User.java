@@ -196,26 +196,23 @@ public class User extends User_Base {
 	}
 
 	public File lookup(String pathname) throws MyDriveException {
+		MyDrive md = getMyDrive();
+		Dir rootDir = md.getRootDir();
 
-		if (pathname == null || pathname.equals("" ))
-			throw new FileDoesNotExistException(pathname);
+		log.debug("Lookup Called");
+		log.debug("Pathname OLD: " + pathname);
 
-		File file = this.getMyDrive().getRootDir();
-		if (pathname.equals("/")) return file;
-		Stack<String> st = toStack(pathname);
+		String filename = pathname.split("/", 3)[1];
+		pathname = pathname.split("/", 3)[2];
 
-		while (!st.empty()) {
-			String filename = st.pop();
-			file = file.getFileByName(this,filename);
-			if (file == null)
-				throw new FileDoesNotExistException(filename);
-			if (!(this.checkPermission(file, 'x'))) {
-				throw new NoPermissionException("User.lookup()->Dir.getFileByName()");
-			}
-			//TODO: Check for links.
-		}
-		return file;
+		log.debug("Filename: " + filename);
+		log.debug("Pathname NEW: " + pathname);
+
+		File file = rootDir.getFileByName(this, filename);
+
+		return file.lookup(this, pathname);
 	}
+
 
 	public Dir makeDir(String pathname){
 
