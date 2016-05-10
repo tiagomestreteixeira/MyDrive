@@ -32,21 +32,12 @@ public class ListDirectoryService extends MyDriveService {
 		currentDir = login.getCurrentDir();
 
 		for (File f : currentDir.getFileSet()) {
-			if (f instanceof Dir) {
+			System.out.println("TYPE " + f.getClass().getSimpleName());
+			if (f.getClass().getSimpleName().equals("Dir")) {
 				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getUsername())));
-				continue;
 			}
-			if (f instanceof Link) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Link", ((Link) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
-			}
-			if (f instanceof App) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "App", ((App) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
-			}
-			if (f instanceof PlainFile) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "PlainFile", ((PlainFile) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
+			else{
+				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), f.getClass().getSimpleName(), ((PlainFile) f).getContent(), f.getFileOwner().getUsername())));
 			}
 		}
 
