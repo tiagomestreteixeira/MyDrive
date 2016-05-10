@@ -123,8 +123,4 @@ public class Dir extends Dir_Base {
 		deleteDomainObject();
 	}
 
-	@Override
-	public String getType(){
-		return "Dir";
-	}
 }

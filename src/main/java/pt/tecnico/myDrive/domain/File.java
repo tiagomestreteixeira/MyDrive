@@ -202,11 +202,8 @@ public class File extends File_Base {
         permElement.addContent(getPermissions());
 
         DateTime lastModification = getLastModification();
-        String lastModificationConvertedToString="";
+        String lastModificationConvertedToString = lastModification.toString();
 
-        if(lastModification != null){
-            lastModificationConvertedToString = lastModification.toString();
-        }
 
         lastModifiedDateElement.addContent(lastModificationConvertedToString);
 
@@ -217,10 +214,6 @@ public class File extends File_Base {
         el.addContent(lastModifiedDateElement);
 
         return el;
-    }
-
-    public String getType(){
-        return null;
     }
 
 }
