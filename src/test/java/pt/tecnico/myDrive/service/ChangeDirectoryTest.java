@@ -96,6 +96,18 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 	}
 
 	@Test
+	public void changeDirToLink() {
+		String pathname = "/home/Andre/level1/level2/level3/link";
+		new Link("link", userObject, l3, userObject.getUmask(), "/home/Andre");
+		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
+		service.execute();
+		String result = service.result();
+		pathname = "/home/Andre";
+		assertEquals("Login CurrentDir does not match", pathname, md.getLoginFromId(login).getCurrentDir().getPath());
+		assertEquals("Returned path does not match", pathname, result);
+	}
+
+	@Test
 	public void changeDirRelativePath() {
 		String pathname = "/home/Andre/level1/level2";
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
@@ -131,6 +143,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 	@Test(expected = NoPermissionException.class)
 	public void changeDirOwnerNoPermission() {
 		final String pathname = "/home/Andre/level1/level2/level3/level4";
+		l3.setPermissions("----rwxd");
 		new Dir("level4", userObject, l3, "----rwxd");
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();
@@ -150,6 +163,7 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 	@Test (expected = NoPermissionException.class)
 	public void changeDirNoOwnerNoPermission() {
 		final String pathname = "/home/Andre/level1/level2/level3/level4";
+		l3.setPermissions("--------");
 		new Dir("level4", root, l3, "--------");
 		ChangeDirectoryService service = new ChangeDirectoryService(login, pathname);
 		service.execute();

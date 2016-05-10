@@ -1,10 +1,10 @@
 package pt.tecnico.myDrive.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListDirectoryService extends MyDriveService {
 
@@ -39,7 +39,7 @@ public class ListDirectoryService extends MyDriveService {
 
 		Dir d = (Dir) user.lookup(pathname);
 
-		for (File f : d.getFileSet()) {
+		for (File f : d.getFileSet(user)) {
 			if (f instanceof Dir) {
 				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getUsername())));
 				continue;

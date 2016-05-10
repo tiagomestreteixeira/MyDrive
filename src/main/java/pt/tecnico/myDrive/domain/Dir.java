@@ -4,6 +4,8 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
+import java.util.Set;
+
 public class Dir extends Dir_Base {
 
     public Dir(){
@@ -27,8 +29,37 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
+	public File lookup(User user, String path) {
+		log.debug("Lookup Dir");
+		log.debug("Path: " + path);
+
+		if (path.equals("")) {
+			log.debug("path empty");
+			return this;
+		}
+
+		String[] split = path.split("/", 2);
+		File f = getFileByName(user, split[0]);
+		log.debug("Split Length: " + split.length);
+		log.debug("Split 0: " + split[0]);
+		if (split.length == 1) {
+			log.debug("I'msafhadskuofhahoadshfgliusdhipudhvi ipuahavhd pupo");
+			return getFileByName(user, split[0]).lookup(user, "");
+		}
+		return f.lookup(user, split[1]);
+	}
+
+	@Override
 	public int getSize() {
 		return getFileSet().size();
+	}
+
+	public Set<File> getFileSet(User user) {
+		if (user.checkPermission(this, 'r')) {
+			return super.getFileSet();
+		} else {
+			throw new NoPermissionException("Dir.getFileSet()");
+		}
 	}
 
 	@Override
