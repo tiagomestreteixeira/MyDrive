@@ -198,6 +198,8 @@ public class User extends User_Base {
 	public File lookup(String pathname) throws MyDriveException {
 		MyDrive md = getMyDrive();
 		Dir rootDir = md.getRootDir();
+		if (pathname.isEmpty())
+			throw new FileDoesNotExistException("empty");
 
 		log.debug("User Lookup Called");
 		log.debug("Pathname: " + pathname.substring(1));
