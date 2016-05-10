@@ -135,7 +135,9 @@ public class MyDrive extends MyDrive_Base {
 	}
 
 	public void removeLogin(long login) {
-        this.getLoginFromId(login);
+        if(!this.loginIdExists(login)){
+            throw new InvalidLoginTokenException(login);
+        }
         for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
 				super.removeLogins(session);
