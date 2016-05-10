@@ -9,7 +9,7 @@ public class LsCommand extends MdCommand {
 	private static final String USAGE_MSG = "USAGE: ls [path]\n";
 
     public LsCommand(Shell sh) {
-        super(sh, "list", "List given path directory contents or current directory if no argument is given, with the following order:\n" +
+        super(sh, "ls", "List given path directory contents or current directory if no argument is given, with the following order:\n" +
 		        "Permissions \t Size \t File Id \t Last Modification \t Owner \t File Type \t File Name \n" + USAGE_MSG);
     }
 
