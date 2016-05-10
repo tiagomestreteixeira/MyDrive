@@ -34,14 +34,14 @@ public class User extends User_Base {
 
 	@Override
 	public void setPassword(String pass) throws MyDriveException {
-		throw new NoPermissionException("User.setPassword()");
-	}
-
-	protected void setPasswordInternal(String pass) throws MyDriveException {
 		if (pass == null || pass.length()<PASSWORD_MIN_LENGTH){
 			throw new InvalidPasswordException(pass, " : password has fewer than "
 					+ Integer.toString(PASSWORD_MIN_LENGTH));
 		}
+		setPasswordInternal(pass);
+	}
+
+	protected void setPasswordInternal(String pass) throws MyDriveException {
 		super.setPassword(pass);
 	}
 
@@ -54,7 +54,7 @@ public class User extends User_Base {
 		md.addUser(this);
 		setUsername(username);
 		setName(name);
-		setPasswordInternal(password);
+		setPassword(password);
 		setUmask(umask);
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);

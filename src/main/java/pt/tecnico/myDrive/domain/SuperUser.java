@@ -24,6 +24,11 @@ public class SuperUser extends SuperUser_Base {
     }
 
     @Override
+    public void setPassword(String pass) throws MyDriveException {
+        throw new NoPermissionException("Guest.setPassword()");
+    }
+
+    @Override
     public void setUsername(String username) {
         throw new NoPermissionException("SuperUser.setUsername()");
     }
