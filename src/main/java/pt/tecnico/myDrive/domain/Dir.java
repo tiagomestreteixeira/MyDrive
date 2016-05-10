@@ -29,7 +29,7 @@ public class Dir extends Dir_Base {
 	@Override
 	public File lookup(User user, String path) {
 		log.debug("Lookup Dir");
-		log.debug("Path OLD: " + path);
+		log.debug("Path: " + path);
 
 		if (path.equals("")) {
 			log.debug("path empty");
@@ -37,11 +37,14 @@ public class Dir extends Dir_Base {
 		}
 
 		String[] split = path.split("/", 2);
-		if (path.contains("/")) {
-			return getFileByName(user, split[0]).lookup(user, split[1]);
+		File f = getFileByName(user, split[0]);
+		log.debug("Split Length: " + split.length);
+		log.debug("Split 0: " + split[0]);
+		if (split.length == 1) {
+			log.debug("I'msafhadskuofhahoadshfgliusdhipudhvi ipuahavhd pupo");
+			return getFileByName(user, split[0]);
 		}
-
-		return getFileByName(user, split[0]);
+		return f.lookup(user, split[1]);
 	}
 
 	@Override

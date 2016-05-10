@@ -199,18 +199,10 @@ public class User extends User_Base {
 		MyDrive md = getMyDrive();
 		Dir rootDir = md.getRootDir();
 
-		log.debug("Lookup Called");
-		log.debug("Pathname OLD: " + pathname);
+		log.debug("User Lookup Called");
+		log.debug("Pathname: " + pathname.substring(1));
 
-		String filename = pathname.split("/", 3)[1];
-		pathname = pathname.split("/", 3)[2];
-
-		log.debug("Filename: " + filename);
-		log.debug("Pathname NEW: " + pathname);
-
-		File file = rootDir.getFileByName(this, filename);
-
-		return file.lookup(this, pathname);
+		return rootDir.lookup(this, pathname.substring(1));
 	}
 
 
