@@ -4,6 +4,8 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
+import java.util.Set;
+
 public class Dir extends Dir_Base {
 
     public Dir(){
@@ -50,6 +52,14 @@ public class Dir extends Dir_Base {
 	@Override
 	public int getSize() {
 		return getFileSet().size();
+	}
+
+	public Set<File> getFileSet(User user) {
+		if (user.checkPermission(this, 'r')) {
+			return super.getFileSet();
+		} else {
+			throw new NoPermissionException("Dir.getFileSet()");
+		}
 	}
 
 	@Override
