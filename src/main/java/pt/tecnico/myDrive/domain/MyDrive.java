@@ -106,7 +106,7 @@ public class MyDrive extends MyDrive_Base {
 		throw new NoPermissionException("MyDrive.removeLogins()");
 	}
 
-	private boolean loginIdExists(long identifier) {
+	public boolean loginIdExists(long identifier) {
 		for (Login l : super.getLoginsSet()) {
 			if (l.getIdentifier() == identifier) {
 				return true;
