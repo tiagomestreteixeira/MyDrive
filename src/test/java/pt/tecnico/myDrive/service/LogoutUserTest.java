@@ -57,7 +57,7 @@ public class LogoutUserTest extends AbstractServiceTest {
 
 	@Test
 	public void logoutRoot(){
-		LoginUserService service = new LoginUserService(md.getSuperUser().getName(), "***");
+		LoginUserService service = new LoginUserService(md.getSuperUser().getName(), "********");
 		service.execute();
 		login = service.result();
 		assertTrue("Login exists", md.loginIdExists(login));

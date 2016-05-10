@@ -123,7 +123,7 @@ public class MyDrive extends MyDrive_Base {
 			if (user.checkPassword(password)) {
 				Login login = new Login(user);
 				while (loginIdExists(login.getIdentifier())) {
-					login = new Login(user);
+                    login = new Login(user);
 				}
 				super.addLogins(login);
 				return login.getIdentifier();
@@ -134,14 +134,19 @@ public class MyDrive extends MyDrive_Base {
 		}
 	}
 
-	private void removeLogin(long login) {
-		for (Login session : super.getLoginsSet()) {
+	public void removeLogin(long login) {
+        this.getLoginFromId(login);
+        for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
 				super.removeLogins(session);
 				session.delete();
 			}
 		}
 	}
+
+
+
+
 
 	private void loginMaintenance() {
 		for (Login session : super.getLoginsSet()) {
