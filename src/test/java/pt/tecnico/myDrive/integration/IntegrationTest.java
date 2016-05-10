@@ -64,14 +64,14 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.username = node.getAttribute("username").getValue();;
                 ui.password = node.getChild("password").getValue();
                 ui.token = null;
-                ui.numberFilesHomeDir = 0;
+                ui.numberFilesHomeDir = 2;
                 users.add(ui);
             }
         } catch(ImportDocumentException | JDOMException | IOException e){
             e.printStackTrace();
         }
 
-        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 4;
+        users.get(indexOfByUsername("jtb")).numberFilesHomeDir = 6;
     }
 
     protected void populate() {
@@ -104,14 +104,14 @@ public class IntegrationTest extends AbstractServiceTest {
                 log.debug("[System Integration Test] List current non-empty HomeDir Files of : User " + ui.username
                         + " - uses ListDirectoryService");
 
-                ListDirectoryService lds = new ListDirectoryService(ui.token);
+                ListDirectoryService lds = new ListDirectoryService(ui.token, ".");
                 lds.execute();
 
                 for (FileDto dto : lds.result())
                     log.debug("\t" + dto.getType() + " -> " + dto.getFilename());
 
                 assertEquals("[System Integration Test] ListDirectoryService. " +
-                        "User jtb should have" + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
+                        "User jtb should have " + ui.numberFilesHomeDir, lds.result().size(), ui.numberFilesHomeDir);
             }
 
 
@@ -153,7 +153,7 @@ public class IntegrationTest extends AbstractServiceTest {
 
 
             log.debug("[System Integration Test] List current non-empty HomeDir Files By User - uses ListDirectoryService");
-            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token);
+            ListDirectoryService ldsAfterCreated = new ListDirectoryService(ui.token, ".");
             ldsAfterCreated.execute();
 
             for (FileDto dto : ldsAfterCreated.result()) {

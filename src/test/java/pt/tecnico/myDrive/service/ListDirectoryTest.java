@@ -39,12 +39,12 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		App testApp = new App("testApp", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS);
 
 		
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 		List<FileDto> result = service.result();
 		log.info(result.size());
 
-		assertTrue("Size should be 4", result.size() == 4);
+		assertTrue("Size should be 6", result.size() == 6);
 		assertEquals("First file name should be:", "testApp", result.get(0).getFilename());
 		assertEquals("Second file name should be:", "testDir", result.get(1).getFilename());
 		assertEquals("Third file name should be:", "testLink", result.get(2).getFilename());
@@ -71,9 +71,9 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		final String pathname = "/home/Andre/Empty";
 		new Dir("Empty", userObject, userObject.getHomeDir(),USER_DEFAULT_PERMISSIONS );
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
-		assertTrue("Size should be 0: ", service.result().size() == 0);
+		assertTrue("Size should be 2: ", service.result().size() == 2);
 	}
 
 	@Test(expected=NoPermissionException.class)
@@ -81,7 +81,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 		final String pathname = "/home/Andre/NoPerm";
 		new Dir("NoPerm", userObject, userObject.getHomeDir(), "--------");
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 	}
 
@@ -89,7 +89,7 @@ public class ListDirectoryTest extends AbstractServiceTest{
 	public void NonExistantDirectoryList(){
 		final String pathname = "/home/Andre/NA";
 		changeDir(loginId, pathname);
-		ListDirectoryService service = new ListDirectoryService(loginId);
+		ListDirectoryService service = new ListDirectoryService(loginId, ".");
 		service.execute();
 	}
 
