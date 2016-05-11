@@ -17,19 +17,19 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
     private User userNoExe;
     private MyDrive md;
     private SuperUser root;
-    private String args = "";
+    private String[] args;
     
 	@Override
 	protected void populate() {
 		md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
-        user = new User(md, "test", "test", "rwxd----", "testpw");
+        user = new User(md, "test", "test", "rwxd----", "testpw12");
         userNoExe = new User(md, "testfail", "testfail", "rw-d----", "testfailpw");
-        loginTest = md.createLogin("test", "testpw");
+        loginTest = md.createLogin("test", "testpw12");
         loginTestFail = md.createLogin("testfail", "testfailpw");
 	}
 
-	@Test
+	@Test (expected = NoPermissionException.class)
 	public void executePlainFile() throws Exception{
 		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "rwxd----", "PlainFileContent");
 		
@@ -47,7 +47,8 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	
 	@Test
 	public void executeLinkFile() throws Exception{
-		new Link("linkExecuteFile", user, user.getHomeDir(), "rwxd----", "");
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----");
+		new Link("linkExecuteFile", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 		
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/linkExecuteFile", args);
 		efs.execute();
@@ -61,7 +62,8 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	
 	@Test (expected = NoPermissionException.class)
 	public void executeLinkNoPermission() throws Exception{
-		new Link("linkExecuteNoPermission", userNoExe, userNoExe.getHomeDir(), "rwxd----", "");
+		new App("testExecuteApp", userNoExe, userNoExe.getHomeDir(), "rwxd----");
+		new Link("linkExecuteNoPermission", userNoExe, userNoExe.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 		
 		ExecuteFileService efs = new ExecuteFileService(loginTestFail, "/home/testfail/linkExecuteNoPermission", args);
 		efs.execute();
@@ -77,10 +79,11 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	
 	@Test
 	public void executeLinkToAnotherFile() throws Exception{
-		new PlainFile("testFile", user, user.getHomeDir(), "rwxd----", "PlainFileContent");
-		new Link("testLinkToAnotherFile", user, user.getHomeDir(), "rwxd----", "/home/test/testFile");
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----");
+		new Link("testLinkToAnotherFile1", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
+		new Link("testLinkToAnotherFile2", user, user.getHomeDir(), "rwxd----", "/home/test/testLinkToAnotherFile1");
 		
-		ExecuteFileService efs = new ExecuteFileService(loginTestFail, "/home/testfail/appExecuteNoPermission", args);
+		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testLinkToAnotherFile2", args);
 		efs.execute();
 	}
 }
