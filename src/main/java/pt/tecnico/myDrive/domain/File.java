@@ -183,7 +183,7 @@ public class File extends File_Base {
     }
 
     public Element xmlExport(){
-        return null;
+        throw new NoPermissionException("File.xmlExport()");
     }
 
     public Element xmlExportHelper(Element el) {
