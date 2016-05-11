@@ -152,7 +152,7 @@ public class File extends File_Base {
 
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
         String path, name, ownerUsername, defaultPermissions;
-        path = name = ownerUsername = defaultPermissions = null;
+        path = name = ownerUsername = defaultPermissions = "";
 
         for (Element child : FileDomainElement.getChildren()) {
             if (child.getName().equals("path"))
@@ -165,18 +165,18 @@ public class File extends File_Base {
                 defaultPermissions = child.getText();
         }
 
-        if (path == null)
+        if (path.isEmpty())
             throw new ImportDocumentException(elementDomain, "<path> node cannot be read properly.");
-        if (name == null)
+        if (name.isEmpty())
             throw new ImportDocumentException(elementDomain, "<name> node cannot be read properly.");
-        if (ownerUsername == null)
+        if (ownerUsername.isEmpty())
             ownerUsername = "root";
 
         MyDrive md = MyDrive.getInstance();
         User owner = md.getUserByUsername(ownerUsername);
 
-        if (defaultPermissions == null) {
-            if (owner == null) owner = md.getUserByUsername("root");
+        if (defaultPermissions.isEmpty()) {
+            if (ownerUsername.isEmpty()) owner = md.getUserByUsername("root");
             defaultPermissions = owner.getUmask();
         }
         init(name, owner, owner.makeDir(path), defaultPermissions);

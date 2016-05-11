@@ -51,7 +51,6 @@ public class User extends User_Base {
 	}
 
 	protected void init(MyDrive md, String username, String name, String umask, String password){
-		md.addUser(this);
 		setUsername(username);
 		setName(name);
 		setPassword(password);
@@ -59,6 +58,7 @@ public class User extends User_Base {
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
 		getHomeDir().setPermissions(umask);
+		md.addUser(this);
 	}
 
 	  @Override
@@ -182,6 +182,8 @@ public class User extends User_Base {
 		}
 	}
 
+
+
 	public boolean checkPassword (String attempt) {
 		return attempt.equals(super.getPassword());
 	}
@@ -242,6 +244,10 @@ public class User extends User_Base {
 
 		init(md,username,defaultName,defaultMask,defaultPassword);
     }
+
+	/*public boolean equals(User u){
+		return (u.getUsername().equals(this.getUsername()));
+	}*/
 
 	public Element xmlExport() {
 		Element userNode = new Element("user");

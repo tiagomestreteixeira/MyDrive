@@ -57,17 +57,18 @@ public class MyDrive extends MyDrive_Base {
             if (user.getUsername().equals(username))
                 return user;
         }
-        return null;
+        throw new UserDoesNotExistException(username);
     }
-    
-    @Override
-    public void addUser(User user) {
-        if (getUserByUsername(user.getUsername()) == null) {
-            super.addUser(user);
-        }
-		else
-        throw new UserAlreadyExistsException(user.getName());
-    }
+
+	@Override
+	public void addUser(User user) {
+		try {
+			getUserByUsername(user.getUsername());
+			throw new UserAlreadyExistsException(user.getUsername());
+		} catch (UserDoesNotExistException e) {
+			super.addUser(user);
+		}
+	}
 
 	public boolean hasUser(String user){
 		return (getUserByUsername(user) != null);
@@ -145,10 +146,6 @@ public class MyDrive extends MyDrive_Base {
 		}
 	}
 
-
-
-
-
 	private void loginMaintenance() {
 		for (Login session : super.getLoginsSet()) {
 			if (!session.isValid()) {
@@ -174,12 +171,8 @@ public class MyDrive extends MyDrive_Base {
 
         for (Element node: element.getChildren("user")) {
             String username = node.getAttribute("username").getValue();
-            if(username == null)
+            if(username.isEmpty())
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
-
-            User user = getUserByUsername(username);
-            if(user != null)
-                 throw new UserAlreadyExistsException(username);
 
             new User(this,username,node);
         }
