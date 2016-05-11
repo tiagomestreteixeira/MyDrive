@@ -180,6 +180,13 @@ public class CreateFileTest extends  AbstractServiceTest {
     }
 
 
+    @Test(expected = InvalidFileNameException.class)
+    public void createInvalidFileName() throws Exception {
+        final String fileName="example\0";
+        CreateFileService service = new CreateFileService(login,fileName,"Dir");
+        service.execute();
+    }
+
     @Test(expected = FilePathTooLongException.class)
     public void createPathTooLong() throws Exception {
         final String pathTooLong =
