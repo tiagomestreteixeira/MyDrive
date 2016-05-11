@@ -34,14 +34,14 @@ public class User extends User_Base {
 
 	@Override
 	public void setPassword(String pass) throws MyDriveException {
-		throw new NoPermissionException("User.setPassword()");
-	}
-
-	protected void setPasswordInternal(String pass) throws MyDriveException {
 		if (pass == null || pass.length()<PASSWORD_MIN_LENGTH){
 			throw new InvalidPasswordException(pass, " : password has fewer than "
 					+ Integer.toString(PASSWORD_MIN_LENGTH));
 		}
+		setPasswordInternal(pass);
+	}
+
+	protected void setPasswordInternal(String pass) throws MyDriveException {
 		super.setPassword(pass);
 	}
 
@@ -51,14 +51,14 @@ public class User extends User_Base {
 	}
 
 	protected void init(MyDrive md, String username, String name, String umask, String password){
-		md.addUser(this);
 		setUsername(username);
 		setName(name);
-		setPasswordInternal(password);
+		setPassword(password);
 		setUmask(umask);
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
 		getHomeDir().setPermissions(umask);
+		md.addUser(this);
 	}
 
 	  @Override
@@ -78,19 +78,9 @@ public class User extends User_Base {
 		  return null;
 	  }
 
-	public File getFileById(int id){
-		for (File file: getFileSet())
-			if (file.getId().equals(id))
-				return file;
-		return null;
-	}
-
 	  public boolean hasFile(String fileName){
 		  return getFileByName(fileName)!= null;
 	  }
-	  public boolean hasFile(int id){
-		return getFileById(id)!= null;
-	}
 
 	  public boolean isAlphanumeric(String str) {
 		  for (int i=0; i<str.length(); i++) {
@@ -104,7 +94,7 @@ public class User extends User_Base {
 	  @Override
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 
-	    if (username == null || username.length()<USERNAME_MIN_LENGTH){
+	    if (username.length()<USERNAME_MIN_LENGTH){
 	      throw new InvalidUsernameException(username, " : username has fewer than "
 				  										 + Integer.toString(USERNAME_MIN_LENGTH));
 	    }
@@ -182,6 +172,8 @@ public class User extends User_Base {
 		}
 	}
 
+
+
 	public boolean checkPassword (String attempt) {
 		return attempt.equals(super.getPassword());
 	}
@@ -196,25 +188,14 @@ public class User extends User_Base {
 	}
 
 	public File lookup(String pathname) throws MyDriveException {
+		MyDrive md = getMyDrive();
+		Dir rootDir = md.getRootDir();
+		if (pathname.isEmpty())
+			throw new FileDoesNotExistException("empty");
 
-		if (pathname == null || pathname.equals("" ))
-			throw new FileDoesNotExistException(pathname);
-
-		File file = this.getMyDrive().getRootDir();
-		Stack<String> st = toStack(pathname);
-
-		while (!st.empty()) {
-			String filename = st.pop();
-			file = file.getFileByName(this,filename);
-			if (file == null)
-				throw new FileDoesNotExistException(filename);
-			if (!(this.checkPermission(file, 'x'))) {
-				throw new NoPermissionException("User.lookup()->Dir.getFileByName()");
-			}
-			//TODO: Check for links.
-		}
-		return file;
+		return rootDir.lookup(this, pathname.substring(1));
 	}
+
 
 	public Dir makeDir(String pathname){
 

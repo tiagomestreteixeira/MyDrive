@@ -20,8 +20,7 @@ public class MyDrive extends MyDrive_Base {
 	    rootDir.setUser(root);
 	    rootDir.init("/",root,rootDir,root.getUmask());
         root.setHomeDir(root.makeDir("/home/root"));
-
-	    Guest guest = new Guest(this);
+	    new Guest(this);
 
     }
 
@@ -58,17 +57,18 @@ public class MyDrive extends MyDrive_Base {
             if (user.getUsername().equals(username))
                 return user;
         }
-        return null;
+        throw new UserDoesNotExistException(username);
     }
-    
-    @Override
-    public void addUser(User user) {
-        if (getUserByUsername(user.getUsername()) == null) {
-            super.addUser(user);
-        }
-		else
-        throw new UserAlreadyExistsException(user.getName());
-    }
+
+	@Override
+	public void addUser(User user) {
+		try {
+			getUserByUsername(user.getUsername());
+			throw new UserAlreadyExistsException(user.getUsername());
+		} catch (UserDoesNotExistException e) {
+			super.addUser(user);
+		}
+	}
 
 	public boolean hasUser(String user){
 		return (getUserByUsername(user) != null);
@@ -106,7 +106,7 @@ public class MyDrive extends MyDrive_Base {
 		throw new NoPermissionException("MyDrive.removeLogins()");
 	}
 
-	private boolean loginIdExists(long identifier) {
+	public boolean loginIdExists(long identifier) {
 		for (Login l : super.getLoginsSet()) {
 			if (l.getIdentifier() == identifier) {
 				return true;
@@ -123,7 +123,7 @@ public class MyDrive extends MyDrive_Base {
 			if (user.checkPassword(password)) {
 				Login login = new Login(user);
 				while (loginIdExists(login.getIdentifier())) {
-					login = new Login(user);
+                    login = new Login(user);
 				}
 				super.addLogins(login);
 				return login.getIdentifier();
@@ -134,8 +134,11 @@ public class MyDrive extends MyDrive_Base {
 		}
 	}
 
-	private void removeLogin(long login) {
-		for (Login session : super.getLoginsSet()) {
+	public void removeLogin(long login) {
+        if(!this.loginIdExists(login)){
+            throw new InvalidLoginTokenException(login);
+        }
+        for (Login session : super.getLoginsSet()) {
 			if (session.getIdentifier() == login) {
 				super.removeLogins(session);
 				session.delete();
@@ -168,12 +171,8 @@ public class MyDrive extends MyDrive_Base {
 
         for (Element node: element.getChildren("user")) {
             String username = node.getAttribute("username").getValue();
-            if(username == null)
+            if(username.isEmpty())
                 throw new ImportDocumentException("User", "attribute username cannot be read properly");
-
-            User user = getUserByUsername(username);
-            if(user != null)
-                 throw new UserAlreadyExistsException(username);
 
             new User(this,username,node);
         }

@@ -2,6 +2,8 @@ package pt.tecnico.myDrive.presentation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
+import pt.tecnico.myDrive.service.LogoutUserService;
 
 import java.io.*;
 import java.util.*;
@@ -27,6 +29,7 @@ public abstract class Shell {
             void execute(String[] args) {
                 System.out.println(name+" quit");
                 awaitingCommands = false;
+                logoutGuestUser();
             }
         };
 
@@ -115,6 +118,12 @@ public abstract class Shell {
         catch (Exception e) { e.printStackTrace(); }
     }
 
+    public void logoutGuestUser(){
+        try {
+            new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
+        }
+        catch (InvalidLoginTokenException e) { log.debug("user nobody is not logged in"); }
+    }
 
 
     /**

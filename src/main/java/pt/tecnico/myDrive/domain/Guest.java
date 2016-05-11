@@ -27,8 +27,8 @@ public class Guest extends Guest_Base {
 	}
 
 	@Override
-	protected void setPasswordInternal(String pass) throws MyDriveException {
-		throw new NoPermissionException("Guest.setPasswordInternal()");
+	public void setPassword(String pass) throws MyDriveException {
+		throw new NoPermissionException("Guest.setPassword()");
 	}
 
 	@Override

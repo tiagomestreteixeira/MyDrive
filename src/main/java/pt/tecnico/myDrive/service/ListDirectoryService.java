@@ -1,25 +1,21 @@
 package pt.tecnico.myDrive.service;
 
+import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.service.dto.FileDto;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import pt.tecnico.myDrive.domain.App;
-import pt.tecnico.myDrive.domain.Dir;
-import pt.tecnico.myDrive.domain.File;
-import pt.tecnico.myDrive.domain.Link;
-import pt.tecnico.myDrive.domain.Login;
-import pt.tecnico.myDrive.domain.PlainFile;
-import pt.tecnico.myDrive.service.dto.FileDto;
 
 public class ListDirectoryService extends MyDriveService {
 
 	private long loginId;
 	private List<FileDto> fileList;
 	private Dir currentDir;
+	private String pathname;
 
-	public ListDirectoryService(long token) {
+	public ListDirectoryService(long token, String pathname) {
 		this.loginId = token;
-
+		this.pathname = pathname;
 	}
 
 	@Override
@@ -27,26 +23,41 @@ public class ListDirectoryService extends MyDriveService {
 		fileList = new ArrayList<FileDto>();
 
 		Login login = getMyDrive().getLoginFromId(loginId);
+		User user = login.getUser();
 
 		login.refreshToken();
 		currentDir = login.getCurrentDir();
 
-		for (File f : currentDir.getFileSet()) {
+		if (!pathname.startsWith("/")) {
+			if (currentDir.getPath().equals("/")) {
+				pathname = currentDir.getPath() + pathname;
+
+			} else {
+				pathname = currentDir.getPath() + "/" + pathname;
+			}
+		}
+
+		Dir d = (Dir) user.lookup(pathname);
+
+		for (File f : d.getFileSet(user)) {
 			if (f instanceof Dir) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Dir", f.getFileOwner().getUsername())));
-				continue;
+				fileList.add((new FileDto(f.getId(),
+						f.getSize(),
+						f.getName(),
+						f.getLastModification(),
+						f.getPermissions(),
+						"Dir",
+						f.getFileOwner().getUsername())));
 			}
-			if (f instanceof Link) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "Link", ((Link) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
-			}
-			if (f instanceof App) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "App", ((App) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
-			}
-			if (f instanceof PlainFile) {
-				fileList.add((new FileDto(f.getId(), f.getSize(), f.getName(), f.getLastModification(), f.getPermissions(), "PlainFile", ((PlainFile) f).getContent(), f.getFileOwner().getUsername())));
-				continue;
+			else{
+				fileList.add((new FileDto(f.getId(),
+						f.getSize(),
+						f.getName(),
+						f.getLastModification(),
+						f.getPermissions(),
+						f.getClass().getSimpleName(),
+						((PlainFile) f).getContent(),
+						f.getFileOwner().getUsername())));
 			}
 		}
 

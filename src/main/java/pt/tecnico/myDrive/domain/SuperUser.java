@@ -9,7 +9,7 @@ public class SuperUser extends SuperUser_Base {
         super.setUsername("root");
         super.setName("root");
         super.setUmask("rwxdr-x-");
-        super.setPasswordInternal("********");
+        super.setPasswordInternal("***");
         md.addUser(this);
     }
 
@@ -21,6 +21,11 @@ public class SuperUser extends SuperUser_Base {
     public boolean setPermissions(File file, String newPermissions) {
         file.setPermissions(newPermissions);
         return true;
+    }
+
+    @Override
+    public void setPassword(String pass) throws MyDriveException {
+        throw new NoPermissionException("Guest.setPassword()");
     }
 
     @Override

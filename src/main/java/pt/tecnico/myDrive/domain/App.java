@@ -23,13 +23,8 @@ public class App extends App_Base {
 
     @Override
     public void setContent(String method) throws MyDriveException {
-	    super.setContent("");
-        if (method == null || method.equals("")) {
-            super.setContent("");
-            return;
-        }
 
-        if (method.matches("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*")) {
+        if (method.matches("(([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*)|^$")) {
             super.setContent(method);
             return;
         }

@@ -35,7 +35,7 @@ public class CreateFileService extends MyDriveService {
 		switch (fileType) {
 			case "Dir":
 				if (!content.equals(""))
-					throw new DirCanNotHaveContentException();
+					throw new DirCanNotHaveContentException(currentDir.getPath());
 				new Dir(filename, user, currentDir, user.getUmask());
 				break;
 			case "Plain":

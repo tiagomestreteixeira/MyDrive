@@ -4,6 +4,8 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.*;
 
+import java.util.Set;
+
 public class Dir extends Dir_Base {
 
     public Dir(){
@@ -20,8 +22,37 @@ public class Dir extends Dir_Base {
 	}
 
 	@Override
+	protected void init(String name, User user, Dir directory, String permissions) throws MyDriveException {
+		super.init(name, user, directory, permissions);
+		new Link(".", user, this, permissions, this.getPath());
+		new Link("..", user, this, permissions, this.getDir().getPath());
+	}
+
+	@Override
+	public File lookup(User user, String path) {
+		if (path.equals("")) {
+			return this;
+		}
+
+		String[] split = path.split("/", 2);
+		File f = getFileByName(user, split[0]);
+		if (split.length == 1) {
+			return getFileByName(user, split[0]).lookup(user, "");
+		}
+		return f.lookup(user, split[1]);
+	}
+
+	@Override
 	public int getSize() {
 		return getFileSet().size();
+	}
+
+	public Set<File> getFileSet(User user) {
+		if (user.checkPermission(this, 'r')) {
+			return super.getFileSet();
+		} else {
+			throw new NoPermissionException("Dir.getFileSet()");
+		}
 	}
 
 	@Override
@@ -89,10 +120,6 @@ public class Dir extends Dir_Base {
 	protected void remove() throws MyDriveException {
 		getUser().removeFile(this);
 		getDir().removeFile(this);
-		if (getHomeOwner() != null){
-			//Do not allow?
-			setHomeOwner(null);
-		}
 		deleteDomainObject();
 	}
 

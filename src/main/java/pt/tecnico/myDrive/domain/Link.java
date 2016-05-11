@@ -53,6 +53,12 @@ public class Link extends Link_Base {
     }
 
     @Override
+    public File lookup(User user, String path) throws MyDriveException {
+        File target = user.lookup(getContent());
+        return target.lookup(user, path);
+    }
+
+    @Override
     public Element xmlExport(){
         Element linkElement =  new Element("link");
         linkElement = xmlExportHelper(linkElement);

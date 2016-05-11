@@ -23,6 +23,7 @@ public class CreateFileTest extends  AbstractServiceTest {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
         userObject = new User(md, name, name, "rwxd----", pass);
+        //userObject = new User(md, name, name, "rwxd----", pass);
         login = md.createLogin(name,pass);
     }
 
@@ -75,7 +76,7 @@ public class CreateFileTest extends  AbstractServiceTest {
     @Test
     public void createFileCreateLinkWithContentProvided() {
 
-        String expectedContent = "contentlink";
+        String expectedContent = userObject.getHomeDir().getPath();
         CreateFileService service = new CreateFileService(login,"MyLinkFile","Link",expectedContent);
         service.execute();
 
@@ -179,6 +180,13 @@ public class CreateFileTest extends  AbstractServiceTest {
         service.execute();
     }
 
+
+    @Test(expected = InvalidFileNameException.class)
+    public void createInvalidFileName() throws Exception {
+        final String fileName="example\0";
+        CreateFileService service = new CreateFileService(login,fileName,"Dir");
+        service.execute();
+    }
 
     @Test(expected = FilePathTooLongException.class)
     public void createPathTooLong() throws Exception {
