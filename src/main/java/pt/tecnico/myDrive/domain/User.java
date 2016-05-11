@@ -51,7 +51,6 @@ public class User extends User_Base {
 	}
 
 	protected void init(MyDrive md, String username, String name, String umask, String password){
-		md.addUser(this);
 		setUsername(username);
 		setName(name);
 		setPassword(password);
@@ -59,6 +58,7 @@ public class User extends User_Base {
 		setHomeDir(md.getSuperUser().makeDir("/home/"+username));
 		getHomeDir().setOwner(md.getSuperUser(), this);
 		getHomeDir().setPermissions(umask);
+		md.addUser(this);
 	}
 
 	  @Override
@@ -78,19 +78,9 @@ public class User extends User_Base {
 		  return null;
 	  }
 
-	public File getFileById(int id){
-		for (File file: getFileSet())
-			if (file.getId().equals(id))
-				return file;
-		return null;
-	}
-
 	  public boolean hasFile(String fileName){
 		  return getFileByName(fileName)!= null;
 	  }
-	  public boolean hasFile(int id){
-		return getFileById(id)!= null;
-	}
 
 	  public boolean isAlphanumeric(String str) {
 		  for (int i=0; i<str.length(); i++) {
@@ -104,7 +94,7 @@ public class User extends User_Base {
 	  @Override
 	  public void setUsername(String username) throws InvalidUsernameException /*UserAlreadyExistsException*/ {
 
-	    if (username == null || username.length()<USERNAME_MIN_LENGTH){
+	    if (username.length()<USERNAME_MIN_LENGTH){
 	      throw new InvalidUsernameException(username, " : username has fewer than "
 				  										 + Integer.toString(USERNAME_MIN_LENGTH));
 	    }
@@ -181,6 +171,8 @@ public class User extends User_Base {
 			return false;
 		}
 	}
+
+
 
 	public boolean checkPassword (String attempt) {
 		return attempt.equals(super.getPassword());

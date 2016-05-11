@@ -81,9 +81,4 @@ public class PlainFile extends PlainFile_Base {
         return plainElement;
     }
 
-    @Override
-    public String getType(){
-        return "PlainFile";
-    }
-
 }

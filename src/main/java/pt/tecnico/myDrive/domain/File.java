@@ -25,7 +25,7 @@ public class File extends File_Base {
             setName(name);
             setPermissions(permissions);
             setDir(directory);
-            setOwner(user, user);
+            setUser(user);
             setLastModification(new DateTime());
             checkPathLengthConstrain(directory, name);
         } else {
@@ -121,20 +121,15 @@ public class File extends File_Base {
             throw new InvalidPermissionsFormatException(permissions);
     }
 
-	public void setOwner(User requester, User newOwner) throws MyDriveException {
+    public void setOwner(User requester, User newOwner) throws MyDriveException {
 
         SuperUser superUser = getDir().getFileOwner().getMyDrive().getSuperUser();
 		User fileOwner = getFileOwner();
 
-		if (requester.equals(fileOwner) || requester.equals(superUser) || fileOwner == null) {
-			if (newOwner == null) {
-				superUser.addFile(this);
-                this.setUser(superUser);
-				return;
-			}
+		if (requester.equals(fileOwner) || requester.equals(superUser)) {
             if(!newOwner.hasFile(this.getPath())){
                 newOwner.addFile(this);
-                this.setUser(newOwner);
+                super.setUser(newOwner);
             }
 			return;
 		}
@@ -157,7 +152,7 @@ public class File extends File_Base {
 
     public void xmlImport(Element FileDomainElement, String elementDomain) throws ImportDocumentException {
         String path, name, ownerUsername, defaultPermissions;
-        path = name = ownerUsername = defaultPermissions = null;
+        path = name = ownerUsername = defaultPermissions = "";
 
         for (Element child : FileDomainElement.getChildren()) {
             if (child.getName().equals("path"))
@@ -170,25 +165,25 @@ public class File extends File_Base {
                 defaultPermissions = child.getText();
         }
 
-        if (path == null)
+        if (path.isEmpty())
             throw new ImportDocumentException(elementDomain, "<path> node cannot be read properly.");
-        if (name == null)
+        if (name.isEmpty())
             throw new ImportDocumentException(elementDomain, "<name> node cannot be read properly.");
-        if (ownerUsername == null)
+        if (ownerUsername.isEmpty())
             ownerUsername = "root";
 
         MyDrive md = MyDrive.getInstance();
         User owner = md.getUserByUsername(ownerUsername);
 
-        if (defaultPermissions == null) {
-            if (owner == null) owner = md.getUserByUsername("root");
+        if (defaultPermissions.isEmpty()) {
+            if (ownerUsername.isEmpty()) owner = md.getUserByUsername("root");
             defaultPermissions = owner.getUmask();
         }
         init(name, owner, owner.makeDir(path), defaultPermissions);
     }
 
     public Element xmlExport(){
-        return null;
+        throw new NoPermissionException("File.xmlExport()");
     }
 
     public Element xmlExportHelper(Element el) {
@@ -207,11 +202,8 @@ public class File extends File_Base {
         permElement.addContent(getPermissions());
 
         DateTime lastModification = getLastModification();
-        String lastModificationConvertedToString="";
+        String lastModificationConvertedToString = lastModification.toString();
 
-        if(lastModification != null){
-            lastModificationConvertedToString = lastModification.toString();
-        }
 
         lastModifiedDateElement.addContent(lastModificationConvertedToString);
 
@@ -222,10 +214,6 @@ public class File extends File_Base {
         el.addContent(lastModifiedDateElement);
 
         return el;
-    }
-
-    public String getType(){
-        return null;
     }
 
 }

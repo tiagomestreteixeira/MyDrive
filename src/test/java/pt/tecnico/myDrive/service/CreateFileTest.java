@@ -23,6 +23,7 @@ public class CreateFileTest extends  AbstractServiceTest {
         md = MyDriveService.getMyDrive();
         root = md.getSuperUser();
         userObject = new User(md, name, name, "rwxd----", pass);
+        //userObject = new User(md, name, name, "rwxd----", pass);
         login = md.createLogin(name,pass);
     }
 
