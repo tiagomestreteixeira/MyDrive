@@ -8,23 +8,22 @@ import pt.tecnico.myDrive.exception.MyDriveException;
 public class ExecuteFileService extends MyDriveService {
 	private long token;
 	private String filename;
-	private String fileType;
-	private String content;
+	private String pathname;
+	private String[] args;
 
-	public ExecuteFileService() {
+	public ExecuteFileService(long token, String pathname, String[] args) {
 		this.token = token;
-		this.filename = filename;
-		this.fileType = fileType;
-		this.content = content;
+		this.pathname = pathname;
+		this.args = args;
 	}
-
-
+	
 	@Override
 	protected void dispatch() throws MyDriveException {
-		MyDrive md = getMyDrive();
+		MyDrive md = MyDrive.getInstance();
 		Login login = md.getLoginFromId(token);
 		login.refreshToken();
 		User user = login.getUser();
-		Dir currentDir = login.getCurrentDir();
-		}
+		File file = user.lookup(pathname);
+		file.execute(user);
 	}
+}
