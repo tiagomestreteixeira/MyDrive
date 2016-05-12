@@ -21,8 +21,6 @@ public class AddVariableTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser root;
     private App myApp;
-    private int notValidName;
-    private int notValidValue;
     private String variableName;
     private String variableName2;
     private String variableValue;
@@ -49,7 +47,6 @@ public class AddVariableTest extends AbstractServiceTest {
 		aev.execute();
 		
 		result = aev.result();
-		assertNotNull(result.get(variableName));
 		assertEquals(variableValue, result.get(variableName));
     }
     
@@ -60,39 +57,24 @@ public class AddVariableTest extends AbstractServiceTest {
 		result = aev.result();
 		assertEquals(variableValue, result.get(variableName));
 		
-		AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue2);
-		aev.execute();
-		result = aev.result();
+		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName, variableValue2);
+		aev2.execute();
+		result = aev2.result();
 		assertEquals(variableValue2, result.get(variableName));
     }
     
-    @Test(expected = NotValidEnvVariableException.class)
-    public void addVariableWithNonStringName() throws Exception{
-    	AddEnvVariableService aev = new AddEnvVariableService(login, notValidName, variableValue);
-		aev.execute();
-    }
-    
-    @Test(expected = NotValidEnvVariableException.class)
-    public void addVariableWithNonStringValue() throws Exception{
-    	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, notValidValue);
-		aev.execute();
-    }
-    
     @Test
-    public void addEnvVariable() throws Exception{
+    public void addEnvVariables() throws Exception{
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();		
 		result = aev.result();		
-		assertNotNull(result.get(variableName));
 		assertEquals(variableValue, result.get(variableName));
 		
-		AddEnvVariableService aev = new AddEnvVariableService(login, variableName2, variableValue2);
-		aev.execute();		
-		result = aev.result();		
-		assertNotNull(result.get(variableName2));
-		assertEquals(variableValue2, result.get(variableName2));
+		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName2, variableValue2);
+		aev2.execute();		
+		result = aev2.result();		
 		
-		assertNotNull(result.get(variableName));
+		assertEquals(variableValue2, result.get(variableName2));
 		assertEquals(variableValue, result.get(variableName));
     }
     
