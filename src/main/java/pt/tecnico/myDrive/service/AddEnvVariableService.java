@@ -1,7 +1,6 @@
 package pt.tecnico.myDrive.service;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
 import pt.tecnico.myDrive.domain.EnvVariables;
 import pt.tecnico.myDrive.domain.Login;
@@ -16,7 +15,7 @@ public class AddEnvVariableService extends MyDriveService{
 		private String value;
 		private MyDrive md;
 		private long token;
-		private List<EnvVarDto> list;
+		private ArrayList<EnvVarDto> list;
 
 		public AddEnvVariableService(long token, String name, String value) {
 			this.token = token;
@@ -26,6 +25,8 @@ public class AddEnvVariableService extends MyDriveService{
 
 		@Override
 		protected void dispatch() throws MyDriveException {
+			list = new ArrayList<EnvVarDto>();
+			
 			md = MyDrive.getInstance();
 			Login login = md.getLoginFromId(token);
 			
@@ -34,13 +35,13 @@ public class AddEnvVariableService extends MyDriveService{
 			for(EnvVariables env : login.getEnvVarSet()){
 				list.add(new EnvVarDto(env.getName(), env.getValue()));
 				if(env.getName().equals(variable.getName())){
-					env.setValue(variable.getName());
+					env.setValue(variable.getValue());
 				}
 			}
 			login.addEnvVar(variable);
 		}
 
-		public List<EnvVarDto> result() {
+		public ArrayList<EnvVarDto> result() {
 			return list;
 		}
 }

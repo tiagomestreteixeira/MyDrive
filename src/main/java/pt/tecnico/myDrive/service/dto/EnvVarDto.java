@@ -9,4 +9,12 @@ public class EnvVarDto {
 		this.name = name;
 		this.value = value;
 	}
+	
+	public final String getName(){
+		return name;
+	}
+	
+	public final String getValue(){
+		return value;
+	}
 }
