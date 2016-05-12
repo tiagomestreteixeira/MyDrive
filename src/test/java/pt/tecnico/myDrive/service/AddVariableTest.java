@@ -50,7 +50,19 @@ public class AddVariableTest extends AbstractServiceTest {
 		assertNotNull(result.get(variableName));
 		assertEquals(variableValue, result.get(variableName));
     }
-
+    
+    @Test
+    public void changeExistingVariable() throws Exception{
+    	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
+		aev.execute();
+		result = aev.result();
+		assertEquals(variableValue, result.get(variableName));
+		
+		AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue2);
+		aev.execute();
+		result = aev.result();
+		assertEquals(variableValue2, result.get(variableName));
+    }
     
     
 }
