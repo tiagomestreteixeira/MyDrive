@@ -19,13 +19,11 @@ public class EnvVariables extends EnvVariables_Base {
     
     @Override
     public void setValue(String value){
-    	//throw new NoPermissionException("EnvVariables.setValue()");
     	super.setValue(value);
     }
     
     @Override
     public void setLogin(Login login){
-    	//throw new NoPermissionException("EnvVariables.setLogin()");
     	login.addEnvVar(this);
     }
     
