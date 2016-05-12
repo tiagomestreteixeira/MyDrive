@@ -9,8 +9,10 @@ import org.junit.runner.RunWith;
 import mockit.integration.junit4.JMockit;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
@@ -20,6 +22,7 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
+import pt.tecnico.myDrive.service.dto.EnvVarDto;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
 import static org.junit.Assert.*;
@@ -39,10 +42,13 @@ public class IntegrationTest extends AbstractServiceTest {
     private class UserInfoTest {
         public String username, password;
         public Long token;
+        public String homeDir;
         public String currentDir;
 
         public int numberFilesHomeDir;
         public int numberDirsToCreate, numberPlainsToCreate, numberLinksToCreate, numberAppsToCreate;
+
+        public Map<String,String> envVars;
     }
 
     private int indexOfByUsername(String username) {
@@ -63,6 +69,7 @@ public class IntegrationTest extends AbstractServiceTest {
             ui.numberLinksToCreate = 10;
             ui.numberAppsToCreate = 10;
             ui.numberDirsToCreate = 10;
+            ui.envVars.put("$"+ui.username+"_HOME",ui.homeDir);
         }
     }
 
@@ -75,8 +82,10 @@ public class IntegrationTest extends AbstractServiceTest {
                 UserInfoTest ui = new UserInfoTest();
                 ui.username = node.getAttribute("username").getValue();
                 ui.password = node.getChild("password").getValue();
-                ui.currentDir = node.getChild("home").getValue();
+                ui.homeDir = node.getChild("home").getValue();
+                ui.currentDir = ui.homeDir;
                 ui.numberFilesHomeDir = 0;
+                ui.envVars = new HashMap<String,String>();
                 users.add(ui);
             }
             specificUserInitialization();
@@ -196,6 +205,23 @@ public class IntegrationTest extends AbstractServiceTest {
                 "expected to be delected");
     }
 
+    private void addEnvVariableBatchServiceUser(UserInfoTest uit){
+        log.debug("[System Integration Test] AddEnvVariableService. Adding Env. Vars of the User: " + uit.username + "" +
+                " - uses AddEnvVariableService");
+
+        for(Map.Entry<String, String> entry : uit.envVars.entrySet()) {
+            String name = entry.getKey();
+            String value = entry.getValue();
+            log.info("name : " + name);
+            log.info("value : " + value);
+
+            AddEnvVariableService aev = new AddEnvVariableService(uit.token,name,value);
+            aev.execute();
+
+            assertTrue("Env. Variable should be added ",aev.result().stream().anyMatch(var -> var.getName().equals(name)));
+        }
+    }
+
     @Test
     public void success() throws Exception {
         try {
@@ -206,6 +232,8 @@ public class IntegrationTest extends AbstractServiceTest {
 
             for (UserInfoTest ui : users) {
                 loginUser(ui);
+                addEnvVariableBatchServiceUser(ui);
+
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 String filename = "plainExample";
@@ -274,11 +302,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.currentDir = pathNewDir;
 
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
-                // TODO: Check the correctness
                 deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
-
-
-
 
             }
         } catch (Exception e) {
