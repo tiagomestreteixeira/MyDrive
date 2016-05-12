@@ -53,12 +53,6 @@ public class Login extends Login_Base {
 	
 	@Override
 	public void addEnvVar(EnvVariables variable){
-		//TODO: Remove variable value reset after AddEnvVariable Service is done.
-		for(EnvVariables env : getEnvVarSet())
-			if(env.getName().equals(variable.getName())){
-				env.setValue(variable.getName());
-				return;
-			}
 		super.addEnvVar(variable);
 	}
 
