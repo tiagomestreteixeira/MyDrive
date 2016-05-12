@@ -21,8 +21,6 @@ public class AddVariableTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser root;
     private App myApp;
-    private int notValidName;
-    private int notValidValue;
     private String variableName;
     private String variableName2;
     private String variableValue;
