@@ -33,7 +33,7 @@ public class App extends App_Base {
 
 
     @Override
-    public void execute(User user){
+    public void execute(User user, String[] args){
         if (user.checkPermission(this, 'x')) {
             // TODO Execute Apps.
         } else {

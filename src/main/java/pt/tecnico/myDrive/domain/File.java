@@ -41,7 +41,7 @@ public class File extends File_Base {
         throw new NoPermissionException("File.write()");
     }
 
-    public void execute(User user) throws MyDriveException {
+    public void execute(User user, String[] args) throws MyDriveException {
         throw new NoPermissionException("File.execute()");
     }
 

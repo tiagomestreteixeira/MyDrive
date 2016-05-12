@@ -26,9 +26,9 @@ public class Link extends Link_Base {
     }
 
     @Override
-    public void execute(User user){
+    public void execute(User user, String[] args){
         if (user.checkPermission(this, 'r')) {
-            user.lookup(this.getContent()).execute(user);
+            user.lookup(this.getContent()).execute(user, args);
         } else {
             throw new NoPermissionException("link.read()");
         }
