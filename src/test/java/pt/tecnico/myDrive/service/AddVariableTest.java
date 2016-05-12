@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
+import pt.tecnico.myDrive.service.dto.EnvVarDto;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
@@ -11,6 +12,7 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class AddVariableTest extends AbstractServiceTest {
 
@@ -25,7 +27,7 @@ public class AddVariableTest extends AbstractServiceTest {
     private String variableName2;
     private String variableValue;
     private String variableValue2;
-    private HashMap<String, String> result;
+    private List<EnvVarDto> result;
 
     private static final String USER_DEFAULT_PERMISSIONS = "rwxd----";
 
@@ -46,36 +48,39 @@ public class AddVariableTest extends AbstractServiceTest {
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();
 		
-		result = aev.result();
-		assertEquals(variableValue, result.get(variableName));
+		List<EnvVarDto> result = aev.result();
+		assertEquals(variableName, result.get(0).getName());
+		assertEquals(variableValue, result.get(0).getValue());
     }
     
     @Test
     public void changeExistingVariable() throws Exception{
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();
-		result = aev.result();
-		assertEquals(variableValue, result.get(variableName));
+		List<EnvVarDto> result = aev.result();
+		assertEquals(variableName, result.get(0).getName());
+		assertEquals(variableValue, result.get(0).getValue());
 		
 		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName, variableValue2);
 		aev2.execute();
 		result = aev2.result();
-		assertEquals(variableValue2, result.get(variableName));
+		assertEquals(variableName, result.get(0).getName());
+		assertEquals(variableValue2, result.get(0).getValue());
     }
     
     @Test
     public void addEnvVariables() throws Exception{
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();		
-		result = aev.result();		
-		assertEquals(variableValue, result.get(variableName));
+		List<EnvVarDto> result = aev.result();		
+		assertEquals(variableName, result.get(0).getName());
+		assertEquals(variableValue, result.get(0).getValue());
 		
 		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName2, variableValue2);
 		aev2.execute();		
 		result = aev2.result();		
-		
-		assertEquals(variableValue2, result.get(variableName2));
-		assertEquals(variableValue, result.get(variableName));
+		assertEquals(variableName2, result.get(1).getName());
+		assertEquals(variableValue2, result.get(1).getValue());
     }
     
 }
