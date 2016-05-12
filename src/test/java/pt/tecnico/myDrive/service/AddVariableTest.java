@@ -21,6 +21,8 @@ public class AddVariableTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser root;
     private App myApp;
+    private int notValidName;
+    private int notValidValue;
     private String variableName;
     private String variableName2;
     private String variableValue;
@@ -63,6 +65,19 @@ public class AddVariableTest extends AbstractServiceTest {
 		result = aev.result();
 		assertEquals(variableValue2, result.get(variableName));
     }
+    
+    @Test(expected = NotValidEnvVariableException.class)
+    public void addVariableWithNonStringName() throws Exception{
+    	AddEnvVariableService aev = new AddEnvVariableService(login, notValidName, variableValue);
+		aev.execute();
+    }
+    
+    @Test(expected = NotValidEnvVariableException.class)
+    public void addVariableWithNonStringValue() throws Exception{
+    	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, notValidValue);
+		aev.execute();
+    }
+    
     
     
 }
