@@ -22,7 +22,6 @@ import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
-import pt.tecnico.myDrive.service.dto.EnvVarDto;
 import pt.tecnico.myDrive.service.dto.FileDto;
 
 import static org.junit.Assert.*;
@@ -117,6 +116,13 @@ public class IntegrationTest extends AbstractServiceTest {
         log.debug("Number of Files in Home dir: " + uit.numberFilesHomeDir);
     }
 
+    private void logoutUser(UserInfoTest uit){
+        log.debug("[System Integration Test] Logout Service of user " + uit.username + " - uses LogoutUserService");
+
+        LogoutUserService us = new LogoutUserService(uit.token);
+        us.execute();
+    }
+
     private void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles) {
         log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
                 + ", Current Dir : " + uif.currentDir + " - uses ListDirectoryService");
@@ -141,7 +147,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals("Changed to a wrong pathname", pathNewDir, cds.result());
     }
 
-    private void writeFileServiceUser(UserInfoTest uit, String fileName, String content) {
+    private void writeFileUser(UserInfoTest uit, String fileName, String content) {
         log.debug("[System Integration Test] WriteFileService. User: " + uit.username + ", write the content:" + content
                 + " to the file : " + fileName + " - uses WriteFileService");
 
@@ -156,7 +162,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals("Content Written don't match.", uit.username, pf.getContent());
     }
 
-    private void readFileServiceUser(UserInfoTest uit, String fileName) {
+    private void readFileUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] ReadFileService. User: " + uit.username + ", reads the content of file: " +
                 fileName + " -  uses ReadFileService");
 
@@ -167,13 +173,13 @@ public class IntegrationTest extends AbstractServiceTest {
         assertEquals("Content Read from don't match.", uit.username, rft.result());
     }
 
-    private void createFileServiceBatchUser(UserInfoTest uit, String filename, String fileType, String content, int maxNumber) {
+    private void createFileBatchUser(UserInfoTest uit, String filename, String fileType, String content, int maxNumber) {
         for (int idFile = 0; idFile < maxNumber; idFile++) {
-            createFileServiceUser(uit, filename + idFile, fileType, content);
+            createFileUser(uit, filename + idFile, fileType, content);
         }
     }
 
-    private void createFileServiceUser(UserInfoTest uit, String filename, String fileType, String content) {
+    private void createFileUser(UserInfoTest uit, String filename, String fileType, String content) {
         log.debug("[System Integration Test] CreateFileService. User: " + uit.username + ", will create the file "
                 + filename + ", of type : " + fileType + ", in the directory: " + uit.currentDir + " - uses CreateFileService");
 
@@ -189,7 +195,7 @@ public class IntegrationTest extends AbstractServiceTest {
         assertNotNull(assertWriteServiceMsg, su.lookup(uit.currentDir + "/" + filename));
     }
 
-    private void deleteFileServiceUser(UserInfoTest uit, String fileName) {
+    private void deleteFileUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] DeleteFileService. User: " + uit.username + ", delete the file "
                 + fileName + " - uses DeleteFileService");
 
@@ -205,7 +211,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 "expected to be delected");
     }
 
-    private void addEnvVariableBatchServiceUser(UserInfoTest uit){
+    private void addEnvVariableBatchUser(UserInfoTest uit){
         log.debug("[System Integration Test] AddEnvVariableService. Adding Env. Vars of the User: " + uit.username + "" +
                 " - uses AddEnvVariableService");
 
@@ -218,7 +224,7 @@ public class IntegrationTest extends AbstractServiceTest {
             AddEnvVariableService aev = new AddEnvVariableService(uit.token,name,value);
             aev.execute();
 
-            assertTrue("Env. Variable should be added ",aev.result().stream().anyMatch(var -> var.getName().equals(name)));
+            assertTrue("Env. Variable should have been added ",aev.result().stream().anyMatch(var -> var.getName().equals(name)));
         }
     }
 
@@ -232,54 +238,54 @@ public class IntegrationTest extends AbstractServiceTest {
 
             for (UserInfoTest ui : users) {
                 loginUser(ui);
-                addEnvVariableBatchServiceUser(ui);
+                addEnvVariableBatchUser(ui);
 
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 String filename = "plainExample";
                 String fileType = "Plain";
                 String plainContent = "This\nIs\nA\nPlain File\nContent!";
-                createFileServiceUser(ui, filename, fileType, plainContent);
+                createFileUser(ui, filename, fileType, plainContent);
                 ui.numberFilesHomeDir++;
                 listDirectoryUser(ui,ui.numberFilesHomeDir);
 
-                writeFileServiceUser(ui, filename, ui.username);
-                readFileServiceUser(ui, filename);
+                writeFileUser(ui, filename, ui.username);
+                readFileUser(ui, filename);
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 fileType = "Dir";
                 filename = "dir" + ui.username;
-                createFileServiceUser(ui, filename, fileType, "");
+                createFileUser(ui, filename, fileType, "");
                 ui.numberFilesHomeDir++;
 
                 String pathNewDir = "/home/" + ui.username + "/" + filename;
                 changeDirUser(ui, pathNewDir);
                 ui.currentDir = pathNewDir;
 
-                createFileServiceBatchUser(ui, fileType, fileType, "", ui.numberDirsToCreate);
+                createFileBatchUser(ui, fileType, fileType, "", ui.numberDirsToCreate);
                 listDirectoryUser(ui, ui.numberDirsToCreate);
 
                 fileType = "Plain";
-                createFileServiceBatchUser(ui, fileType, fileType, plainContent, ui.numberPlainsToCreate);
+                createFileBatchUser(ui, fileType, fileType, plainContent, ui.numberPlainsToCreate);
                 listDirectoryUser(ui, ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "Link";
                 String linkContent = "/home/" + ui.username;
-                createFileServiceBatchUser(ui, fileType, fileType, linkContent, ui.numberLinksToCreate);
+                createFileBatchUser(ui, fileType, fileType, linkContent, ui.numberLinksToCreate);
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "App";
                 String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
-                createFileServiceBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
+                createFileBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
                         + ui.numberAppsToCreate;
                 listDirectoryUser(ui, expectedNumberFiles);
 
                 filename = "Plain.pdf";
-                createFileServiceUser(ui, filename, "Plain", "");
+                createFileUser(ui, filename, "Plain", "");
 
-                deleteFileServiceUser(ui,"Plain0");
+                deleteFileUser(ui,"Plain0");
                 listDirectoryUser(ui,expectedNumberFiles);
 
                 new MockUp<ExecuteFileAssociationService>(){
@@ -302,8 +308,9 @@ public class IntegrationTest extends AbstractServiceTest {
                 ui.currentDir = pathNewDir;
 
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
-                deleteFileServiceUser(ui, pathNewDir+"/dir"+ui.username);
+                deleteFileUser(ui, pathNewDir+"/dir"+ui.username);
 
+                logoutUser(ui);
             }
         } catch (Exception e) {
             e.printStackTrace();
