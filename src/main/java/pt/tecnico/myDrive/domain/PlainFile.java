@@ -46,7 +46,6 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
-
     @Override
     public void write(User user, String string) {
         if (user.checkPermission(this, 'w')) {

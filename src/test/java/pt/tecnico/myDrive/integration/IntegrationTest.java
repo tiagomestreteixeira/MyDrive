@@ -250,7 +250,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 createFileBatchUser(ui, LINK_TYPE, LINK_TYPE, linkContent, ui.numberLinksToCreate);
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
                 createFileBatchUser(ui, APP_TYPE, APP_TYPE, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate
@@ -265,10 +265,6 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
-                    public final String result() {
-                        return appContent;
-                    }
-                    @Mock
                     public final void dispatch(){
                         su.lookup(ui.currentDir+"/"+"App0").execute(md.getUserByUsername(ui.username),new String[0]);
                     }
@@ -276,7 +272,6 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 ExecuteFileAssociationService efas = new ExecuteFileAssociationService(ui.token, filename);
                 efas.execute();
-                assertEquals(appContent,efas.result());
 
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);
