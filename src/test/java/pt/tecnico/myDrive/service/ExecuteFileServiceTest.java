@@ -1,5 +1,6 @@
 package pt.tecnico.myDrive.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.*;
@@ -28,7 +29,7 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
         loginTest = md.createLogin("test", "testpw12");
         loginTestFail = md.createLogin("testfail", "testfailpw");
 	}
-
+	
 	@Test (expected = NoPermissionException.class)
 	public void executePlainFile() throws Exception{
 		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "rwxd----", "PlainFileContent");
