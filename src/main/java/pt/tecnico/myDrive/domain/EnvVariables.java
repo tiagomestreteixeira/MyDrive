@@ -41,5 +41,5 @@ public class EnvVariables extends EnvVariables_Base {
     public Login getLogin(){
     	return super.getLogin();
     }
-    
+
 }

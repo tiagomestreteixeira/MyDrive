@@ -3,6 +3,9 @@ package pt.tecnico.myDrive.presentation;
 import pt.tecnico.myDrive.service.AddEnvVariableService;
 import pt.tecnico.myDrive.service.dto.EnvVarDto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnvCommand extends MdCommand {
 
 	private static final String USAGE_MSG = "USAGE: env [name [value]]\n";
@@ -13,49 +16,31 @@ public class EnvCommand extends MdCommand {
 		mdShell = sh;
 	}
 
-	public void executeEnv(long token, String name, String value) throws Exception {
-
-
-		AddEnvVariableService aev = new AddEnvVariableService(token, name, value);
-		aev.execute();
-
-		if(name != "null" && value == "null"){
-			for(EnvVarDto env : aev.result()){
-				if(env.getName().equals(name))
-					mdShell.println(env.getValue());
-			}
-		}
-
-		if(name == "null"){
-			for (EnvVarDto env : aev.result()) {
-				mdShell.println(env.getName() + "=" + env.getValue());
-			}
-		}
-
-
-	}
-
 	@Override
 	public void execute(String[] args) throws Exception {
 		long token = mdShell.getCurrentToken();
-		String name = "";
-		String value = "";
+		String name;
+		String value;
 
-		if(args.length > 2)
+		if (args.length > 2)
 			throw new RuntimeException(USAGE_MSG);
 
-		if(args.length == 1){
+		if (args.length == 1) {
 			name = args[0];
-			value = "null";
-		}else {
+			value = null;
+		} else {
 			if (args.length == 2) {
 				name = args[0];
 				value = args[1];
-			}else{
-				name = "null";
-				value = "null";
+			} else {
+				name = null;
+				value = null;
 			}
 		}
-		executeEnv(token, name, value);
+		AddEnvVariableService service = new AddEnvVariableService(token, name, value);
+		service.execute();
+		List<EnvVarDto> result = service.result();
+		for (EnvVarDto dto : result)
+			System.out.println(dto.getName() + " = " + dto.getValue());
 	}
 }

@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.domain;
 
 import org.joda.time.DateTime;
 import pt.tecnico.myDrive.exception.NoPermissionException;
+import pt.tecnico.myDrive.exception.VariableNotFoundException;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -50,10 +51,38 @@ public class Login extends Login_Base {
 	public void setMydrive(MyDrive mydrive) {
 		throw new NoPermissionException("Login.setMyDrive()");
 	}
-	
+
 	@Override
-	public void addEnvVar(EnvVariables variable){
+	public void addEnvVar(EnvVariables variable) {
+		for (EnvVariables env : getEnvVarSet()) {
+			if (env.getName().equals(variable.getName())) {
+				System.out.println(variable.getName() + " " + variable.getValue());
+				if (variable.getValue() == null) {
+					variable.setValue(env.getValue());
+				}
+				env.setValue(variable.getValue());
+				return;
+			}
+		}
 		super.addEnvVar(variable);
+	}
+
+	public EnvVariables getEnviromentVariable(Login login, String name, String value) {
+		for (EnvVariables env : getEnvVarSet()) {
+			if (env.getName().equals(name)) {
+				if (value != null) {
+					env.setValue(value);
+				}
+				return env;
+			}
+		}
+
+		if (value == null)
+			throw new VariableNotFoundException(name);
+
+		EnvVariables var = new EnvVariables(login, name, value);
+		super.addEnvVar(var);
+		return var;
 	}
 
 	public void refreshToken() {

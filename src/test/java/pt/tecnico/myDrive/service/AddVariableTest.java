@@ -12,6 +12,7 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddVariableTest extends AbstractServiceTest {
 
@@ -47,7 +48,7 @@ public class AddVariableTest extends AbstractServiceTest {
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();
 		
-		ArrayList<EnvVarDto> result = aev.result();
+		List<EnvVarDto> result = aev.result();
 		assertEquals(variableName, result.get(0).getName());
 		assertEquals(variableValue, result.get(0).getValue());
     }
@@ -56,7 +57,7 @@ public class AddVariableTest extends AbstractServiceTest {
     public void changeExistingVariable() throws Exception{
     	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
 		aev.execute();
-		ArrayList<EnvVarDto> result = aev.result();
+		List<EnvVarDto> result = aev.result();
 		assertEquals(variableName, result.get(0).getName());
 		assertEquals(variableValue, result.get(0).getValue());
 		
@@ -69,20 +70,17 @@ public class AddVariableTest extends AbstractServiceTest {
     
     @Test
     public void addEnvVariables() throws Exception{
-    	AddEnvVariableService aev = new AddEnvVariableService(login, variableName, variableValue);
-		aev.execute();		
-		ArrayList<EnvVarDto> result = aev.result();		
-		assertEquals(variableName, result.get(0).getName());
-		assertEquals(variableValue, result.get(0).getValue());
-		
-		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName2, variableValue2);
-		aev2.execute();		
-		result = aev2.result();		
-		assertEquals(variableName2, result.get(1).getName());
-		assertEquals(variableValue2, result.get(1).getValue());
+    	AddEnvVariableService service = new AddEnvVariableService(login, variableName, variableValue);
+		service.execute();
 
-		assertEquals(variableName, result.get(0).getName());
-		assertEquals(variableValue, result.get(0).getValue());
+		service = new AddEnvVariableService(login, variableName2, variableValue2);
+		service.execute();
+
+		service = new AddEnvVariableService(login, null, null);
+		service.execute();
+		List<EnvVarDto> result = service.result();
+
+		assertEquals("Result size should be 2.", 2, result.size());
     }
-    
+
 }
