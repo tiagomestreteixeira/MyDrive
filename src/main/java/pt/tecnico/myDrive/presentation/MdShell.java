@@ -5,7 +5,7 @@ import pt.tecnico.myDrive.service.LogoutUserService;
 public class MdShell extends Shell {
 	protected static UsersManager userManager = new UsersManager();
 
-	public static void main() throws Exception {
+	public static void main(String[] args) throws Exception {
 		MdShell sh = new MdShell();
 		sh.execute();
 
@@ -52,6 +52,4 @@ public class MdShell extends Shell {
 	public void addUser(String username,Long token){
 		userManager.addUser(username,token);
 	}
-
-
 }
