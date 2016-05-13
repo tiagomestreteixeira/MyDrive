@@ -17,6 +17,7 @@ import java.util.Map;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 
+import pt.ist.fenixframework.Atomic;
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
@@ -32,11 +33,10 @@ public class IntegrationTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser su;
 
-    private Document doc;
     private static final String IMPORT_XML_FILENAME = "users.xml";
     private static final int INITIAL_NUMBER_FILES = 2;
 
-    private static final List<UserInfoTest> users = new ArrayList<UserInfoTest>();
+    private static final List<UserInfoTest> users = new ArrayList<>();
 
     private class UserInfoTest {
         public String username, password;
@@ -61,6 +61,8 @@ public class IntegrationTest extends AbstractServiceTest {
     }
 
     void specificUserInitialization() {
+        for (UserInfoTest ui : users)
+            System.out.println(ui.username);
         UserInfoTest jtb = users.get(indexOfByUsername("jtb"));
         jtb.numberFilesHomeDir += 4;
         for (UserInfoTest ui : users) {
@@ -72,27 +74,20 @@ public class IntegrationTest extends AbstractServiceTest {
         }
     }
 
-    private Document usersXMLtoList() {
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = null;
-        try {
-            doc = builder.build(Main.resourceFile(IMPORT_XML_FILENAME));
-            for (Element node : doc.getRootElement().getChildren("user")) {
+    @Atomic
+    private void getUserInfo() {
+
+            for (User u : md.getUserSet()) {
                 UserInfoTest ui = new UserInfoTest();
-                ui.username = node.getAttribute("username").getValue();
-                ui.password = node.getChild("password").getValue();
-                ui.homeDir = node.getChild("home").getValue();
+                ui.username = u.getUsername();
+                ui.password = u.getPasswordForTesting();
+                ui.homeDir = u.getHomeDir().getPath();
                 ui.currentDir = ui.homeDir;
                 ui.numberFilesHomeDir = 0;
-                ui.envVars = new HashMap<String,String>();
+                ui.envVars = new HashMap<>();
                 users.add(ui);
             }
             specificUserInitialization();
-
-        } catch (ImportDocumentException | JDOMException | IOException e) {
-            e.printStackTrace();
-        }
-        return doc;
     }
 
     protected void populate() {
@@ -233,9 +228,12 @@ public class IntegrationTest extends AbstractServiceTest {
 
             log.debug("[System Integration Test] - ImportXMLService");
             new ImportXMLService(IMPORT_XML_FILENAME).execute();
+            getUserInfo();
 
 
             for (UserInfoTest ui : users) {
+                if (ui.username.equals("root")  || ui.username.equals("nobody"))
+                    continue;
                 loginUser(ui);
                 addEnvVariableBatchUser(ui);
 
