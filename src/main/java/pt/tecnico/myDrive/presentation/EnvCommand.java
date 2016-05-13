@@ -17,14 +17,14 @@ public class EnvCommand extends MdCommand {
 		AddEnvVariableService aev = new AddEnvVariableService(token, name, value);
 		aev.execute();
 
-		if(name != null && value == null){
+		if(name != "null" && value == "null"){
 			for(EnvVarDto env : aev.result()){
 				if(env.getName().equals(name))
 					shell().println(env.getValue());
 			}
 		}
-		
-		if(name == null){
+
+		if(name == "null"){
 			for (EnvVarDto env : aev.result()) {
 				shell().println(env.getName() + "=" + env.getValue());
 			}
@@ -36,15 +36,16 @@ public class EnvCommand extends MdCommand {
 	@Override
 	public void execute(String[] args) throws Exception {
 		long token = shell().getCurrentToken();
-		String name;
-		String value;
+		String name = "";
+		String value = "";
 
 		if(args.length > 2)
 			throw new RuntimeException(USAGE_MSG);
 
 		if(args.length == 1){
 			name = args[0];
-			executeEnv(token, name, null);
+			value = "null";
+			executeEnv(token, name, value);
 		}
 
 		if(args.length == 2){
@@ -53,8 +54,11 @@ public class EnvCommand extends MdCommand {
 			executeEnv(token, name, value);
 		}
 
-		if(args.length == 0)
-			executeEnv(token, null, null);
-	}
+		if(args.length == 0){
+			name = "null";
+			value = "null";
+			executeEnv(token, name, value);
+		}
 
+	}
 }
