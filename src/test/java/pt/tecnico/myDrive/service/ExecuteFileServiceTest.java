@@ -29,9 +29,7 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
         loginTest = md.createLogin("test", "testpw12");
         loginTestFail = md.createLogin("testfail", "testfailpw");
 	}
-
-	// TODO: remove ignore
-	@Ignore
+	
 	@Test (expected = NoPermissionException.class)
 	public void executePlainFile() throws Exception{
 		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "rwxd----", "PlainFileContent");
