@@ -16,7 +16,7 @@ public class LoginCommand extends MdCommand{
         loginUserService.execute();
         mdShell.addUser(user,loginUserService.result());
         log.info("Token generated: " + mdShell.getCurrentToken());
-        if(mdShell.getCurrentUsername().equals("nobody"))
+        if(!mdShell.getCurrentUsername().equals("nobody"))
             mdShell.logoutGuestUser();
     }
 

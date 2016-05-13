@@ -4,7 +4,30 @@ import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.service.LogoutUserService;
 
 public class MdShell extends Shell {
-	private UsersManager userManager;
+	protected static UsersManager userManager = new UsersManager();
+
+	public static void main() throws Exception {
+		MdShell sh = new MdShell();
+		sh.execute();
+
+		new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
+	}
+
+	public MdShell() {
+		super("myDrive");
+		// TODO: Add each command here
+		new LoginCommand(this);
+		new TokenCommand(this);
+		new LsCommand(this);
+		new UpdateCommand(this);
+		new CWDCommand(this);
+		new DoCommand(this);
+		new EnvCommand(this);
+		loginGuestUser();
+	}
+
+
+
 
 	public void loginGuestUser(){
 		try {
@@ -17,7 +40,7 @@ public class MdShell extends Shell {
 		try {
 			new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
 		}
-		catch (InvalidLoginTokenException e) { log.debug("user nobody is not logged in"); }
+		catch (InvalidLoginTokenException e) {}
 	}
 
 	public String getCurrentUsername() {
@@ -31,32 +54,8 @@ public class MdShell extends Shell {
 	public Long getCurrentToken() {
 		return userManager.getCurrentToken();
 	}
-
-	public void setCurrentToken(Long token) {
-		userManager.setCurrentToken(token);
-	}
-
+	
 	public void addUser(String username,Long token){
 		userManager.addUser(username,token);
-	}
-
-	public static void main() throws Exception {
-		UsersManager usersManager = new UsersManager();
-		MdShell sh = new MdShell();
-		sh.execute();
-	}
-
-	public MdShell() {
-		super("myDrive");
-		// TODO: Add each command here
-		new LoginCommand(this);
-		new TokenCommand(this);
-		new LsCommand(this);
-		new UpdateCommand(this);
-		new CWDCommand(this);
-		new DoCommand(this);
-		new EnvCommand(this);
-
-		loginGuestUser();
 	}
 }
