@@ -44,7 +44,7 @@ public class SystemTest extends AbstractServiceTest {
 		new Dir(DIRECTORYNAME, u2, u2.getHomeDir(), u2.getUmask());
 	}
 
-	@Test
+	/*@Test
 	public void success() throws Exception {
 		new LoginCommand(sh).execute(new String[]{USERNAME1, PASSWORD1});
 		new DoCommand(sh).execute(new String[]{PLAINFILENAME});
@@ -71,5 +71,5 @@ public class SystemTest extends AbstractServiceTest {
 		new TokenCommand(sh).execute(new String[]{});
 		new TokenCommand(sh).execute(new String[]{USERNAME1});
 
-	}
+	}*/
 }
