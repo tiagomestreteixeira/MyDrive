@@ -1,9 +1,7 @@
 package pt.tecnico.myDrive.service;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-
+import mockit.Mock;
+import mockit.MockUp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -11,7 +9,11 @@ import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
+import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
+
+import static junit.framework.TestCase.assertEquals;
+
 
 public class ChangeDirectoryTest extends AbstractServiceTest {
 
@@ -34,6 +36,26 @@ public class ChangeDirectoryTest extends AbstractServiceTest {
 		Dir l1 = new Dir("level1", userObject, userObject.getHomeDir(), userObject.getUmask());
 		Dir l2 = new Dir("level2", userObject, l1, userObject.getUmask());
 		l3 = new Dir("level3", userObject, l2, userObject.getUmask());
+	}
+
+	@Test
+	public void TestEnvironmentLink() {
+		final String pathname = "/home/Andre/level1/level2/level3";
+		final String pathnameEnvVar = "/home/Andre/level1/$HOME/level3";
+		final User u = md.getLoginFromId(login).getUser();
+
+		new MockUp<User>(){
+			@Mock
+			public File lookup(String pathname) throws MyDriveException {
+				return l3;
+			}
+		};
+
+		ChangeDirectoryService service = new ChangeDirectoryService(login, pathnameEnvVar);
+		service.execute();
+
+		String result = service.result();
+		assertEquals("Returned path does not match", pathname, result);
 	}
 
 	@Test
