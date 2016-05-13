@@ -1,13 +1,12 @@
 package pt.tecnico.myDrive.service;
 
-import java.util.ArrayList;
-
 import pt.tecnico.myDrive.domain.EnvVariables;
 import pt.tecnico.myDrive.domain.Login;
 import pt.tecnico.myDrive.domain.MyDrive;
 import pt.tecnico.myDrive.exception.MyDriveException;
-import pt.tecnico.myDrive.exception.NotValidEnvVariableException;
 import pt.tecnico.myDrive.service.dto.EnvVarDto;
+
+import java.util.ArrayList;
 
 public class AddEnvVariableService extends MyDriveService{
 

@@ -1,13 +1,17 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.Mocked;
+import mockit.Verifications;
+import mockit.integration.junit4.JMockit;
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
-
-public class ExecuteFileServiceTest extends AbstractServiceTest {
+@RunWith(JMockit.class)
+public class ExecuteFileTest extends AbstractServiceTest {
 
 	private static final String DEFAULT_APP = "pt.tecnico.myDrive.presentation.Hello";
 
@@ -31,29 +35,32 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	}
 
 	@Test
-	public void executePlainFile() throws Exception {
+	public void executePlainFile(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
 		App app = new App("testApp", user, user.getHomeDir(), user.getUmask(), DEFAULT_APP);
 		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "rwxd----", app.getPath());
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecutePlainFile", args);
 		efs.execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 
 	@Test
-	public void executeAppFile() throws Exception {
+	public void executeAppFile(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
 		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecuteApp", args);
 		efs.execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 
 	@Test
-	public void executeLinkFile() throws Exception {
+	public void executeLinkFile(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
 		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("linkExecuteFile", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/linkExecuteFile", args);
 		efs.execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 
 	@Test(expected = NoPermissionException.class)
@@ -80,13 +87,14 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	}
 
 	@Test
-	public void executeLinkToAnotherFile() throws Exception {
+	public void executeLinkToAnotherFile(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
 		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("testLinkToAnotherFile1", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 		new Link("testLinkToAnotherFile2", user, user.getHomeDir(), "rwxd----", "/home/test/testLinkToAnotherFile1");
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testLinkToAnotherFile2", args);
 		efs.execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 
 	@Test(expected = InvalidLoginTokenException.class)
@@ -100,10 +108,11 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	}
 
 	@Test
-	public void executeNoOwnerPermission() {
+	public void executeNoOwnerPermission(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) {
 		new App("testExecuteApp", root, user.getHomeDir(), "------x-", DEFAULT_APP);
 
 		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 
 	@Test(expected = NoPermissionException.class)
@@ -121,9 +130,9 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	}
 
 	@Test
-	public void executeOwnerPermission() {
+	public void executeOwnerPermission(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) {
 		new App("testExecuteApp", user, user.getHomeDir(), "--x-----", DEFAULT_APP);
-
 		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+		new Verifications() {{ mock.main(args); times = 1; }};
 	}
 }
