@@ -47,6 +47,17 @@ public class PlainFile extends PlainFile_Base {
     }
 
     @Override
+    public void execute(User user, String[] args) {
+        if (user.checkPermission(this, 'r')) {
+            this.getContent().split("\n");
+            System.out.println(this.getContent());//TODO: dummy
+        } else {
+            throw new NoPermissionException("PlainFile.read()");
+        }
+    }
+
+
+    @Override
     public void write(User user, String string) {
         if (user.checkPermission(this, 'w')) {
             this.setContent(string);
