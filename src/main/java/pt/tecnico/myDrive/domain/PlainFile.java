@@ -56,6 +56,16 @@ public class PlainFile extends PlainFile_Base {
         }
     }
 
+    @Override
+    public void execute(User user, String[] args) {
+        if (user.checkPermission(this, 'r')) {
+            this.getContent().split("\n");
+            System.out.println(this.getContent());//TODO: dummy
+        } else {
+            throw new NoPermissionException("PlainFile.read()");
+        }
+    }
+
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
         String contents = "";

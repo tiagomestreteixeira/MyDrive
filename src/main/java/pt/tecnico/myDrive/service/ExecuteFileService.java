@@ -22,8 +22,17 @@ public class ExecuteFileService extends MyDriveService {
 		Login login = md.getLoginFromId(token);
 		login.refreshToken();
 		User user = login.getUser();
+        Dir currentDir = login.getCurrentDir();
+        if (!pathname.startsWith("/")) {
+            if (currentDir.getPath().equals("/")) {
+                pathname = currentDir.getPath() + pathname;
+            } else {
+                pathname = currentDir.getPath() + "/" + pathname;
+            }
+        }
 		File file = user.lookup(pathname);
 		file.execute(user,args);
+
 	}
 }
 
