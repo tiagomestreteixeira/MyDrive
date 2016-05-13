@@ -2,27 +2,26 @@ package pt.tecnico.myDrive.integration;
 
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Verifications;
+import mockit.integration.junit4.JMockit;
+import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import mockit.integration.junit4.JMockit;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.jdom2.Document;
-import org.jdom2.input.SAXBuilder;
-
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -275,7 +274,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
                 fileType = "App";
-                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
                 createFileBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
@@ -290,18 +289,15 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
-                    public final String result() {
-                        return appContent;
-                    }
-                    @Mock
                     public final void dispatch(){
-                        su.lookup(ui.currentDir+"/"+"App0").execute(md.getUserByUsername(ui.username),new String[0]);
+                        User user = md.getUserByUsername(ui.username);
+                        File file = su.lookup(ui.currentDir + "/" + "App0");
+                        file.execute(user, new String[] {"1", "2"});
                     }
                 };
 
                 ExecuteFileAssociationService efas = new ExecuteFileAssociationService(ui.token, filename);
                 efas.execute();
-                assertEquals(appContent,efas.result());
 
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);

@@ -15,8 +15,4 @@ public class ExecuteFileAssociationService extends MyDriveService {
     public final void dispatch() {
         // TODO: mockup example
     }
-
-    public final String result() {
-        return executedApp;
-    }
 }
