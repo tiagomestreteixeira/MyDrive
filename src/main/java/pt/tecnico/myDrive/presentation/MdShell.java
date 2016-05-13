@@ -43,7 +43,6 @@ public class MdShell extends Shell {
 	public static void main() throws Exception {
 		UsersManager usersManager = new UsersManager();
 		MdShell sh = new MdShell();
-		sh.loginGuestUser();
 		sh.execute();
 	}
 
@@ -58,17 +57,6 @@ public class MdShell extends Shell {
 		new DoCommand(this);
 		new EnvCommand(this);
 
-		new Command(this, "LoginGuestUser", "this command help LoginGuestUser") {
-			void execute(String[] args) {
-				if (args.length == 0) {
-					shell().list().forEach((commandName)->System.out.println(commandName));
-					System.out.println(name()+" name (for command details)");
-				} else {
-					for (String s: args)
-						if (shell().get(s) != null)
-							System.out.println(shell().get(s).help());
-				}
-			}
-		};//.execute();
+		loginGuestUser();
 	}
 }
