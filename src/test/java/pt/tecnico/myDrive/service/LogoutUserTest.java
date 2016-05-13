@@ -13,7 +13,6 @@ public class LogoutUserTest extends AbstractServiceTest {
 	private static final String USER =  "testUser";
 	private static final long WRONGLOGIN = 123456789;
 
-
 	protected void populate() {
 
 		md = MyDriveService.getMyDrive();
