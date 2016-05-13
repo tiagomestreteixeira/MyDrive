@@ -165,7 +165,7 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		new MockUp<User>() {
 			@Mock
-			void executeAssociation(String filename) {
+			public void executeAssociation(String filename) {
 				app.execute(user, associationArgs);
 			}
 		};
@@ -190,7 +190,7 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		new MockUp<User>() {
 			@Mock
-			void executeAssociation(String filename) {
+			public void executeAssociation(String filename) {
 			}
 		};
 
