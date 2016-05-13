@@ -36,16 +36,15 @@ public class SystemTest extends AbstractServiceTest {
 		MyDrive md = MyDrive.getInstance();
 
 		User u1 = new User(md, USERNAME1, NAME1, PERMISSION, PASSWORD1);
-		new PlainFile(PLAINFILENAME, u1, u1.getHomeDir(), u1.getUmask());
-		new App(APPNAME, u1, u1.getHomeDir(), u1.getUmask(), APPMETHOD);
+		App app = new App(APPNAME, u1, u1.getHomeDir(), u1.getUmask(), APPMETHOD);
+		new PlainFile(PLAINFILENAME, u1, u1.getHomeDir(), u1.getUmask(), app.getPath());
 		new Dir(DIRECTORYNAME, u1, u1.getHomeDir(), u1.getUmask());
 
 		User u2 = new User(md, USERNAME2, NAME2, PERMISSION, PASSWORD2);
-		new PlainFile(PLAINFILENAME, u2, u2.getHomeDir(), u2.getUmask());
+		new PlainFile(PLAINFILENAME, u2, u2.getHomeDir(), u2.getUmask(), app.getPath());
 		new Dir(DIRECTORYNAME, u2, u2.getHomeDir(), u2.getUmask());
 	}
 
-	@Ignore
 	@Test
 	public void success() throws Exception {
 		new LoginCommand(sh).execute(new String[]{USERNAME1, PASSWORD1});
