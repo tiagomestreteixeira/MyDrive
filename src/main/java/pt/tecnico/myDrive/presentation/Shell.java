@@ -15,7 +15,7 @@ public abstract class Shell {
     private String name;
     private boolean awaitingCommands;
 
-    private UsersManager userManager;
+
 
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
@@ -23,13 +23,11 @@ public abstract class Shell {
         name = n;
         out = new PrintWriter(w, flush);
         awaitingCommands = true;
-        userManager = new UsersManager();
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
                 System.out.println(name+" quit");
                 awaitingCommands = false;
-                logoutGuestUser();
             }
         };
 
@@ -47,25 +45,7 @@ public abstract class Shell {
         };
     }
 
-    public String getCurrentUsername() {
-        return userManager.getCurrentUsername();
-    }
 
-    public void setCurrentUsername(String username) {
-        userManager.setCurrentUsername(username);
-    }
-
-    public Long getCurrentToken() {
-        return userManager.getCurrentToken();
-    }
-
-    public void setCurrentToken(Long token) {
-        userManager.setCurrentToken(token);
-    }
-
-    public void addUser(String username,Long token){
-        userManager.addUser(username,token);
-    }
 
     public void print(String s) { out.print(s); }
     public void println(String s) { out.println(s); }
@@ -86,8 +66,8 @@ public abstract class Shell {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String str, prompt = null;
 
-        loginGuestUser();
-        if (prompt == null) prompt = "myDrive <"+ getCurrentUsername()+"> $ ";
+
+        if (prompt == null) prompt = "myDrive <> $ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -104,25 +84,10 @@ public abstract class Shell {
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
             if(awaitingCommands)
-                System.out.print("myDrive <"+ getCurrentUsername()+"> $ ");
+                System.out.print("myDrive <> $ ");
             else break;
         }
         System.out.println(name+" end");
-    }
-
-
-    public void loginGuestUser(){
-        try {
-            coms.get("login").execute("nobody".split(" "));
-        }
-        catch (Exception e) { e.printStackTrace(); }
-    }
-
-    public void logoutGuestUser(){
-        try {
-            new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
-        }
-        catch (InvalidLoginTokenException e) { log.debug("user nobody is not logged in"); }
     }
 
 
