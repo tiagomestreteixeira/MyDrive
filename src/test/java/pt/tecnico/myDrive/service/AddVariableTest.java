@@ -78,11 +78,11 @@ public class AddVariableTest extends AbstractServiceTest {
 		AddEnvVariableService aev2 = new AddEnvVariableService(login, variableName2, variableValue2);
 		aev2.execute();		
 		result = aev2.result();		
-		assertEquals(variableName2, result.get(0).getName());
-		assertEquals(variableValue2, result.get(0).getValue());
+		assertEquals(variableName2, result.get(1).getName());
+		assertEquals(variableValue2, result.get(1).getValue());
 
-		assertEquals(variableName, result.get(1).getName());
-		assertEquals(variableValue, result.get(1).getValue());
+		assertEquals(variableName, result.get(0).getName());
+		assertEquals(variableValue, result.get(0).getValue());
     }
     
 }

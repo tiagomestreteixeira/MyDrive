@@ -54,43 +54,11 @@ public class AddEnvVariableService extends MyDriveService{
 				}
 				list.add(new EnvVarDto(env.getName(), env.getValue()));
 			}
-			if(exists) break;
-			//login.addEnvVar(variable); DONE IN DOMAIN WITH NEW ENVVARIABLE OBJ CREATION
-				EnvVariables variable = new EnvVariables(login, name, value);
-				list.add(new EnvVarDto(variable.getName(), variable.getValue()));
-		}
-		/*
-		if(name == null && value == null){
-			for(EnvVariables env : login.getEnvVarSet()){
-				list.add(new EnvVarDto(env.getName(), env.getValue()));
-			}
-			return;
-		}
-
-		if(value == null){
-			for(EnvVariables env : login.getEnvVarSet()){
-				if(env.getName().equals(name)){
+			if(exists) return;
+				new EnvVariables(login, name, value);
+				for(EnvVariables env : login.getEnvVarSet())
 					list.add(new EnvVarDto(env.getName(), env.getValue()));
-				}
-			}
-			return;
 		}
-
-		
-		EnvVariables variable = new EnvVariables(login, name, value);
-
-		boolean exists = false;
-		for(EnvVariables env : login.getEnvVarSet()){
-			if(env.getName().equals(variable.getName())){
-				env.setValue(variable.getValue());
-				exists = true;
-			}
-			list.add(new EnvVarDto(env.getName(), env.getValue()));
-		}
-
-		if(!exists){
-		login.addEnvVar(variable);
-		}*/
 	}
 
 	public ArrayList<EnvVarDto> result() {
