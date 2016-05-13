@@ -1,7 +1,9 @@
 package pt.tecnico.myDrive.service;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
 
@@ -84,5 +86,15 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testLinkToAnotherFile2", args);
 		efs.execute();
+	}
+
+	@Test(expected = InvalidLoginTokenException.class)
+	public void executeInvalidLogin() throws Exception {
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
+
+		Login login = md.getLoginFromId(loginTest);
+		login.setLoginDate(new DateTime(0));
+
+		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
 	}
 }
