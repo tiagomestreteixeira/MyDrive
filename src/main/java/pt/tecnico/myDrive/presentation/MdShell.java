@@ -1,11 +1,17 @@
 package pt.tecnico.myDrive.presentation;
 
+import pt.tecnico.myDrive.service.ImportXMLService;
 import pt.tecnico.myDrive.service.LogoutUserService;
 
 public class MdShell extends Shell {
 	protected static UsersManager userManager = new UsersManager();
 
 	public static void main(String[] args) throws Exception {
+
+		for (String s : args){
+			new ImportXMLService(s).execute();
+		}
+		
 		MdShell sh = new MdShell();
 		sh.execute();
 
