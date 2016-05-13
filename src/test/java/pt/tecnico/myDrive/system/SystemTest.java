@@ -19,7 +19,7 @@ public class SystemTest extends AbstractServiceTest {
 	private final static String PLAINFILENAME = "PlainFile";
 	private final static String PLAINFILECONTENT = "PlainFile";
 	private final static String APPNAME = "App";
-	private final static String APPMETHOD = "package.Main.method";
+	private final static String APPMETHOD = "pt.tecnico.myDrive.presentation.Hello";
 	private final static String APPARGUMENT = "arg";
 
 	private final static String DIRECTORYNAME = "Dir";
