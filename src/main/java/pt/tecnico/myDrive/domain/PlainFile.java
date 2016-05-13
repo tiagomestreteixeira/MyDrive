@@ -69,8 +69,11 @@ public class PlainFile extends PlainFile_Base {
 			for (String line : lines) {
 				String[] lineSplit = line.split(" ");
 				String appName = lineSplit[0];
-				String[] appArgs = Arrays.copyOfRange(lineSplit, 1, args.length);
+				String[] appArgs = new String[0];
 				App app;
+
+				if(lineSplit.length > 1)
+					appArgs = Arrays.copyOfRange(lineSplit, 1, args.length);
 
 				if (appName.startsWith("/")) {
 					app = (App) rootDir.lookup(user, appName.substring(1));

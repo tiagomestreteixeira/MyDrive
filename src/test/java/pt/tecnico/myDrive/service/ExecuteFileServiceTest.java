@@ -28,9 +28,7 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
         loginTestFail = md.createLogin("testfail", "testfailpw");
 	}
 
-	// TODO: remove ignore
-	@Ignore // TODO: Fix test to not Expect exception since plain files can be executed
-	@Test(expected = NoPermissionException.class)
+	@Test
 	public void executePlainFile() throws Exception {
 		App app = new App("testApp", user, user.getHomeDir(), user.getUmask(), DEFAULT_APP);
 		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "rwxd----", app.getPath());
