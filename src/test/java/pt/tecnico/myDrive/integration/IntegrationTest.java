@@ -250,7 +250,7 @@ public class IntegrationTest extends AbstractServiceTest {
                 createFileBatchUser(ui, LINK_TYPE, LINK_TYPE, linkContent, ui.numberLinksToCreate);
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
                 createFileBatchUser(ui, APP_TYPE, APP_TYPE, appContent, ui.numberAppsToCreate);
 
                 int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate
