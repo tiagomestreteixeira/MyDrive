@@ -1,42 +1,47 @@
 package pt.tecnico.myDrive.presentation;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
-import pt.tecnico.myDrive.service.LogoutUserService;
-
 import java.io.*;
 import java.util.*;
+import java.lang.reflect.*;
 
 public abstract class Shell {
     protected static final Logger log = LogManager.getRootLogger();
     private Map<String,Command> coms = new TreeMap<String,Command>();
     private PrintWriter out;
     private String name;
-    private boolean awaitingCommands;
-
-    private UsersManager userManager;
 
     public Shell(String n) { this(n, new PrintWriter(System.out, true), true); }
     public Shell(String n, Writer w) { this(n, w, true); }
     public Shell(String n, Writer w, boolean flush) {
         name = n;
         out = new PrintWriter(w, flush);
-        awaitingCommands = true;
-        userManager = new UsersManager();
 
         new Command(this, "quit", "Quit the command interpreter") {
             void execute(String[] args) {
                 System.out.println(name+" quit");
-                awaitingCommands = false;
-                logoutGuestUser();
+                System.exit(0);
             }
         };
-
+        new Command(this, "exec", "execute an external command") {
+            void execute(String[] args) {
+                try { Sys.output(out); Sys.main(args);
+                } catch (Exception e) { throw new RuntimeException(""+e); }
+            }
+        };
+        new Command(this, "run", "run a class method") {
+            void execute(String[] args) {
+                try {
+                    if (args.length > 0)
+                        shell().run(args[0], Arrays.copyOfRange(args, 1, args.length));
+                    else throw new Exception("Nothing to run!");
+                } catch (Exception e) { throw new RuntimeException(""+e); }
+            }
+        };
         new Command(this, "help", "this command help") {
             void execute(String[] args) {
                 if (args.length == 0) {
-                    shell().list().forEach((commandName)->System.out.println(commandName));
+                    for (String s: shell().list()) System.out.println(s);
                     System.out.println(name()+" name (for command details)");
                 } else {
                     for (String s: args)
@@ -45,26 +50,6 @@ public abstract class Shell {
                 }
             }
         };
-    }
-
-    public String getCurrentUsername() {
-        return userManager.getCurrentUsername();
-    }
-
-    public void setCurrentUsername(String username) {
-        userManager.setCurrentUsername(username);
-    }
-
-    public Long getCurrentToken() {
-        return userManager.getCurrentToken();
-    }
-
-    public void setCurrentToken(Long token) {
-        userManager.setCurrentToken(token);
-    }
-
-    public void addUser(String username,Long token){
-        userManager.addUser(username,token);
     }
 
     public void print(String s) { out.print(s); }
@@ -84,10 +69,9 @@ public abstract class Shell {
 
     public void execute() throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        String str, prompt = null;
+        String str, prompt = null; // System.getenv().get("PS1");
 
-        loginGuestUser();
-        if (prompt == null) prompt = "myDrive <"+ getCurrentUsername()+"> $ ";
+        if (prompt == null) prompt = "$ ";
         System.out.println(name+" shell ('quit' to leave)");
         System.out.print(prompt);
         while ((str = in.readLine()) != null) {
@@ -103,28 +87,31 @@ public abstract class Shell {
             } else
             if (arg[0].length() > 0)
                 System.err.println(arg[0]+": command not found. ('help' for command list)");
-            if(awaitingCommands)
-                System.out.print("myDrive <"+ getCurrentUsername()+"> $ ");
-            else break;
+            System.out.print(prompt);
         }
         System.out.println(name+" end");
     }
 
-
-    public void loginGuestUser(){
-        try {
-            coms.get("login").execute("nobody".split(" "));
+    /**
+     *  Call a static method with argument String[]
+     *  (Return value is ignored)
+     *  @param name full-class-name or full-method-name
+     *  @param args arguments to the function
+     */
+    public static void run(String name, String[] args) throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        Class<?> cls;
+        Method meth;
+        try { // name is a class: call main()
+            cls = Class.forName(name);
+            meth = cls.getMethod("main", String[].class);
+        } catch (ClassNotFoundException cnfe) { // name is a method
+            int pos;
+            if ((pos = name.lastIndexOf('.')) < 0) throw cnfe;
+            cls = Class.forName(name.substring(0, pos));
+            meth = cls.getMethod(name.substring(pos+1), String[].class);
         }
-        catch (Exception e) { e.printStackTrace(); }
+        meth.invoke(null, (Object)args); // static method (ignore return)
     }
-
-    public void logoutGuestUser(){
-        try {
-            new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
-        }
-        catch (InvalidLoginTokenException e) { log.debug("user nobody is not logged in"); }
-    }
-
 
     /**
      *  Simple wildcard processing

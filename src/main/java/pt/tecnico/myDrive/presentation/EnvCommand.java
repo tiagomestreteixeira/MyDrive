@@ -6,9 +6,11 @@ import pt.tecnico.myDrive.service.dto.EnvVarDto;
 public class EnvCommand extends MdCommand {
 
 	private static final String USAGE_MSG = "USAGE: env [name [value]]\n";
+	private MdShell mdShell;
 
-	public EnvCommand(Shell sh) {
+	public EnvCommand(MdShell sh) {
 		super(sh, "env", "Create or modify the value of an environment variable if variable 'name' already exists.");
+		mdShell = sh;
 	}
 
 	public void executeEnv(long token, String name, String value) throws Exception {
@@ -20,13 +22,13 @@ public class EnvCommand extends MdCommand {
 		if(name != "null" && value == "null"){
 			for(EnvVarDto env : aev.result()){
 				if(env.getName().equals(name))
-					shell().println(env.getValue());
+					mdShell.println(env.getValue());
 			}
 		}
 
 		if(name == "null"){
 			for (EnvVarDto env : aev.result()) {
-				shell().println(env.getName() + "=" + env.getValue());
+				mdShell.println(env.getName() + "=" + env.getValue());
 			}
 		}
 
@@ -35,7 +37,7 @@ public class EnvCommand extends MdCommand {
 
 	@Override
 	public void execute(String[] args) throws Exception {
-		long token = shell().getCurrentToken();
+		long token = mdShell.getCurrentToken();
 		String name = "";
 		String value = "";
 

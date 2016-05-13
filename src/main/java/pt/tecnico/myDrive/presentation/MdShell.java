@@ -1,10 +1,16 @@
 package pt.tecnico.myDrive.presentation;
 
+import pt.tecnico.myDrive.exception.InvalidLoginTokenException;
+import pt.tecnico.myDrive.service.LogoutUserService;
+
 public class MdShell extends Shell {
+	protected static UsersManager userManager = new UsersManager();
 
 	public static void main() throws Exception {
 		MdShell sh = new MdShell();
 		sh.execute();
+
+		new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
 	}
 
 	public MdShell() {
@@ -17,5 +23,39 @@ public class MdShell extends Shell {
 		new CWDCommand(this);
 		new DoCommand(this);
 		new EnvCommand(this);
+		loginGuestUser();
+	}
+
+
+
+
+	public void loginGuestUser(){
+		try {
+			this.get("login").execute("nobody".split(" "));
+		}
+		catch (Exception e) { e.printStackTrace(); }
+	}
+
+	public void logoutGuestUser(){
+		try {
+			new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
+		}
+		catch (InvalidLoginTokenException e) {}
+	}
+
+	public String getCurrentUsername() {
+		return userManager.getCurrentUsername();
+	}
+
+	public void setCurrentUsername(String username) {
+		userManager.setCurrentUsername(username);
+	}
+
+	public Long getCurrentToken() {
+		return userManager.getCurrentToken();
+	}
+	
+	public void addUser(String username,Long token){
+		userManager.addUser(username,token);
 	}
 }

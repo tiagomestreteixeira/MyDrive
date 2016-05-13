@@ -44,12 +44,6 @@ public class UsersManager {
         return users.get(username);
     }
 
-    public void updateTokenByUsername(String username,Long token) throws UserManagerPresentationException{
-        checkUserExistence(username,UPDATE_TOKEN_MSG + username
-                + NOT_LOGGED_SYSTEM_MSG + UPDATE_TOKEN_HELP_MSG + username + ",token[Long])\n");
-
-        users.put(username,token);
-    }
 
     public void setCurrentUsername(String username) throws UserManagerPresentationException{
         checkUserExistence(username,SET_CURRENT_USERNAME_MSG + username + NOT_LOGGED_SYSTEM_MSG + "\n");

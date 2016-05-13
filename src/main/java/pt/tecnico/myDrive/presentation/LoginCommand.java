@@ -4,18 +4,20 @@ import pt.tecnico.myDrive.service.LoginUserService;
 public class LoginCommand extends MdCommand{
 
     private static final String USAGE_MSG = "USAGE: login username [password]\n";
+    private MdShell mdShell;
 
-    public LoginCommand(Shell sh) {
+    public LoginCommand(MdShell sh) {
         super(sh, "login", "Log into the system providing the username and login token.\n" + USAGE_MSG);
+        mdShell = sh;
     }
 
     private void executeLogin(String user, String pass){
         LoginUserService loginUserService = new LoginUserService(user, pass);
         loginUserService.execute();
-        shell().addUser(user,loginUserService.result());
-        log.info("Token generated: " + shell().getCurrentToken());
-        if(shell().getCurrentUsername().equals("nobody"))
-            shell().logoutGuestUser();
+        mdShell.addUser(user,loginUserService.result());
+        log.info("Token generated: " + mdShell.getCurrentToken());
+        if(!mdShell.getCurrentUsername().equals("nobody"))
+            mdShell.logoutGuestUser();
     }
 
     public void execute(String[] args) throws Exception {
