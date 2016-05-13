@@ -11,15 +11,11 @@ public class UsersManager {
     private Long currentToken;
 
     private static final String GET_TOKEN_MSG = "Presentation : getTokenByUsername - ";
-    private static final String UPDATE_TOKEN_MSG = "Presentation : updateToken - ";
     private static final String SET_CURRENT_USERNAME_MSG  = "Presentation : setCurrentUsername - ";
-    private static final String SET_CURRENT_TOKEN_MSG  = "Presentation : setCurrentToken - \"Illegal usage. " +
-            "Use updateToken(username,token) instead.";
 
     private static final String NOT_LOGGED_SYSTEM_MSG = " - has not been previously logged into the system.";
 
     private static final String GET_TOKEN_HELP_MSG = "\t\t- First add username and its token : addUser(";
-    private static final String UPDATE_TOKEN_HELP_MSG = GET_TOKEN_HELP_MSG;
 
     public UsersManager(){
         users = new HashMap<String, Long>();
