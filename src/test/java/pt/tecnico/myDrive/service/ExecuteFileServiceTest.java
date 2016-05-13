@@ -21,6 +21,7 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 
 	@Override
 	protected void populate() {
+		args = new String[0];
 		md = MyDriveService.getMyDrive();
 		root = md.getSuperUser();
 		user = new User(md, "test", "test", "rwxd----", "testpw12");
@@ -94,6 +95,34 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 
 		Login login = md.getLoginFromId(loginTest);
 		login.setLoginDate(new DateTime(0));
+
+		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+	}
+
+	@Test
+	public void executeNoOwnerPermission() {
+		new App("testExecuteApp", root, user.getHomeDir(), "------x-", DEFAULT_APP);
+
+		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+	}
+
+	@Test(expected = NoPermissionException.class)
+	public void executeNoOwnerNoPermission() {
+		new App("testExecuteApp", root, user.getHomeDir(), "--------", DEFAULT_APP);
+
+		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+	}
+
+	@Test(expected = NoPermissionException.class)
+	public void executeOwnerNoPermission() {
+		new App("testExecuteApp", user, user.getHomeDir(), "--------", DEFAULT_APP);
+
+		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
+	}
+
+	@Test
+	public void executeOwnerPermission() {
+		new App("testExecuteApp", user, user.getHomeDir(), "--x-----", DEFAULT_APP);
 
 		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
 	}
