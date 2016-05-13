@@ -52,8 +52,6 @@ public class App extends App_Base {
 				}
 				meth.invoke(null, (Object) args); // static method (ignore return)
 			} catch (Exception e) {
-				log.debug("I'm here");
-				log.debug(e.getMessage());
 				throw new MethodNotValidException(name);
 			}
 		} else {

@@ -3,10 +3,10 @@ package pt.tecnico.myDrive.presentation;
 public class Hello {
 
 	public static void main(String[] args) {
-		System.out.println("Hello phonebook!");
+		System.out.println("Hello MyDrive!");
 	}
 	public static void bye(String[] args) {
-		System.out.println("Godbye phonebook!");
+		System.out.println("Goodbye MyDrive!");
 	}
 	public static void greet(String[] args) {
 		System.out.println("Hello "+args[0]);
