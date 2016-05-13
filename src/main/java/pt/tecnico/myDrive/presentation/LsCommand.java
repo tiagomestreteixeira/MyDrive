@@ -7,11 +7,14 @@ import pt.tecnico.myDrive.service.dto.FileDto;
 public class LsCommand extends MdCommand {
 
 	private static final String USAGE_MSG = "USAGE: ls [path]\n";
+	private MdShell mdShell;
 
-    public LsCommand(Shell sh) {
+
+    public LsCommand(MdShell sh) {
         super(sh, "ls", "List given path directory contents or current directory if no argument is given, with the following order:\n" +
 		        "Permissions \t Size \t File Id \t Last Modification \t Owner \t File Type \t File Name \n" + USAGE_MSG);
-    }
+		mdShell = sh;
+	}
 
 	private void executeList(Long token, String pathname) {
 		ListDirectoryService listDirectoryService = new ListDirectoryService(token, pathname);
@@ -29,7 +32,7 @@ public class LsCommand extends MdCommand {
 
 	@Override
 	public void execute(String[] args) throws Exception {
-		Long token = shell().getCurrentToken();
+		Long token = mdShell.getCurrentToken();
 
 		if(args.length > 1)
 			throw new RuntimeException(USAGE_MSG);

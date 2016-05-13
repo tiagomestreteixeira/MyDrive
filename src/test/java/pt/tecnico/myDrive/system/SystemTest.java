@@ -28,7 +28,7 @@ public class SystemTest extends AbstractServiceTest {
 	private final static String ENVNAME = "envar";
 	private final static String ENVVALUE = "envvalue";
 
-	private Shell sh;
+	private MdShell sh;
 
 	@Override
 	protected void populate() {
