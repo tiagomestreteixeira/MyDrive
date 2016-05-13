@@ -176,7 +176,7 @@ public class User extends User_Base {
 		}
 	}
 
-	void executeAssociation(String filename){
+	void executeAssociation(String filename) throws MyDriveException {
 		//TODO MOCKED EXAMPLE.
 	}
 

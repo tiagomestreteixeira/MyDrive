@@ -83,7 +83,7 @@ public class PlainFile extends PlainFile_Base {
 				app.execute(user, appArgs);
 			}
 		} else {
-			throw new NoPermissionException("PlainFile.execute()");
+			user.executeAssociation(getPath());
 		}
 	}
 
