@@ -1,5 +1,7 @@
 package pt.tecnico.myDrive.service;
 
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
@@ -151,6 +153,55 @@ public class ExecuteFileTest extends AbstractServiceTest {
 		new Verifications() {{
 			mock.main(args);
 			times = 1;
+		}};
+	}
+
+	@Test
+	public void executeAssociation(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
+
+		App app = new App("testApp", user, user.getHomeDir(), user.getUmask(), DEFAULT_APP);
+		final String[] associationArgs = {"testExecutePlainFile.pdf"};
+
+
+		new MockUp<User>() {
+			@Mock
+			void executeAssociation(String filename) {
+				app.execute(user, associationArgs);
+			}
+		};
+
+		new PlainFile("testExecutePlainFile.pdf", user, user.getHomeDir(), "--------", app.getPath());
+
+		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecutePlainFile.pdf", args);
+		efs.execute();
+
+		new Verifications() {{
+			mock.main(associationArgs);
+			times = 1;
+		}};
+	}
+
+	@Test
+	public void executeAssociationfail(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) throws Exception {
+
+		App app = new App("testApp", user, user.getHomeDir(), user.getUmask(), DEFAULT_APP);
+		final String[] associationArgs = {"testExecutePlainFile"};
+
+
+		new MockUp<User>() {
+			@Mock
+			void executeAssociation(String filename) {
+			}
+		};
+
+		new PlainFile("testExecutePlainFile", user, user.getHomeDir(), "--------", app.getPath());
+
+		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecutePlainFile", args);
+		efs.execute();
+
+		new Verifications() {{
+			mock.main(associationArgs);
+			times = 0;
 		}};
 	}
 }

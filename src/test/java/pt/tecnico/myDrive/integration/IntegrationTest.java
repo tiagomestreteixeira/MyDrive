@@ -3,6 +3,7 @@ package pt.tecnico.myDrive.integration;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import pt.ist.fenixframework.Atomic;
