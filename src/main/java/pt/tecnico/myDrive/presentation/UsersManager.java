@@ -52,10 +52,6 @@ public class UsersManager {
         currentToken = users.get(username);
     }
 
-    public void setCurrentToken(Long token) throws UserManagerPresentationException {
-        throw new UserManagerPresentationException(SET_CURRENT_TOKEN_MSG);
-    }
-
     public String getCurrentUsername(){
         return currentUsername;
     }

@@ -26,21 +26,11 @@ public class MdShell extends Shell {
 		loginGuestUser();
 	}
 
-
-
-
 	public void loginGuestUser(){
 		try {
 			this.get("login").execute("nobody".split(" "));
 		}
 		catch (Exception e) { e.printStackTrace(); }
-	}
-
-	public void logoutGuestUser(){
-		try {
-			new LogoutUserService(userManager.getTokenByUsername("nobody")).execute();
-		}
-		catch (InvalidLoginTokenException e) {}
 	}
 
 	public String getCurrentUsername() {
