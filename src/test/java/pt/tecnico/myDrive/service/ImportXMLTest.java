@@ -2,6 +2,7 @@ package pt.tecnico.myDrive.service;
 
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 
@@ -90,7 +91,7 @@ public class ImportXMLTest extends AbstractServiceTest {
 	@Test
 	public void testUserImport() throws Exception {
 		Document doc = new SAXBuilder().build(new StringReader(xml));
-		ImportXMLService service = new ImportXMLService(doc);
+		ImportXMLService service = new ImportXMLService("test.xml");
 		service.execute();
 
 		user = md.getUserByUsername("jms");
@@ -112,7 +113,7 @@ public class ImportXMLTest extends AbstractServiceTest {
 	@Test
 	public void testFilesImport() throws Exception {
 		Document doc = new SAXBuilder().build(new StringReader(xml));
-		ImportXMLService service = new ImportXMLService(doc);
+		ImportXMLService service = new ImportXMLService("test.xml");
 		service.execute();
 
 		assertTrue("created jtb", md.hasUser("jtb"));
