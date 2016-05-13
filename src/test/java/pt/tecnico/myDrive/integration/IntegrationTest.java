@@ -98,7 +98,6 @@ public class IntegrationTest extends AbstractServiceTest {
     protected void populate() {
         md = MyDrive.getInstance();
         su = md.getSuperUser();
-        doc = usersXMLtoList();
     }
 
     private void loginUser(UserInfoTest uit) {
@@ -233,7 +232,7 @@ public class IntegrationTest extends AbstractServiceTest {
         try {
 
             log.debug("[System Integration Test] - ImportXMLService");
-            new ImportXMLService(doc).execute();
+            new ImportXMLService(IMPORT_XML_FILENAME).execute();
 
 
             for (UserInfoTest ui : users) {
