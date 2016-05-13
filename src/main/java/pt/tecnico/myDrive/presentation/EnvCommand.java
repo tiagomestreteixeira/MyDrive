@@ -47,20 +47,15 @@ public class EnvCommand extends MdCommand {
 		if(args.length == 1){
 			name = args[0];
 			value = "null";
-			executeEnv(token, name, value);
+		}else {
+			if (args.length == 2) {
+				name = args[0];
+				value = args[1];
+			}else{
+				name = "null";
+				value = "null";
+			}
 		}
-
-		if(args.length == 2){
-			name = args[0];
-			value = args[1];
-			executeEnv(token, name, value);
-		}
-
-		if(args.length == 0){
-			name = "null";
-			value = "null";
-			executeEnv(token, name, value);
-		}
-
+		executeEnv(token, name, value);
 	}
 }
