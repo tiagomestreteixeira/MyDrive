@@ -265,10 +265,6 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
-                    public final String result() {
-                        return appContent;
-                    }
-                    @Mock
                     public final void dispatch(){
                         su.lookup(ui.currentDir+"/"+"App0").execute(md.getUserByUsername(ui.username),new String[0]);
                     }
@@ -276,7 +272,6 @@ public class IntegrationTest extends AbstractServiceTest {
 
                 ExecuteFileAssociationService efas = new ExecuteFileAssociationService(ui.token, filename);
                 efas.execute();
-                assertEquals(appContent,efas.result());
 
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);
