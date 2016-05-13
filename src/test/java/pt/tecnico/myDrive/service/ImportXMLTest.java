@@ -44,7 +44,6 @@ public class ImportXMLTest extends AbstractServiceTest {
 
 	@Test
 	public void testFilesImport() throws Exception {
-		Document doc = new SAXBuilder().build(new StringReader(xml));
 		ImportXMLService service = new ImportXMLService("test.xml");
 		service.execute();
 
