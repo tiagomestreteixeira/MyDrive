@@ -2,26 +2,27 @@ package pt.tecnico.myDrive.integration;
 
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.Verifications;
-import mockit.integration.junit4.JMockit;
-import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import mockit.integration.junit4.JMockit;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
+
 import pt.tecnico.myDrive.Main;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.FileDoesNotExistException;
 import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.service.*;
 import pt.tecnico.myDrive.service.dto.FileDto;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -34,6 +35,10 @@ public class IntegrationTest extends AbstractServiceTest {
     private Document doc;
     private static final String IMPORT_XML_FILENAME = "users.xml";
     private static final int INITIAL_NUMBER_FILES = 2;
+    private static final String DIR_TYPE = "Dir";
+    private static final String PLAIN_TYPE = "Plain";
+    private static final String LINK_TYPE = "Link";
+    private static final String APP_TYPE = "App";
 
     private static final List<UserInfoTest> users = new ArrayList<UserInfoTest>();
 
@@ -102,22 +107,15 @@ public class IntegrationTest extends AbstractServiceTest {
 
     private void loginUser(UserInfoTest uit) {
         log.debug("[System Integration Test] Login Service of user " + uit.username + " - uses LoginUserService");
-
         LoginUserService us = new LoginUserService(uit.username, uit.password);
         us.execute();
 
         assertNotNull(us.result());
-
         uit.token = us.result();
-        log.debug("username: " + uit.username);
-        log.debug("password: " + uit.password);
-        log.debug("token: " + uit.token);
-        log.debug("Number of Files in Home dir: " + uit.numberFilesHomeDir);
     }
 
     private void logoutUser(UserInfoTest uit){
         log.debug("[System Integration Test] Logout Service of user " + uit.username + " - uses LogoutUserService");
-
         LogoutUserService us = new LogoutUserService(uit.token);
         us.execute();
     }
@@ -125,7 +123,6 @@ public class IntegrationTest extends AbstractServiceTest {
     private void listDirectoryUser(UserInfoTest uif, int expectedNumberFiles) {
         log.debug("[System Integration Test] List current Dir Files of User: " + uif.username
                 + ", Current Dir : " + uif.currentDir + " - uses ListDirectoryService");
-
         ListDirectoryService lds = new ListDirectoryService(uif.token,uif.currentDir);
         lds.execute();
 
@@ -139,7 +136,6 @@ public class IntegrationTest extends AbstractServiceTest {
     private void changeDirUser(UserInfoTest uif, String pathNewDir) {
         log.debug("[System Integration Test] ChangeDirectoryService . User " + uif.username + "changes current dir from "
                 + uif.currentDir + " to " + pathNewDir + " - uses ChangeDirectoryService");
-
         ChangeDirectoryService cds = new ChangeDirectoryService(uif.token, pathNewDir);
         cds.execute();
 
@@ -149,7 +145,6 @@ public class IntegrationTest extends AbstractServiceTest {
     private void writeFileUser(UserInfoTest uit, String fileName, String content) {
         log.debug("[System Integration Test] WriteFileService. User: " + uit.username + ", write the content:" + content
                 + " to the file : " + fileName + " - uses WriteFileService");
-
         WriteFileService wft = new WriteFileService(uit.token, fileName, content);
         wft.execute();
 
@@ -164,7 +159,6 @@ public class IntegrationTest extends AbstractServiceTest {
     private void readFileUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] ReadFileService. User: " + uit.username + ", reads the content of file: " +
                 fileName + " -  uses ReadFileService");
-
         ReadFileService rft = new ReadFileService(uit.token, fileName);
         rft.execute();
 
@@ -181,23 +175,18 @@ public class IntegrationTest extends AbstractServiceTest {
     private void createFileUser(UserInfoTest uit, String filename, String fileType, String content) {
         log.debug("[System Integration Test] CreateFileService. User: " + uit.username + ", will create the file "
                 + filename + ", of type : " + fileType + ", in the directory: " + uit.currentDir + " - uses CreateFileService");
-
-        if (fileType.equals("Dir")) {
+        if (fileType.equals(DIR_TYPE)) {
             new CreateFileService(uit.token, filename, fileType).execute();
         } else {
             new CreateFileService(uit.token, filename, fileType, content).execute();
         }
 
-        String assertWriteServiceMsg = "[System Integration Test] CreateFileService. The  file "
-                + uit.currentDir + "/" + filename + " of user " + uit.username + " should have been created";
-
-        assertNotNull(assertWriteServiceMsg, su.lookup(uit.currentDir + "/" + filename));
+        assertNotNull(su.lookup(uit.currentDir + "/" + filename));
     }
 
     private void deleteFileUser(UserInfoTest uit, String fileName) {
         log.debug("[System Integration Test] DeleteFileService. User: " + uit.username + ", delete the file "
                 + fileName + " - uses DeleteFileService");
-
         DeleteFileService dft = new DeleteFileService(uit.token, fileName);
         try{
             dft.execute();
@@ -215,89 +204,79 @@ public class IntegrationTest extends AbstractServiceTest {
                 " - uses AddEnvVariableService");
 
         for(Map.Entry<String, String> entry : uit.envVars.entrySet()) {
-            String name = entry.getKey();
-            String value = entry.getValue();
-            log.info("name : " + name);
-            log.info("value : " + value);
-
-            AddEnvVariableService aev = new AddEnvVariableService(uit.token,name,value);
-            aev.execute();
-
-            assertTrue("Env. Variable should have been added ",aev.result().stream().anyMatch(var -> var.getName().equals(name)));
+                String name = entry.getKey();
+                String value = entry.getValue();
+                AddEnvVariableService aev = new AddEnvVariableService(uit.token,name,value);
+                aev.execute();
+                assertTrue(aev.result().stream().anyMatch(var -> var.getName().equals(name)));
         }
     }
 
     @Test
     public void success() throws Exception {
         try {
-
             log.debug("[System Integration Test] - ImportXMLService");
             new ImportXMLService(doc).execute();
-
 
             for (UserInfoTest ui : users) {
                 loginUser(ui);
                 addEnvVariableBatchUser(ui);
-
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
 
                 String filename = "plainExample";
-                String fileType = "Plain";
                 String plainContent = "This\nIs\nA\nPlain File\nContent!";
-                createFileUser(ui, filename, fileType, plainContent);
-                ui.numberFilesHomeDir++;
-                listDirectoryUser(ui,ui.numberFilesHomeDir);
+                createFileUser(ui, filename, PLAIN_TYPE, plainContent);
+                listDirectoryUser(ui,++ui.numberFilesHomeDir);
 
                 writeFileUser(ui, filename, ui.username);
                 readFileUser(ui, filename);
                 listDirectoryUser(ui, ui.numberFilesHomeDir);
 
-                fileType = "Dir";
                 filename = "dir" + ui.username;
-                createFileUser(ui, filename, fileType, "");
+                createFileUser(ui, filename, DIR_TYPE, "");
                 ui.numberFilesHomeDir++;
 
                 String pathNewDir = "/home/" + ui.username + "/" + filename;
                 changeDirUser(ui, pathNewDir);
                 ui.currentDir = pathNewDir;
 
-                createFileBatchUser(ui, fileType, fileType, "", ui.numberDirsToCreate);
+                createFileBatchUser(ui, DIR_TYPE, DIR_TYPE, "", ui.numberDirsToCreate);
                 listDirectoryUser(ui, ui.numberDirsToCreate);
 
-                fileType = "Plain";
-                createFileBatchUser(ui, fileType, fileType, plainContent, ui.numberPlainsToCreate);
+                createFileBatchUser(ui, PLAIN_TYPE, PLAIN_TYPE, plainContent, ui.numberPlainsToCreate);
                 listDirectoryUser(ui, ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                fileType = "Link";
                 String linkContent = "/home/" + ui.username;
-                createFileBatchUser(ui, fileType, fileType, linkContent, ui.numberLinksToCreate);
+                createFileBatchUser(ui, LINK_TYPE, LINK_TYPE, linkContent, ui.numberLinksToCreate);
                 listDirectoryUser(ui, ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate);
 
-                fileType = "App";
-                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum";
-                createFileBatchUser(ui, fileType, fileType, appContent, ui.numberAppsToCreate);
+                String appContent = "pt.tecnico.myDrive.presentation.Hello.sum.pdf";
+                createFileBatchUser(ui, APP_TYPE, APP_TYPE, appContent, ui.numberAppsToCreate);
 
-                int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate + ui.numberDirsToCreate
-                        + ui.numberAppsToCreate;
+                int expectedNumberFiles = ui.numberLinksToCreate + ui.numberPlainsToCreate
+                        + ui.numberDirsToCreate + ui.numberAppsToCreate;
                 listDirectoryUser(ui, expectedNumberFiles);
 
                 filename = "Plain.pdf";
-                createFileUser(ui, filename, "Plain", "");
+                createFileUser(ui, filename, PLAIN_TYPE, "");
 
                 deleteFileUser(ui,"Plain0");
                 listDirectoryUser(ui,expectedNumberFiles);
 
                 new MockUp<ExecuteFileAssociationService>(){
                     @Mock
+                    public final String result() {
+                        return appContent;
+                    }
+                    @Mock
                     public final void dispatch(){
-                        User user = md.getUserByUsername(ui.username);
-                        File file = su.lookup(ui.currentDir + "/" + "App0");
-                        file.execute(user, new String[] {"1", "2"});
+                        su.lookup(ui.currentDir+"/"+"App0").execute(md.getUserByUsername(ui.username),new String[0]);
                     }
                 };
 
                 ExecuteFileAssociationService efas = new ExecuteFileAssociationService(ui.token, filename);
                 efas.execute();
+                assertEquals(appContent,efas.result());
 
                 pathNewDir = "/home/" + ui.username;
                 changeDirUser(ui, pathNewDir);
