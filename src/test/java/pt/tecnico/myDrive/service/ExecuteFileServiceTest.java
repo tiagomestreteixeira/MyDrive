@@ -1,6 +1,5 @@
 package pt.tecnico.myDrive.service;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import pt.tecnico.myDrive.domain.*;
 import pt.tecnico.myDrive.exception.NoPermissionException;
@@ -12,11 +11,11 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 
 	private long loginTest;
 	private long loginTestFail;
-    private User user;
-    private User userNoExe;
-    private MyDrive md;
-    private SuperUser root;
-    private String[] args;
+	private User user;
+	private User userNoExe;
+	private MyDrive md;
+	private SuperUser root;
+	private String[] args;
 
 	@Override
 	protected void populate() {
@@ -53,36 +52,36 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/linkExecuteFile", args);
 		efs.execute();
 	}
-	
-	@Test (expected = NoPermissionException.class)
-	public void executeDirFile() throws Exception{
+
+	@Test(expected = NoPermissionException.class)
+	public void executeDirFile() throws Exception {
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test", args);
 		efs.execute();
 	}
-	
-	@Test (expected = NoPermissionException.class)
-	public void executeLinkNoPermission() throws Exception{
+
+	@Test(expected = NoPermissionException.class)
+	public void executeLinkNoPermission() throws Exception {
 		new App("testExecuteApp", userNoExe, userNoExe.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("linkExecuteNoPermission", userNoExe, userNoExe.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 
 		ExecuteFileService efs = new ExecuteFileService(loginTestFail, "/home/testfail/linkExecuteNoPermission", args);
 		efs.execute();
 	}
-	
-	@Test (expected = NoPermissionException.class)
-	public void executeAppNoPermission() throws Exception{
+
+	@Test(expected = NoPermissionException.class)
+	public void executeAppNoPermission() throws Exception {
 		new App("appExecuteNoPermission", userNoExe, userNoExe.getHomeDir(), "rwxd----", "");
-		
+
 		ExecuteFileService efs = new ExecuteFileService(loginTestFail, "/home/testfail/appExecuteNoPermission", args);
 		efs.execute();
 	}
 
 	@Test
-	public void executeLinkToAnotherFile() throws Exception{
+	public void executeLinkToAnotherFile() throws Exception {
 		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("testLinkToAnotherFile1", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 		new Link("testLinkToAnotherFile2", user, user.getHomeDir(), "rwxd----", "/home/test/testLinkToAnotherFile1");
-		
+
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testLinkToAnotherFile2", args);
 		efs.execute();
 	}
