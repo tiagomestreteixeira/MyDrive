@@ -6,6 +6,8 @@ import pt.tecnico.myDrive.exception.ImportDocumentException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
+import java.util.Arrays;
+
 
 public class PlainFile extends PlainFile_Base {
 
@@ -58,13 +60,29 @@ public class PlainFile extends PlainFile_Base {
 
     @Override
     public void execute(User user, String[] args) {
-        if (user.checkPermission(this, 'r')) {
-            this.getContent().split("\n");
-            System.out.println(this.getContent());//TODO: dummy
-        } else {
-            throw new NoPermissionException("PlainFile.read()");
-        }
-    }
+		if (user.checkPermission(this, 'x')) {
+			Dir rootDir = user.getMyDrive().getRootDir();
+			Dir relativeDir = getDir();
+			String content = getContent();
+			String[] lines = content.split("\n");
+
+			for (String line : lines) {
+				String[] lineSplit = line.split(" ");
+				String appName = lineSplit[0];
+				String[] appArgs = Arrays.copyOfRange(lineSplit, 1, args.length);
+				App app;
+
+				if (appName.startsWith("/")) {
+					app = (App) rootDir.lookup(user, appName.substring(1));
+				} else {
+					app = (App) relativeDir.lookup(user, appName);
+				}
+				app.execute(user, appArgs);
+			}
+		} else {
+			throw new NoPermissionException("PlainFile.execute()");
+		}
+	}
 
     public void xmlImport(Element plainFileElement, String elementDomain, String elementDomainValue) throws ImportDocumentException {
 
