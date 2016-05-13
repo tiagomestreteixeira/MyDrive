@@ -176,7 +176,9 @@ public class User extends User_Base {
 		}
 	}
 
-
+	void executeAssociation(String filename){
+		//TODO MOCKED EXAMPLE.
+	}
 
 	public boolean checkPassword (String attempt) {
 		return attempt.equals(super.getPassword());

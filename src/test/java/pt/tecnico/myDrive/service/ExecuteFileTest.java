@@ -41,7 +41,10 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecutePlainFile", args);
 		efs.execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 
 	@Test
@@ -50,7 +53,10 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecuteApp", args);
 		efs.execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 
 	@Test
@@ -60,7 +66,10 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/linkExecuteFile", args);
 		efs.execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 
 	@Test(expected = NoPermissionException.class)
@@ -94,7 +103,10 @@ public class ExecuteFileTest extends AbstractServiceTest {
 
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testLinkToAnotherFile2", args);
 		efs.execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 
 	@Test(expected = InvalidLoginTokenException.class)
@@ -112,7 +124,10 @@ public class ExecuteFileTest extends AbstractServiceTest {
 		new App("testExecuteApp", root, user.getHomeDir(), "------x-", DEFAULT_APP);
 
 		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 
 	@Test(expected = NoPermissionException.class)
@@ -133,6 +148,9 @@ public class ExecuteFileTest extends AbstractServiceTest {
 	public void executeOwnerPermission(final @Mocked pt.tecnico.myDrive.presentation.Hello mock) {
 		new App("testExecuteApp", user, user.getHomeDir(), "--x-----", DEFAULT_APP);
 		new ExecuteFileService(loginTest, "/home/test/testExecuteApp", new String[0]).execute();
-		new Verifications() {{ mock.main(args); times = 1; }};
+		new Verifications() {{
+			mock.main(args);
+			times = 1;
+		}};
 	}
 }
