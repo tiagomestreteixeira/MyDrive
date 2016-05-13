@@ -17,15 +17,15 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
     private MyDrive md;
     private SuperUser root;
     private String[] args;
-    
+
 	@Override
 	protected void populate() {
 		md = MyDriveService.getMyDrive();
-        root = md.getSuperUser();
-        user = new User(md, "test", "test", "rwxd----", "testpw12");
-        userNoExe = new User(md, "testfail", "testfail", "rw-d----", "testfailpw");
-        loginTest = md.createLogin("test", "testpw12");
-        loginTestFail = md.createLogin("testfail", "testfailpw");
+		root = md.getSuperUser();
+		user = new User(md, "test", "test", "rwxd----", "testpw12");
+		userNoExe = new User(md, "testfail", "testfail", "rw-d----", "testfailpw");
+		loginTest = md.createLogin("test", "testpw12");
+		loginTestFail = md.createLogin("testfail", "testfailpw");
 	}
 
 	@Test
@@ -37,21 +37,19 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 		efs.execute();
 	}
 
-	@Ignore // TODO: Fix test to set content to App
 	@Test
-	public void executeAppFile() throws Exception{
-		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----");
-		
+	public void executeAppFile() throws Exception {
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
+
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/testExecuteApp", args);
 		efs.execute();
 	}
 
-	@Ignore // TODO: Fix test to set content to App
 	@Test
-	public void executeLinkFile() throws Exception{
-		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----");
+	public void executeLinkFile() throws Exception {
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("linkExecuteFile", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
-		
+
 		ExecuteFileService efs = new ExecuteFileService(loginTest, "/home/test/linkExecuteFile", args);
 		efs.execute();
 	}
@@ -64,9 +62,9 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 	
 	@Test (expected = NoPermissionException.class)
 	public void executeLinkNoPermission() throws Exception{
-		new App("testExecuteApp", userNoExe, userNoExe.getHomeDir(), "rwxd----");
+		new App("testExecuteApp", userNoExe, userNoExe.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("linkExecuteNoPermission", userNoExe, userNoExe.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
-		
+
 		ExecuteFileService efs = new ExecuteFileService(loginTestFail, "/home/testfail/linkExecuteNoPermission", args);
 		efs.execute();
 	}
@@ -79,10 +77,9 @@ public class ExecuteFileServiceTest extends AbstractServiceTest {
 		efs.execute();
 	}
 
-	@Ignore // TODO: Fix test to set content to App
 	@Test
 	public void executeLinkToAnotherFile() throws Exception{
-		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----");
+		new App("testExecuteApp", user, user.getHomeDir(), "rwxd----", DEFAULT_APP);
 		new Link("testLinkToAnotherFile1", user, user.getHomeDir(), "rwxd----", "/home/test/testExecuteApp");
 		new Link("testLinkToAnotherFile2", user, user.getHomeDir(), "rwxd----", "/home/test/testLinkToAnotherFile1");
 		
