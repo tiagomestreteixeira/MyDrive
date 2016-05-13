@@ -45,6 +45,10 @@ public class User extends User_Base {
 		super.setPassword(pass);
 	}
 
+	public String getPasswordForTesting() throws MyDriveException {
+		return super.getPassword();
+	}
+
 	@Override
 	public String getPassword() throws MyDriveException {
 		throw new NoPermissionException("User.getPassword()");
