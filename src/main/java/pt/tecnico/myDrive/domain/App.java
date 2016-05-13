@@ -5,6 +5,8 @@ import pt.tecnico.myDrive.exception.MethodNotValidException;
 import pt.tecnico.myDrive.exception.MyDriveException;
 import pt.tecnico.myDrive.exception.NoPermissionException;
 
+import java.lang.reflect.Method;
+
 public class App extends App_Base {
 
     public App(String name, User user, Dir directory, String permissions) throws MyDriveException {
@@ -33,13 +35,31 @@ public class App extends App_Base {
 
 
     @Override
-    public void execute(User user, String[] args){
-        if (user.checkPermission(this, 'x')) {
-            // TODO Execute Apps.
-        } else {
-            throw new NoPermissionException("App.execute()");
-        }
-    }
+    public void execute(User user, String[] args) throws MyDriveException {
+		if (user.checkPermission(this, 'x')) {
+			String name = getContent();
+			try {
+				Class<?> cls;
+				Method meth;
+				try { // name is a class: call main()
+					cls = Class.forName(name);
+					meth = cls.getMethod("main", String[].class);
+				} catch (ClassNotFoundException cnfe) { // name is a method
+					int pos;
+					if ((pos = name.lastIndexOf('.')) < 0) throw cnfe;
+					cls = Class.forName(name.substring(0, pos));
+					meth = cls.getMethod(name.substring(pos + 1), String[].class);
+				}
+				meth.invoke(null, (Object) args); // static method (ignore return)
+			} catch (Exception e) {
+				log.debug("I'm here");
+				log.debug(e.getMessage());
+				throw new MethodNotValidException(name);
+			}
+		} else {
+			throw new NoPermissionException("App.execute()");
+		}
+	}
 
 
     public Element xmlExport(){
