@@ -194,7 +194,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>pt.tecnico.myDrive.Main</mainClass>
+                    <mainClass>pt.tecnico.myDrive.presentation.MdShell</mainClass>
                     <killAfter>-1</killAfter>
                 </configuration>
             </plugin>
